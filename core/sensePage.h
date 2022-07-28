@@ -34,7 +34,7 @@ public slots:
 
     void updateAttriLabel();
     void drawClassImage();
-    void nextBatchChart();
+    void nextBatchImage();
 
 
 private:

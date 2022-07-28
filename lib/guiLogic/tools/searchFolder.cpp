@@ -1,6 +1,9 @@
 #include "searchFolder.h"
 #include <string.h>
 #include <string>
+
+#include <QObject>
+
 using namespace std;
 
 // 为了兼容win与linux双平台
@@ -92,3 +95,26 @@ bool SearchFolder::getDirs(vector<string> &dirs, string folderPath){
 }
 
 #endif
+
+
+bool SearchFolder::getGroundTruth(
+    vector<string>  &label_GT, 
+    vector<vector<cv::Point>> &points_GT, 
+    string labelPath)
+{
+    ifstream infile(labelPath);
+    assert(infile.is_open());   // 文件打开失败   
+    string line;
+    while(getline(infile,line)){
+        QStringList locInfo = QString::fromStdString(line).split(' ');
+        vector<cv::Point> currPoints = {
+            cv::Point(locInfo[0].toFloat(),locInfo[1].toFloat()),
+            cv::Point(locInfo[2].toFloat(),locInfo[3].toFloat()),
+            cv::Point(locInfo[4].toFloat(),locInfo[5].toFloat()),
+            cv::Point(locInfo[6].toFloat(),locInfo[7].toFloat())
+        };
+        label_GT.push_back(locInfo[8].toStdString());
+        points_GT.push_back(currPoints);
+    }
+    infile.close();
+}

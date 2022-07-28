@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1366</width>
-    <height>901</height>
+    <height>907</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -33,7 +33,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="page_senseSet">
        <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -99,8 +99,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>494</width>
-             <height>1097</height>
+             <width>735</width>
+             <height>586</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -117,9 +117,9 @@
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_11">
                      <item>
-                      <widget class="QRadioButton" name="radioButton_HRRP_choice">
+                      <widget class="QRadioButton" name="radioButton_BBOX_choice">
                        <property name="text">
-                        <string>一维距离像序列</string>
+                        <string>正框</string>
                        </property>
                        <property name="checked">
                         <bool>true</bool>
@@ -127,669 +127,97 @@
                       </widget>
                      </item>
                      <item>
-                      <widget class="QRadioButton" name="radioButton_RCS_choice">
+                      <widget class="QRadioButton" name="radioButton_RBOX_choice">
                        <property name="text">
-                        <string>RCS序列</string>
+                        <string>旋转框</string>
                        </property>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QRadioButton" name="radioButton_RADIO_choice">
-                       <property name="text">
-                        <string>雷达回波</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QRadioButton" name="radioButton_IMAGE_choice">
-                       <property name="text">
-                        <string>图像</string>
+                      <widget class="QComboBox" name="comboBox_datasetNameChoice">
+                       <property name="minimumSize">
+                        <size>
+                         <width>120</width>
+                         <height>0</height>
+                        </size>
                        </property>
                       </widget>
                      </item>
                     </layout>
                    </item>
                    <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_12">
-                     <item>
-                      <widget class="QComboBox" name="comboBox_datasetNameChoice">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="minimumSize">
-                        <size>
-                         <width>20</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QPushButton" name="pushButton_datasetConfirm">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="text">
-                        <string>确认</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
+                    <widget class="QPushButton" name="pushButton_datasetConfirm">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>25</height>
+                      </size>
+                     </property>
+                     <property name="layoutDirection">
+                      <enum>Qt::RightToLeft</enum>
+                     </property>
+                     <property name="autoFillBackground">
+                      <bool>false</bool>
+                     </property>
+                     <property name="text">
+                      <string>确认</string>
+                     </property>
+                    </widget>
                    </item>
                   </layout>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QGroupBox" name="groupBox_4">
+                 <widget class="QGroupBox" name="groupBox_5">
                   <property name="title">
-                   <string>数据集基本信息</string>
+                   <string>目标类型</string>
                   </property>
-                  <layout class="QVBoxLayout" name="verticalLayout_10">
+                  <layout class="QVBoxLayout" name="verticalLayout_11">
                    <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_28">
+                    <layout class="QHBoxLayout" name="horizontalLayout_19">
                      <item>
-                      <widget class="QLabel" name="label_62">
-                       <property name="minimumSize">
-                        <size>
-                         <width>30</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>30</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
+                      <layout class="QVBoxLayout" name="verticalLayout_35">
+                       <item>
+                        <widget class="QLabel" name="label_datasetClaImg1">
+                         <property name="text">
+                          <string/>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
                      </item>
                      <item>
-                      <widget class="QLabel" name="label_47">
-                       <property name="text">
-                        <string>数据集名称：</string>
-                       </property>
-                      </widget>
+                      <layout class="QVBoxLayout" name="verticalLayout_19">
+                       <item>
+                        <widget class="QLabel" name="label_datasetClaImg2">
+                         <property name="text">
+                          <string/>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
                      </item>
                      <item>
-                      <widget class="QLineEdit" name="lineEdit_sense_datasetName">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_65">
-                       <property name="minimumSize">
-                        <size>
-                         <width>10</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
+                      <layout class="QVBoxLayout" name="verticalLayout_14">
+                       <item>
+                        <widget class="QLabel" name="label_datasetClaImg3">
+                         <property name="text">
+                          <string/>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
                      </item>
                     </layout>
                    </item>
                    <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_21">
-                     <item>
-                      <widget class="QLabel" name="label_59">
-                       <property name="minimumSize">
-                        <size>
-                         <width>30</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>30</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_46">
-                       <property name="text">
-                        <string>目标类别数：</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLineEdit" name="lineEdit_sense_claNum">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_48">
-                       <property name="minimumSize">
-                        <size>
-                         <width>10</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_26">
-                     <item>
-                      <widget class="QLabel" name="label_60">
-                       <property name="minimumSize">
-                        <size>
-                         <width>30</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>30</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_61">
-                       <property name="text">
-                        <string>每类下样本数：</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLineEdit" name="lineEdit_sense_targetNumEachCla">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_63">
-                       <property name="minimumSize">
-                        <size>
-                         <width>10</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_13">
-                     <item>
-                      <widget class="QLabel" name="label_41">
-                       <property name="minimumSize">
-                        <size>
-                         <width>30</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>30</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_19">
-                       <property name="text">
-                        <string>俯仰角：</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLineEdit" name="lineEdit_sense_pitchAngle">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_31">
-                       <property name="minimumSize">
-                        <size>
-                         <width>10</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_14">
-                     <item>
-                      <widget class="QLabel" name="label_40">
-                       <property name="minimumSize">
-                        <size>
-                         <width>30</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>30</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_21">
-                       <property name="text">
-                        <string>方位角：</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLineEdit" name="lineEdit_sense_azimuthAngle">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_36">
-                       <property name="minimumSize">
-                        <size>
-                         <width>10</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_15">
-                     <item>
-                      <widget class="QLabel" name="label_39">
-                       <property name="minimumSize">
-                        <size>
-                         <width>30</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>30</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_23">
-                       <property name="text">
-                        <string>采样点数：</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLineEdit" name="lineEdit_sense_samplingNum">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_35">
-                       <property name="minimumSize">
-                        <size>
-                         <width>10</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_17">
-                     <item>
-                      <widget class="QLabel" name="label_38">
-                       <property name="minimumSize">
-                        <size>
-                         <width>30</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>30</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_27">
-                       <property name="text">
-                        <string>入射方式：</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLineEdit" name="lineEdit_sense_incidentMode">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_34">
-                       <property name="minimumSize">
-                        <size>
-                         <width>10</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_18">
-                     <item>
-                      <widget class="QLabel" name="label_37">
-                       <property name="minimumSize">
-                        <size>
-                         <width>30</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>30</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_29">
-                       <property name="text">
-                        <string>频率：</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLineEdit" name="lineEdit_sense_freq">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_33">
-                       <property name="minimumSize">
-                        <size>
-                         <width>10</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_27">
-                     <item>
-                      <widget class="QLabel" name="label_43">
-                       <property name="minimumSize">
-                        <size>
-                         <width>30</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>30</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_64">
-                       <property name="text">
-                        <string>路径：</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLineEdit" name="lineEdit_sense_PATH">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_66">
-                       <property name="minimumSize">
-                        <size>
-                         <width>10</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_25">
-                     <item>
-                      <widget class="QLabel" name="label_58">
-                       <property name="minimumSize">
-                        <size>
-                         <width>30</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>30</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_32">
-                       <property name="text">
-                        <string>备注：</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_42">
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QPlainTextEdit" name="plainTextEdit_sense_note">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>16777215</width>
-                         <height>50</height>
-                        </size>
-                       </property>
-                       <property name="baseSize">
-                        <size>
-                         <width>0</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                       <property name="plainText">
-                        <string>备注
-</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_57">
-                       <property name="minimumSize">
-                        <size>
-                         <width>10</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_29">
-                     <item>
-                      <widget class="QLabel" name="label_71">
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QPushButton" name="pushButton_saveDatasetAttri">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="text">
-                        <string>保存</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <widget class="QGroupBox" name="groupBox_5">
-                <property name="title">
-                 <string>目标类型</string>
-                </property>
-                <layout class="QVBoxLayout" name="verticalLayout_11">
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_19">
-                   <item>
-                    <layout class="QVBoxLayout" name="verticalLayout_35">
-                     <item>
-                      <widget class="QLabel" name="label_datasetClaImg1">
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_9">
                      <item>
                       <widget class="QLabel" name="label_datasetCla1">
                        <property name="maximumSize">
@@ -801,16 +229,8 @@
                        <property name="text">
                         <string/>
                        </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <layout class="QVBoxLayout" name="verticalLayout_19">
-                     <item>
-                      <widget class="QLabel" name="label_datasetClaImg2">
-                       <property name="text">
-                        <string/>
+                       <property name="alignment">
+                        <set>Qt::AlignCenter</set>
                        </property>
                       </widget>
                      </item>
@@ -825,16 +245,8 @@
                        <property name="text">
                         <string/>
                        </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <layout class="QVBoxLayout" name="verticalLayout_14">
-                     <item>
-                      <widget class="QLabel" name="label_datasetClaImg3">
-                       <property name="text">
-                        <string/>
+                       <property name="alignment">
+                        <set>Qt::AlignCenter</set>
                        </property>
                       </widget>
                      </item>
@@ -849,87 +261,433 @@
                        <property name="text">
                         <string/>
                        </property>
+                       <property name="alignment">
+                        <set>Qt::AlignCenter</set>
+                       </property>
                       </widget>
                      </item>
                     </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="groupBox_4">
+                <property name="title">
+                 <string>数据集基本信息</string>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_10">
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_28">
+                   <item>
+                    <widget class="QLabel" name="label_62">
+                     <property name="minimumSize">
+                      <size>
+                       <width>30</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>30</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_47">
+                     <property name="text">
+                      <string>数据集名称</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="lineEdit_sense_datasetName">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_65">
+                     <property name="minimumSize">
+                      <size>
+                       <width>10</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
                    </item>
                   </layout>
                  </item>
                  <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_20">
+                  <layout class="QHBoxLayout" name="horizontalLayout_14">
                    <item>
-                    <layout class="QVBoxLayout" name="verticalLayout_37">
-                     <item>
-                      <widget class="QLabel" name="label_datasetClaImg4">
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_datasetCla4">
-                       <property name="maximumSize">
-                        <size>
-                         <width>16777215</width>
-                         <height>30</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
+                    <widget class="QLabel" name="label_40">
+                     <property name="minimumSize">
+                      <size>
+                       <width>30</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>30</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
                    </item>
                    <item>
-                    <layout class="QVBoxLayout" name="verticalLayout_39">
-                     <item>
-                      <widget class="QLabel" name="label_datasetClaImg5">
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_datasetCla5">
-                       <property name="maximumSize">
-                        <size>
-                         <width>16777215</width>
-                         <height>30</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
+                    <widget class="QLabel" name="label_21">
+                     <property name="text">
+                      <string>数据集类型：</string>
+                     </property>
+                    </widget>
                    </item>
                    <item>
-                    <layout class="QVBoxLayout" name="verticalLayout_38">
-                     <item>
-                      <widget class="QLabel" name="label_datasetClaImg6">
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_datasetCla6">
-                       <property name="maximumSize">
-                        <size>
-                         <width>16777215</width>
-                         <height>30</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
+                    <widget class="QLineEdit" name="lineEdit_sense_datasetType">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_36">
+                     <property name="minimumSize">
+                      <size>
+                       <width>10</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
                    </item>
                   </layout>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_21">
+                   <item>
+                    <widget class="QLabel" name="label_59">
+                     <property name="minimumSize">
+                      <size>
+                       <width>30</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>30</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_46">
+                     <property name="text">
+                      <string>目标类别数：</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="lineEdit_sense_claNum">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_48">
+                     <property name="minimumSize">
+                      <size>
+                       <width>10</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_26">
+                   <item>
+                    <widget class="QLabel" name="label_60">
+                     <property name="minimumSize">
+                      <size>
+                       <width>30</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>30</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_61">
+                     <property name="text">
+                      <string>每类下样本数：</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="lineEdit_sense_targetNumEachCla">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_63">
+                     <property name="minimumSize">
+                      <size>
+                       <width>10</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_15">
+                   <item>
+                    <widget class="QLabel" name="label_39">
+                     <property name="minimumSize">
+                      <size>
+                       <width>30</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>30</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_23">
+                     <property name="text">
+                      <string>图像大小：</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="lineEdit_sense_imgSize">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_35">
+                     <property name="minimumSize">
+                      <size>
+                       <width>10</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_27">
+                   <item>
+                    <widget class="QLabel" name="label_43">
+                     <property name="minimumSize">
+                      <size>
+                       <width>30</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>30</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_64">
+                     <property name="text">
+                      <string>路径：</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="lineEdit_sense_PATH">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_66">
+                     <property name="minimumSize">
+                      <size>
+                       <width>10</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_25">
+                   <item>
+                    <widget class="QLabel" name="label_58">
+                     <property name="minimumSize">
+                      <size>
+                       <width>30</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>30</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_32">
+                     <property name="text">
+                      <string>备注：</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_42">
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPlainTextEdit" name="plainTextEdit_sense_note">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>50</height>
+                      </size>
+                     </property>
+                     <property name="baseSize">
+                      <size>
+                       <width>0</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="plainText">
+                      <string>备注
+</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_57">
+                     <property name="minimumSize">
+                      <size>
+                       <width>10</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="pushButton_saveDatasetAttri">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="layoutDirection">
+                    <enum>Qt::RightToLeft</enum>
+                   </property>
+                   <property name="text">
+                    <string>保存</string>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </widget>
@@ -947,7 +705,7 @@
                  <item>
                   <widget class="QProgressBar" name="progressBar">
                    <property name="value">
-                    <number>24</number>
+                    <number>0</number>
                    </property>
                   </widget>
                  </item>
@@ -980,53 +738,33 @@
                 </layout>
                </item>
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_23">
+                <widget class="Line" name="line_9">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_12">
                  <item>
-                  <widget class="QLabel" name="label_51">
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>150</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>5</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_15">
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_9">
-                     <item>
-                      <widget class="QLabel" name="label_16">
-                       <property name="text">
-                        <string>类别：</string>
-                       </property>
-                       <property name="alignment">
-                        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_senseChartInfo_1">
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
+                  <layout class="QVBoxLayout" name="verticalLayout_16">
                    <item>
                     <widget class="QLabel" name="label_senseChart1">
                      <property name="text">
                       <string/>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_senseChartInfo_1">
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignBottom|Qt::AlignHCenter</set>
                      </property>
                     </widget>
                    </item>
@@ -1040,113 +778,59 @@
                   </widget>
                  </item>
                  <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_29">
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_38">
-                     <item>
-                      <widget class="QLabel" name="label_24">
-                       <property name="text">
-                        <string>类别：</string>
-                       </property>
-                       <property name="alignment">
-                        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_senseChartInfo_2">
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
+                  <layout class="QVBoxLayout" name="verticalLayout_33">
                    <item>
                     <widget class="QLabel" name="label_senseChart2">
                      <property name="text">
                       <string/>
                      </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_senseChartInfo_2">
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignBottom|Qt::AlignHCenter</set>
+                     </property>
                     </widget>
                    </item>
                   </layout>
                  </item>
-                 <item>
-                  <widget class="QLabel" name="label_49">
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>80</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>5</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                  </widget>
-                 </item>
                 </layout>
                </item>
                <item>
-                <widget class="Line" name="line_9">
+                <widget class="Line" name="line_6">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
                 </widget>
                </item>
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_39">
+                <layout class="QHBoxLayout" name="horizontalLayout_13">
                  <item>
-                  <widget class="QLabel" name="label_52">
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>150</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>5</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_16">
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_40">
-                     <item>
-                      <widget class="QLabel" name="label_28">
-                       <property name="text">
-                        <string>类别：</string>
-                       </property>
-                       <property name="alignment">
-                        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_senseChartInfo_3">
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
+                  <layout class="QVBoxLayout" name="verticalLayout_17">
                    <item>
                     <widget class="QLabel" name="label_senseChart3">
                      <property name="text">
                       <string/>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_senseChartInfo_3">
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignBottom|Qt::AlignHCenter</set>
                      </property>
                     </widget>
                    </item>
@@ -1160,175 +844,28 @@
                   </widget>
                  </item>
                  <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_33">
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_41">
-                     <item>
-                      <widget class="QLabel" name="label_45">
-                       <property name="text">
-                        <string>类别：</string>
-                       </property>
-                       <property name="alignment">
-                        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_senseChartInfo_4">
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
+                  <layout class="QVBoxLayout" name="verticalLayout_34">
                    <item>
                     <widget class="QLabel" name="label_senseChart4">
                      <property name="text">
                       <string/>
                      </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
                     </widget>
                    </item>
-                  </layout>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="label_67">
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>80</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>5</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <widget class="Line" name="line_6">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_24">
-                 <item>
-                  <widget class="QLabel" name="label_53">
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>150</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>5</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_17">
                    <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_36">
-                     <item>
-                      <widget class="QLabel" name="label_54">
-                       <property name="text">
-                        <string>类别：</string>
-                       </property>
-                       <property name="alignment">
-                        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_senseChartInfo_5">
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <widget class="QLabel" name="label_senseChart5">
+                    <widget class="QLabel" name="label_senseChartInfo_4">
                      <property name="text">
                       <string/>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignBottom|Qt::AlignHCenter</set>
                      </property>
                     </widget>
                    </item>
                   </layout>
-                 </item>
-                 <item>
-                  <widget class="Line" name="line_8">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_34">
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_42">
-                     <item>
-                      <widget class="QLabel" name="label_69">
-                       <property name="text">
-                        <string>类别：</string>
-                       </property>
-                       <property name="alignment">
-                        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_senseChartInfo_6">
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <widget class="QLabel" name="label_senseChart6">
-                     <property name="text">
-                      <string/>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="label_75">
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>80</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>5</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                  </widget>
                  </item>
                 </layout>
                </item>
@@ -1405,8 +942,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>622</width>
-             <height>574</height>
+             <width>721</width>
+             <height>587</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -1892,7 +1429,7 @@
                         <item>
                          <widget class="QLineEdit" name="lineEdit_modelChoice_PATH">
                           <property name="sizePolicy">
-                           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
                             <verstretch>0</verstretch>
                            </sizepolicy>
@@ -2282,8 +1819,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>326</width>
-               <height>551</height>
+               <width>272</width>
+               <height>417</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -3199,8 +2736,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>402</width>
-               <height>591</height>
+               <width>395</width>
+               <height>593</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -3549,11 +3086,35 @@
          </layout>
         </item>
         <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_62">
+          <item>
+           <widget class="QLabel" name="label_117">
+            <property name="text">
+             <string>路径：</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_modelDock_PATH">
+            <property name="minimumSize">
+             <size>
+              <width>10</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
          <layout class="QHBoxLayout" name="horizontalLayout_52">
           <item>
            <widget class="QLabel" name="label_103">
             <property name="text">
-             <string>模型算法：</string>
+             <string>算法：</string>
             </property>
            </widget>
           </item>
@@ -3573,16 +3134,88 @@
          </layout>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_53">
+         <layout class="QHBoxLayout" name="horizontalLayout_61">
           <item>
-           <widget class="QLabel" name="label_104">
+           <widget class="QLabel" name="label_116">
             <property name="text">
-             <string>验证准确率：</string>
+             <string>框架：</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="label_modelDock_accuracy">
+           <widget class="QLabel" name="label_modelDock_framework">
+            <property name="minimumSize">
+             <size>
+              <width>10</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_72">
+          <item>
+           <widget class="QLabel" name="label_133">
+            <property name="text">
+             <string>输出类别：</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_modelDock_class">
+            <property name="minimumSize">
+             <size>
+              <width>10</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_53">
+          <item>
+           <widget class="QLabel" name="label_104">
+            <property name="text">
+             <string>训练mAP：</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_modelDock_mAP">
+            <property name="minimumSize">
+             <size>
+              <width>10</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_71">
+          <item>
+           <widget class="QLabel" name="label_129">
+            <property name="text">
+             <string>训练mAP_50：</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_modelDock_mAP_50">
             <property name="minimumSize">
              <size>
               <width>10</width>
@@ -3649,60 +3282,12 @@
           <item>
            <widget class="QLabel" name="label_115">
             <property name="text">
-             <string>学习率：</string>
+             <string>训练学习率：</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QLabel" name="label_modelDock_trainLR">
-            <property name="minimumSize">
-             <size>
-              <width>10</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_61">
-          <item>
-           <widget class="QLabel" name="label_116">
-            <property name="text">
-             <string>框架：</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_modelDock_framework">
-            <property name="minimumSize">
-             <size>
-              <width>10</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_62">
-          <item>
-           <widget class="QLabel" name="label_117">
-            <property name="text">
-             <string>路径：</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_modelDock_PATH">
             <property name="minimumSize">
              <size>
               <width>10</width>
@@ -3776,7 +3361,7 @@
         <enum>QTabWidget::Rounded</enum>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <property name="elideMode">
         <enum>Qt::ElideNone</enum>
@@ -3787,43 +3372,23 @@
        <property name="tabBarAutoHide">
         <bool>false</bool>
        </property>
-       <widget class="QWidget" name="tab_HRRP">
+       <widget class="QWidget" name="tab_BBOX">
         <attribute name="title">
-         <string>HRRP</string>
+         <string>正框</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_21">
          <item>
-          <widget class="QTreeView" name="treeView_HRRP"/>
+          <widget class="QTreeView" name="treeView_BBOX"/>
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="tab_RCS">
+       <widget class="QWidget" name="tab_RBOX">
         <attribute name="title">
-         <string>RCS</string>
+         <string>旋转框</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_20">
          <item>
-          <widget class="QTreeView" name="treeView_RCS"/>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="tab_RADIO">
-        <attribute name="title">
-         <string>RADIO</string>
-        </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_22">
-         <item>
-          <widget class="QTreeView" name="treeView_RADIO"/>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="tab_IMAGE">
-        <attribute name="title">
-         <string>IMAGE</string>
-        </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_32">
-         <item>
-          <widget class="QTreeView" name="treeView_IMAGE"/>
+          <widget class="QTreeView" name="treeView_RBOX"/>
          </item>
         </layout>
        </widget>
@@ -3866,7 +3431,7 @@
             <item>
              <widget class="QLabel" name="label_84">
               <property name="text">
-               <string>路径：</string>
+               <string>数据集路径：</string>
               </property>
              </widget>
             </item>
@@ -3890,12 +3455,12 @@
             <item>
              <widget class="QLabel" name="label_76">
               <property name="text">
-               <string>频率：</string>
+               <string>图像大小：</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label__datasetDock_freq">
+             <widget class="QLabel" name="label_datasetDock_imgSize">
               <property name="minimumSize">
                <size>
                 <width>10</width>
@@ -3962,7 +3527,7 @@
             <item>
              <widget class="QLabel" name="label_80">
               <property name="text">
-               <string>数据集备注：</string>
+               <string>备注：</string>
               </property>
              </widget>
             </item>
@@ -3991,93 +3556,63 @@
          </widget>
         </item>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_25">
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_10">
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_26">
-              <item>
-               <widget class="QLabel" name="label_12">
-                <property name="text">
-                 <string>类别：</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_datasetDock_chart1">
-                <property name="text">
-                 <string>None</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_30">
-              <item>
-               <widget class="QLabel" name="label_datasetDock_chartView01">
-                <property name="minimumSize">
-                 <size>
-                  <width>10</width>
-                  <height>10</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="Line" name="line_4">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_16">
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_28">
-              <item>
-               <widget class="QLabel" name="label_13">
-                <property name="text">
-                 <string>类别：</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_datasetDock_chart2">
-                <property name="text">
-                 <string>None</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_31">
-              <item>
-               <widget class="QLabel" name="label_datasetDock_chartView02">
-                <property name="minimumSize">
-                 <size>
-                  <width>10</width>
-                  <height>10</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </item>
-         </layout>
+         <widget class="QLabel" name="label_datasetDock_imageView1">
+          <property name="minimumSize">
+           <size>
+            <width>10</width>
+            <height>10</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_datasetDock_imageInfo1">
+          <property name="text">
+           <string>None</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignHCenter|Qt::AlignTop</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="line_4">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_datasetDock_imageView2">
+          <property name="minimumSize">
+           <size>
+            <width>10</width>
+            <height>10</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_datasetDock_imageInfo2">
+          <property name="text">
+           <string>None</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignHCenter|Qt::AlignTop</set>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -4093,7 +3628,7 @@
     </size>
    </property>
    <property name="features">
-    <set>QDockWidget::DockWidgetClosable|QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+    <set>QDockWidget::AllDockWidgetFeatures</set>
    </property>
    <property name="windowTitle">
     <string>调试输出</string>
@@ -4184,10 +3719,8 @@
       <iconset resource="../sources/MainWindow_sources.qrc">
        <normaloff>:/icon/import_data.png</normaloff>:/icon/import_data.png</iconset>
      </property>
-     <addaction name="action_import_HRRP"/>
-     <addaction name="action_import_RCS"/>
-     <addaction name="action_import_RADIO"/>
-     <addaction name="action_import_IMAGE"/>
+     <addaction name="action_importDataset_BBOX"/>
+     <addaction name="action_importDataset_RBOX"/>
     </widget>
     <addaction name="submenu_import_dataset"/>
     <addaction name="separator"/>
@@ -4232,10 +3765,8 @@
        <normaloff>:/icon/import_model.png</normaloff>
        <normalon>:/icon/import_model.png</normalon>:/icon/import_model.png</iconset>
      </property>
-     <addaction name="action_importModel_TRA_DL"/>
-     <addaction name="action_importModel_FEA_RELE"/>
-     <addaction name="action_importModel_FEA_OPTI"/>
-     <addaction name="action_importModel_INCRE"/>
+     <addaction name="action_importModel_BBOX"/>
+     <addaction name="action_importModel_RBOX"/>
     </widget>
     <addaction name="menu"/>
     <addaction name="separator"/>
@@ -4319,9 +3850,9 @@
     <string>默认大小</string>
    </property>
   </action>
-  <action name="action_import_HRRP">
+  <action name="action_importDataset_BBOX">
    <property name="text">
-    <string>导入一维距离像序列数据</string>
+    <string>导入正框数据集</string>
    </property>
   </action>
   <action name="action_AboutQt">
@@ -4435,12 +3966,12 @@
     <string>后退</string>
    </property>
   </action>
-  <action name="action_import_RCS">
+  <action name="action_importDataset_RBOX">
    <property name="text">
-    <string>导入RCS数据</string>
+    <string>导入旋转框数据集</string>
    </property>
   </action>
-  <action name="action_import_RADIO">
+  <action name="action">
    <property name="text">
     <string>导入雷达回波数据</string>
    </property>
@@ -4486,9 +4017,9 @@
     <string>删除模型</string>
    </property>
   </action>
-  <action name="action_importModel_TRA_DL">
+  <action name="action_importModel_BBOX">
    <property name="text">
-    <string>导入传统深度学习模型</string>
+    <string>导入正框检测模型</string>
    </property>
   </action>
   <action name="action_importModel_FEA_RELE">
@@ -4501,9 +4032,9 @@
     <string>导入特征优化模型</string>
    </property>
   </action>
-  <action name="action_importModel_INCRE">
+  <action name="action_importModel_RBOX">
    <property name="text">
-    <string>导入小样本增量学习模型</string>
+    <string>导入旋转框检测模型</string>
    </property>
   </action>
  </widget>

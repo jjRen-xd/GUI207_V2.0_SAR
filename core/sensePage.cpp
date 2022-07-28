@@ -1,5 +1,6 @@
 #include "sensePage.h"
 #include <QMessageBox>
+#include "lib/guiLogic/tools/convertTools.h""
 
 #include <iostream>
 #include <string>
@@ -14,10 +15,8 @@ SenseSetPage::SenseSetPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, 
     datasetInfo(globalDatasetInfo)
 {
     // 数据集类别选择框事件相应
-    BtnGroup_typeChoice->addButton(ui->radioButton_HRRP_choice, 0);
-    BtnGroup_typeChoice->addButton(ui->radioButton_RCS_choice, 1);
-    BtnGroup_typeChoice->addButton(ui->radioButton_RADIO_choice, 2);
-    BtnGroup_typeChoice->addButton(ui->radioButton_IMAGE_choice, 3);
+    BtnGroup_typeChoice->addButton(ui->radioButton_BBOX_choice, 0);
+    BtnGroup_typeChoice->addButton(ui->radioButton_RBOX_choice, 1);
     connect(this->BtnGroup_typeChoice, &QButtonGroup::buttonClicked, this, &SenseSetPage::changeType);
 
     // 确定
@@ -27,49 +26,35 @@ SenseSetPage::SenseSetPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, 
     connect(ui->pushButton_saveDatasetAttri, &QPushButton::clicked, this, &SenseSetPage::saveDatasetAttri);
 
     // 下一批数据
-    connect(ui->pushButton_nextSenseChart, &QPushButton::clicked, this, &SenseSetPage::nextBatchChart);
+    connect(ui->pushButton_nextSenseChart, &QPushButton::clicked, this, &SenseSetPage::nextBatchImage);
 
     // 数据集属性显示框
     this->attriLabelGroup["datasetName"] = ui->lineEdit_sense_datasetName;
+    this->attriLabelGroup["datasetType"] = ui->lineEdit_sense_datasetType;
     this->attriLabelGroup["claNum"] = ui->lineEdit_sense_claNum;
     this->attriLabelGroup["targetNumEachCla"] = ui->lineEdit_sense_targetNumEachCla;
-    this->attriLabelGroup["pitchAngle"] = ui->lineEdit_sense_pitchAngle;
-    this->attriLabelGroup["azimuthAngle"] = ui->lineEdit_sense_azimuthAngle;
-    this->attriLabelGroup["samplingNum"] = ui->lineEdit_sense_samplingNum;
-    this->attriLabelGroup["incidentMode"] = ui->lineEdit_sense_incidentMode;
-    this->attriLabelGroup["freq"] = ui->lineEdit_sense_freq;
+    this->attriLabelGroup["imgSize"] = ui->lineEdit_sense_imgSize;
     this->attriLabelGroup["PATH"] = ui->lineEdit_sense_PATH;
 
     // 图片显示label成组
     imgGroup.push_back(ui->label_datasetClaImg1);
     imgGroup.push_back(ui->label_datasetClaImg2);
     imgGroup.push_back(ui->label_datasetClaImg3);
-    imgGroup.push_back(ui->label_datasetClaImg4);
-    imgGroup.push_back(ui->label_datasetClaImg5);
-    imgGroup.push_back(ui->label_datasetClaImg6);
 
     imgInfoGroup.push_back(ui->label_datasetCla1);
     imgInfoGroup.push_back(ui->label_datasetCla2);
     imgInfoGroup.push_back(ui->label_datasetCla3);
-    imgInfoGroup.push_back(ui->label_datasetCla4);
-    imgInfoGroup.push_back(ui->label_datasetCla5);
-    imgInfoGroup.push_back(ui->label_datasetCla6);
 
-    // 显示图表成组
+    // 显示成组
     chartGroup.push_back(ui->label_senseChart1);
     chartGroup.push_back(ui->label_senseChart2);
     chartGroup.push_back(ui->label_senseChart3);
     chartGroup.push_back(ui->label_senseChart4);
-    chartGroup.push_back(ui->label_senseChart5);
-    chartGroup.push_back(ui->label_senseChart6);
 
     chartInfoGroup.push_back(ui->label_senseChartInfo_1);
     chartInfoGroup.push_back(ui->label_senseChartInfo_2);
     chartInfoGroup.push_back(ui->label_senseChartInfo_3);
     chartInfoGroup.push_back(ui->label_senseChartInfo_4);
-    chartInfoGroup.push_back(ui->label_senseChartInfo_5);
-    chartInfoGroup.push_back(ui->label_senseChartInfo_6);
-
 
 }
 
@@ -112,12 +97,10 @@ void SenseSetPage::confirmDataset(bool notDialog = false){
         // 绘制类别图
         drawClassImage();
 
-        ui->progressBar->setValue(40);
+        ui->progressBar->setValue(100);
 
-        // 绘制曲线
-        nextBatchChart();
-
-        // 绘制表格 TODO
+        // 绘制图像
+        nextBatchImage();
 
         if(!notDialog)
             QMessageBox::information(NULL, "数据集切换提醒", "已成功切换数据集为->"+selectedType+"->"+selectedName+"！");
@@ -143,42 +126,64 @@ void SenseSetPage::updateAttriLabel(){
 
 void SenseSetPage::drawClassImage(){
     string rootPath = datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
-    // 寻找根目录下子文件夹的名称
-    vector<string> subDirNames;
-    dirTools->getDirs(subDirNames, rootPath);
-    datasetInfo->selectedClassNames = subDirNames; // 保存下，之后不用重复遍历
-
-    for(int i = 0; i<subDirNames.size(); i++){
-        imgInfoGroup[i]->setText(QString::fromStdString(subDirNames[i]));
-        QString imgPath = QString::fromStdString(rootPath +"/"+ subDirNames[i] +".png");
-        imgGroup[i]->setPixmap(QPixmap(imgPath).scaled(QSize(200,200), Qt::KeepAspectRatio));
+    string subClassDirName = "classImages";
+    // 清空图片显示label
+    for(size_t i = 0; i<imgGroup.size(); i++){
+        imgGroup[i]->clear();
+        imgInfoGroup[i]->clear();
     }
+    // 遍历类别图像目录
+    vector<string> classNames;
+    if(dirTools->getFiles(classNames, ".jpg", rootPath+"/classImages/")){
+        for(size_t i=0; i<classNames.size(); i++){
+            imgInfoGroup[i]->setText(QString::fromStdString(classNames[i]).split(".")[0]);
+            QString imgPath = QString::fromStdString(rootPath+"/classImages/"+classNames[i]);
+            imgGroup[i]->setPixmap(QPixmap(imgPath).scaled(QSize(200,150)));
+        }
+    }
+
 }
 
 
-void SenseSetPage::nextBatchChart(){
+void SenseSetPage::nextBatchImage(){
     string rootPath = datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
-    vector<string> subDirNames = datasetInfo->selectedClassNames;
-
-    // 按类别显示
-    for(int i=0; i<subDirNames.size(); i++){
-        srand((unsigned)time(NULL));
-        // 选取类别
-        string choicedClass = subDirNames[i];
-        string classPath = rootPath +"/"+ choicedClass;
-        vector<string> allTxtFile;
-        if(dirTools->getFiles(allTxtFile,".txt",classPath)){
-            // 随机选取数据
-            string choicedFile = allTxtFile[(rand())%allTxtFile.size()];
-            QString txtFilePath = QString::fromStdString(classPath + "/" + choicedFile);
-            choicedFile = QString::fromStdString(choicedFile).split(".").first().toStdString();
-
-            // 绘图显示
-            Chart *previewChart = new Chart(chartGroup[i],"HRRP(Ephi),Polarization HP(1)[Magnitude in dB]",txtFilePath);
-            previewChart->drawHRRPimage(chartGroup[i]);
-            chartInfoGroup[i]->setText(QString::fromStdString(choicedClass+":"+choicedFile));
-
+    // 获取所有子文件夹，并判断是否是图片、标注文件夹
+    vector<string> allSubDirs;
+    dirTools->getDirs(allSubDirs, rootPath);
+    vector<string> targetKeys = {"images","labelTxt"};
+    for (auto &targetKey: targetKeys){
+        if(!(std::find(allSubDirs.begin(), allSubDirs.end(), targetKey) != allSubDirs.end())){
+            // 目标路径不存在目标文件夹
+            QMessageBox::warning(NULL,"错误","该数据集路径下不存在"+QString::fromStdString(targetKey)+"文件夹！");
+            return;
         }
+    }
+    // 获取图片文件夹下的所有图片文件名
+    vector<string> imageFileNames;
+    dirTools->getFiles(imageFileNames, ".png", rootPath+"/images");
+
+    for(size_t i = 0; i<chartGroup.size(); i++){
+        // 随机选取一张图片作为预览图片
+        srand((unsigned)time(NULL));
+        string choicedImageFile = imageFileNames[(rand()+i)%imageFileNames.size()];
+        string choicedImagePath = rootPath+"/images/"+choicedImageFile;
+        cv::Mat imgSrc = cv::imread(choicedImagePath.c_str(), cv::IMREAD_COLOR);
+
+        // 记录GroundTruth，包含四个坐标和类别信息
+        vector<string> label_GT;
+        vector<vector<cv::Point>> points_GT;
+        string labelPath = rootPath+"/labelTxt/"+choicedImageFile.substr(0,choicedImageFile.size()-4)+".txt";
+        dirTools->getGroundTruth(label_GT, points_GT, labelPath);
+        // 绘制旋转框到图片上
+        cv::drawContours(imgSrc, points_GT, -1, cv::Scalar(16, 124, 16), 2);
+        // 绘制类别标签到图片上
+        for(size_t i = 0; i<label_GT.size(); i++){
+            cv::putText(imgSrc, label_GT[i], points_GT[i][1], cv::FONT_HERSHEY_COMPLEX, 0.4, cv::Scalar(0, 204, 0), 1);
+        }
+        // 将图片显示到界面上
+        QPixmap pixmap = CVS::cvMatToQPixmap(imgSrc);
+        chartGroup[i]->setPixmap(pixmap.scaled(QSize(500,500),Qt::KeepAspectRatio));
+        chartInfoGroup[i]->setText("图像名："+QString::fromStdString(choicedImageFile));
     }
 }
 

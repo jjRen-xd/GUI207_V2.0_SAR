@@ -16,7 +16,7 @@ class DatasetInfo{
         void clear();
 
         std::vector<std::string> getTypes();                   // 获取所有的数据集类型
-        std::vector<std::string> getNamesInType(std::string type); // 获取特定类型下的数据集名称
+        std::vector<std::string> getNamesInType(std::string type); // 获 取特定类型下的数据集名称
         std::string getAttri(std::string type, std::string name, std::string attri);
         std::map<std::string,std::string> getAllAttri(std::string Type, std::string Name);  // 获取指定是数据集的属性
 
@@ -24,7 +24,7 @@ class DatasetInfo{
         int writeToXML(std::string xmlPath);             // 将载入的数据集信息保存至.xml文件
         int loadFromXML(std::string xmlPath);            // 从.xml文件中读取所载入数据集的信息
 
-        int addItemFromXML(std::string xmlPath);        // 从.xml文件中导入新数据集
+        std::string addItemFromXML(std::string xmlPath);        // 从.xml文件中导入新数据集
         void deleteItem(std::string type, std::string name);
 
         std::string selectedType;

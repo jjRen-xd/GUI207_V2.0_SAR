@@ -14,7 +14,7 @@
 
 #include "./lib/guiLogic/tools/searchFolder.h"
 
-#include "lib/algorithm/libtorchTest.h"
+// #include "lib/algorithm/libtorchTest.h"
 
 
 class ModelEvalPage:public QObject{
@@ -51,7 +51,7 @@ private:
     // 不同平台下文件夹搜索工具
     SearchFolder *dirTools = new SearchFolder();
 
-    LibtorchTest *libtorchTest;
+    // LibtorchTest *libtorchTest;
 
 };
 

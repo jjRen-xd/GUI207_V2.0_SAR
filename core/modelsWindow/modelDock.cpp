@@ -12,22 +12,22 @@ ModelDock::ModelDock(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, ModelI
     modelInfo(globalModelInfo)
 {
     // 模型导入事件
-    connect(ui->action_importModel_TRA_DL, &QAction::triggered, this, [this]{importModel("TRA_DL");});
-    connect(ui->action_importModel_FEA_RELE, &QAction::triggered, this, [this]{importModel("FEA_RELE");});
-    connect(ui->action_importModel_FEA_OPTI, &QAction::triggered, this, [this]{importModel("FEA_OPTI");});
-    connect(ui->action_importModel_INCRE, &QAction::triggered, this, [this]{importModel("INCRE");});
+    connect(ui->action_importModel_BBOX, &QAction::triggered, this, [this]{importModel("BBOX");});
+    connect(ui->action_importModel_RBOX, &QAction::triggered, this, [this]{importModel("RBOX");});
     // 模型删除事件
     connect(ui->action_dele_model, &QAction::triggered, this, &ModelDock::deleteModel);
 
     // 预览属性标签成组
     attriLabelGroup["name"] = ui->label_modelDock_name;
+    attriLabelGroup["PATH"] = ui->label_modelDock_PATH;
     attriLabelGroup["algorithm"] = ui->label_modelDock_algorithm;
-    attriLabelGroup["accuracy"] = ui->label_modelDock_accuracy;
+    attriLabelGroup["framework"] = ui->label_modelDock_framework;
+    attriLabelGroup["class"] = ui->label_modelDock_class;
+    attriLabelGroup["mAP"] = ui->label_modelDock_mAP;
+    attriLabelGroup["mAP_50"] = ui->label_modelDock_mAP_50;
     attriLabelGroup["trainDataset"] = ui->label_modelDock_trainDataset;
     attriLabelGroup["trainEpoch"] = ui->label_modelDock_trainEpoch;
     attriLabelGroup["trainLR"] = ui->label_modelDock_trainLR;
-    attriLabelGroup["framework"] = ui->label_modelDock_framework;
-    attriLabelGroup["PATH"] = ui->label_modelDock_PATH;
     attriLabelGroup["note"] = ui->label_modelDock_note;
 
     // TreeView

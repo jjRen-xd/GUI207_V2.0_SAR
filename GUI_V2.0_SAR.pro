@@ -30,6 +30,7 @@ HEADERS += \
     lib/guiLogic/modelInfo.h \
     lib/guiLogic/tinyXml/tinystr.h \
     lib/guiLogic/tinyXml/tinyxml.h \
+    lib/guiLogic/tools/convertTools.h \
     lib/guiLogic/tools/searchFolder.h
 SOURCES += \
     main.cpp \

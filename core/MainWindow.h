@@ -7,9 +7,7 @@
 // 主页面类
 #include "./core/sensePage.h"
 #include "./core/modelChoicePage.h"
-#include "./core/modelEvalPage.h"
-
-//#include "./lib/guiLogic/modelEval.h"
+// #include "./core/modelEvalPage.h"
 // 悬浮窗部件类
 #include "./core/datasetsWindow/datasetDock.h"
 #include "./core/modelsWindow/modelDock.h"
@@ -36,7 +34,7 @@ class MainWindow: public QMainWindow{
         ~MainWindow();
 
         BashTerminal *terminal; // 自定义终端
-//        ModelEval *modeleval; // 模型评估页面控制类
+
     public slots:
         void switchPage();      // 页面切换
         void fullScreen();      // 全屏
@@ -49,7 +47,7 @@ class MainWindow: public QMainWindow{
 
         SenseSetPage *senseSetPage;
         ModelChoicePage *modelChoicePage;
-        ModelEvalPage *modelEvalPage;
+        // ModelEvalPage *modelEvalPage;
 
         DatasetInfo *globalDatasetInfo;
         ModelInfo *globalModelInfo;

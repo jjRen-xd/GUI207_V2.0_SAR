@@ -12,10 +12,11 @@ ModelInfo::ModelInfo(string xmlPath):
     this->selectedName = "";
 
     // 中文名称对照表
+    var2TypeName["RBOX_DET"] = "旋转目标检测模型";
     var2TypeName["TRA_DL"] = "传统深度学习模型";
-    var2TypeName["FEA_RELE"] = "特征关联模型";
+    var2TypeName["FEA_RELE"] = "SAR电磁特征关联模型";
+    var2TypeName["FEW_SHOT"] = "小样本迁移学习模型";
     var2TypeName["FEA_OPTI"] = "特征优化模型";
-    var2TypeName["INCRE"] = "小样本增量学习模型";
     for(auto &item: var2TypeName){
         typeName2Var[item.second] = item.first;
     }

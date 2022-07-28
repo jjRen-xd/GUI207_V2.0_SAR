@@ -26,7 +26,7 @@ ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal
     }
 
     // 先用libtorch
-    libtorchTest = new LibtorchTest(class2label);
+    // libtorchTest = new LibtorchTest(class2label);
     // 随机选取样本按钮
     connect(ui->pushButton_mE_randone, &QPushButton::clicked, this, &ModelEvalPage::randSample);
     // 测试按钮
@@ -90,31 +90,31 @@ void ModelEvalPage::randSample(){
 
 
 void ModelEvalPage::testOneSample(){
-    if(!choicedModelPATH.empty() && !choicedSamplePATH.empty()){
-        std::cout<<choicedSamplePATH<<endl;
-        std::vector<float> degrees(datasetInfo->selectedClassNames.size());  //隶属度
-        double predTime;
-        int predIdx = libtorchTest->testOneSample(choicedSamplePATH, choicedModelPATH, degrees, predTime);
-        QString predClass = QString::fromStdString(label2class[predIdx]);   // 预测类别
+    // if(!choicedModelPATH.empty() && !choicedSamplePATH.empty()){
+    //     std::cout<<choicedSamplePATH<<endl;
+    //     std::vector<float> degrees(datasetInfo->selectedClassNames.size());  //隶属度
+    //     double predTime;
+    //     int predIdx = libtorchTest->testOneSample(choicedSamplePATH, choicedModelPATH, degrees, predTime);
+    //     QString predClass = QString::fromStdString(label2class[predIdx]);   // 预测类别
 
-        terminal->print("识别结果： " + predClass);
-        terminal->print(QString("隶属度：%1").arg(degrees[predIdx]));
+    //     terminal->print("识别结果： " + predClass);
+    //     terminal->print(QString("隶属度：%1").arg(degrees[predIdx]));
 
-        // 可视化结果
-        ui->label_predClass->setText(predClass);
-        ui->label_predDegree->setText(QString("%1").arg(degrees[predIdx]*100));
-        ui->label_predTime->setText(QString("%1").arg(predTime));
-        QString imgPath = QString::fromStdString(choicedDatasetPATH) +"/"+ predClass +".png";
-        ui->label_predImg->setPixmap(QPixmap(imgPath).scaled(QSize(200,200), Qt::KeepAspectRatio));
+    //     // 可视化结果
+    //     ui->label_predClass->setText(predClass);
+    //     ui->label_predDegree->setText(QString("%1").arg(degrees[predIdx]*100));
+    //     ui->label_predTime->setText(QString("%1").arg(predTime));
+    //     QString imgPath = QString::fromStdString(choicedDatasetPATH) +"/"+ predClass +".png";
+    //     ui->label_predImg->setPixmap(QPixmap(imgPath).scaled(QSize(200,200), Qt::KeepAspectRatio));
 
-        // 绘制隶属度柱状图
-        disDegreeChart(predClass, degrees, label2class);
+    //     // 绘制隶属度柱状图
+    //     disDegreeChart(predClass, degrees, label2class);
 
-        QMessageBox::information(NULL, "单样本测试", "识别成果，结果已输出！");
-    }
-    else{
-        QMessageBox::warning(NULL, "单样本测试", "数据或模型未指定！");
-    }
+    //     QMessageBox::information(NULL, "单样本测试", "识别成果，结果已输出！");
+    // }
+    // else{
+    //     QMessageBox::warning(NULL, "单样本测试", "数据或模型未指定！");
+    // }
 }
 
 
@@ -188,22 +188,22 @@ void ModelEvalPage::disDegreeChart(QString &classGT, std::vector<float> &degrees
 
 // TODO 待优化
 void ModelEvalPage::testAllSample(){
-    if(!choicedDatasetPATH.empty() && !choicedModelPATH.empty()){
-        float acc = 0.0;
-        std::vector<std::vector<int>> confusion_matrix(5, std::vector<int>(5, 0));
-        libtorchTest->testAllSample(choicedDatasetPATH, choicedModelPATH, acc, confusion_matrix);
-        QMessageBox::information(NULL, "所有样本测试", "识别成果，结果已输出！");
+    // if(!choicedDatasetPATH.empty() && !choicedModelPATH.empty()){
+    //     float acc = 0.0;
+    //     std::vector<std::vector<int>> confusion_matrix(5, std::vector<int>(5, 0));
+    //     libtorchTest->testAllSample(choicedDatasetPATH, choicedModelPATH, acc, confusion_matrix);
+    //     QMessageBox::information(NULL, "所有样本测试", "识别成果，结果已输出！");
 
-        ui->label_testAllAcc->setText(QString("%1").arg(acc*100));
-        for(int i=0;i<5;i++){
-            for(int j=0;j<5;j++){
-                QLabel *valuelabel = ui->confusion_matrix->findChild<QLabel *>("cfmx_"+QString::number(i)+QString::number(j));
-                valuelabel->setText(QString::number(confusion_matrix[i][j]));
-            }
-        }
-    }
-    else{
-        QMessageBox::warning(NULL, "所有样本测试", "数据集或模型未指定！");
-    }
+    //     ui->label_testAllAcc->setText(QString("%1").arg(acc*100));
+    //     for(int i=0;i<5;i++){
+    //         for(int j=0;j<5;j++){
+    //             QLabel *valuelabel = ui->confusion_matrix->findChild<QLabel *>("cfmx_"+QString::number(i)+QString::number(j));
+    //             valuelabel->setText(QString::number(confusion_matrix[i][j]));
+    //         }
+    //     }
+    // }
+    // else{
+    //     QMessageBox::warning(NULL, "所有样本测试", "数据集或模型未指定！");
+    // }
 }
 

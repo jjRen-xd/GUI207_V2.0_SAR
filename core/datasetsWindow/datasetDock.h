@@ -6,7 +6,7 @@
 
 #include "./lib/guiLogic/bashTerminal.h"
 #include "./lib/guiLogic/datasetInfo.h"
-#include "core/datasetsWindow/chart.h"
+// #include "core/datasetsWindow/chart.h"
 
 #include "./lib/guiLogic/tools/searchFolder.h"
 class DatasetDock:public QObject{
@@ -15,10 +15,11 @@ public:
     DatasetDock(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, DatasetInfo *globalDatasetInfo);
     ~DatasetDock();
 
+    // 组信息
     std::map<std::string, QLabel*> attriLabelGroup;
     std::map<std::string, QTreeView*> datasetTreeViewGroup;
-    std::vector<QLabel*> chartGroup;
-    std::vector<QLabel*> chartInfoGroup;
+    std::vector<QLabel*> imageViewGroup;
+    std::vector<QLabel*> imageInfoGroup;
 
     void reloadTreeView();
 

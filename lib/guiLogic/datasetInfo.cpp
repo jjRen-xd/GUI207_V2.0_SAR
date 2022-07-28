@@ -126,7 +126,7 @@ int DatasetInfo::writeToXML(string xmlPath){
 
 //解析xml文件
 int DatasetInfo::loadFromXML(string xmlPath){
-    TiXmlDocument datasetInfoDoc(xmlPath.c_str());   //xml文档对象
+    TiXmlDocument datasetInfoDoc(xmlPath.c_str());          //xml文档对象
     bool loadOk=datasetInfoDoc.LoadFile();                  //加载文档
     if(!loadOk){
         cout<<"Could not load the datasetInfo file.Error:"<<datasetInfoDoc.ErrorDesc()<<endl;
@@ -155,8 +155,10 @@ int DatasetInfo::loadFromXML(string xmlPath){
             //遍历子子节点
             for(TiXmlElement *currAttrEle=currNameEle->FirstChildElement(); currAttrEle != NULL; currAttrEle=currAttrEle->NextSiblingElement()){
                 datasetAttrMap[currAttrEle->Value()] = currAttrEle->FirstChild()->Value();
+                // cout<<currAttrEle->Value()<<"->"<<currAttrEle->FirstChild()->Value()<<endl;
                 // 遍历节点属性
                 TiXmlAttribute *pAttr=currAttrEle->FirstAttribute();
+
                 while( NULL != pAttr){
                     pAttr=pAttr->Next();
                 }
@@ -169,8 +171,9 @@ int DatasetInfo::loadFromXML(string xmlPath){
 }
 
 
-int DatasetInfo::addItemFromXML(string xmlPath){
-    TiXmlDocument datasetInfoDoc(xmlPath.c_str());   //xml文档对象
+string DatasetInfo::addItemFromXML(string xmlPath){
+    string datasetName;
+    TiXmlDocument datasetInfoDoc(xmlPath.c_str());          //xml文档对象
     bool loadOk=datasetInfoDoc.LoadFile();                  //加载文档
     if(!loadOk){
         cout<<"Could not load the datasetInfo file.Error:"<<datasetInfoDoc.ErrorDesc()<<endl;
@@ -189,6 +192,7 @@ int DatasetInfo::addItemFromXML(string xmlPath){
         }
         //遍历Name节点
         for(TiXmlElement *currNameEle=currTypeEle->FirstChildElement(); currNameEle != NULL; currNameEle=currNameEle->NextSiblingElement()){
+            datasetName = currNameEle->Value();
             map<string,string> datasetAttrMap;
             // 遍历节点属性
             TiXmlAttribute *pAttr=currNameEle->FirstAttribute();
@@ -198,16 +202,20 @@ int DatasetInfo::addItemFromXML(string xmlPath){
             //遍历子子节点
             for(TiXmlElement *currAttrEle=currNameEle->FirstChildElement(); currAttrEle != NULL; currAttrEle=currAttrEle->NextSiblingElement()){
                 datasetAttrMap[currAttrEle->Value()] = currAttrEle->FirstChild()->Value();
+                // cout<<currAttrEle->Value()<<"->"<<currAttrEle->FirstChild()->Value()<<endl;
                 // 遍历节点属性
                 TiXmlAttribute *pAttr=currAttrEle->FirstAttribute();
                 while( NULL != pAttr){
                     pAttr=pAttr->Next();
                 }
             }
+
             this->infoMap[currTypeEle->Value()][currNameEle->Value()] = datasetAttrMap;
+            cout<<"add item: "<<currTypeEle->Value()<<"->"<<currNameEle->Value()<<endl;
         }
     }
-    return 1;
+    // this->print();
+    return datasetName;
 }
 
 
