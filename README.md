@@ -1,6 +1,6 @@
 
 # 文件夹结构说明
----
+```
 PATH_ROOT
 |
 |___api/           <!-- 存放接口文件，接口主要用于于业务逻辑提供数据操作 -->
@@ -54,3 +54,4 @@ PATH_ROOT
 |___.gitignore     <!-- gitignore -->
 |
 |___README.md      <!-- readme -->
+```
