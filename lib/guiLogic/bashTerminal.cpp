@@ -26,8 +26,9 @@ void BashTerminal::print(QString msg){
 }
 
 
-void BashTerminal::runCommand(QString cmd){
+void BashTerminal::execute(QString cmd){
     /* 开放在终端运行命令接口 */
+    // this->print("$执行命令: \n" + cmd + "\n");
     bashOutShow->append("Shell:~$ "+cmd);
     process_bash->write(cmd.toLocal8Bit() + '\n');
 }

@@ -15,5 +15,4 @@
 !/api\api_here
 conf/libtorch.pri
 
-db/models/rotated_faster_rcnn_torchserver.mar
-db/models/SSDD_RBOX.mar
+db/models/*.mar

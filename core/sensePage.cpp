@@ -67,7 +67,7 @@ void SenseSetPage::changeType(){
 //    this->BtnGroup_typeChoice->checkedId()<<endl;
     // 获取选择的类型内容
     QString selectedType = this->BtnGroup_typeChoice->checkedButton()->objectName().split("_")[1];
-    terminal->print("Selected Type: " + selectedType);
+    // terminal->print("Selected Type: " + selectedType);
 
     // 更新下拉选择框
     vector<string> comboBoxContents = datasetInfo->getNamesInType(

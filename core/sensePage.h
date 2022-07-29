@@ -26,7 +26,6 @@ public:
     QButtonGroup *BtnGroup_typeChoice = new QButtonGroup;
 
 
-
 public slots:
     void changeType();
     void confirmDataset(bool notDialog);

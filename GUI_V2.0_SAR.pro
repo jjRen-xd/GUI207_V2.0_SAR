@@ -25,6 +25,7 @@ HEADERS += \
     core/modelsWindow/modelDock.h \
     core/sensePage.h \
     lib/algorithm/libtorchTest.h \
+    lib/algorithm/torchServe.h \
     lib/guiLogic/bashTerminal.h \
     lib/guiLogic/datasetInfo.h \
     lib/guiLogic/modelInfo.h \
@@ -33,6 +34,7 @@ HEADERS += \
     lib/guiLogic/tools/convertTools.h \
     lib/guiLogic/tools/searchFolder.h
 SOURCES += \
+    lib/algorithm/torchServe.cpp \
     main.cpp \
     conf/QRibbon/QRibbon.cpp \
     core/MainWindow.cpp \

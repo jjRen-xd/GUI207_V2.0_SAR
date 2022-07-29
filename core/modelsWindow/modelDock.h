@@ -5,7 +5,9 @@
 #include "ui_MainWindow.h"
 
 #include "./lib/guiLogic/bashTerminal.h"
+
 #include "./lib/guiLogic/modelInfo.h"
+#include "./lib/algorithm/torchServe.h"
 
 #include "./lib/guiLogic/tools/searchFolder.h"
 
@@ -13,7 +15,7 @@
 class ModelDock:public QObject{
     Q_OBJECT
 public:
-    ModelDock(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, ModelInfo *globalModelInfo);
+    ModelDock(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, ModelInfo *globalModelInfo, TorchServe *globalTorchServe);
     ~ModelDock(){};
 
     std::map<std::string, QLabel*> attriLabelGroup;
@@ -34,6 +36,7 @@ private:
     Ui_MainWindow *ui;
     BashTerminal *terminal;
 
+    TorchServe *torchServe;
     ModelInfo *modelInfo;
 
     QTreeView *modelTreeView;

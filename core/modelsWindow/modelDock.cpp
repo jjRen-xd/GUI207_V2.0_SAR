@@ -6,14 +6,18 @@
 
 using namespace std;
 
-ModelDock::ModelDock(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, ModelInfo *globalModelInfo):
+ModelDock::ModelDock(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, ModelInfo *globalModelInfo, TorchServe *globalTorchServe):
     ui(main_ui),
     terminal(bash_terminal),
-    modelInfo(globalModelInfo)
+    modelInfo(globalModelInfo),
+    torchServe(globalTorchServe)
 {
     // 模型导入事件
-    connect(ui->action_importModel_BBOX, &QAction::triggered, this, [this]{importModel("BBOX");});
-    connect(ui->action_importModel_RBOX, &QAction::triggered, this, [this]{importModel("RBOX");});
+    connect(ui->action_importModel_RBOX_DET, &QAction::triggered, this, [this]{importModel("RBOX_DET");});
+    connect(ui->action_importModel_TRA_DL, &QAction::triggered, this, [this]{importModel("TRA_DL");});
+    connect(ui->action_importModel_FEA_RELE, &QAction::triggered, this, [this]{importModel("FEA_RELE");});
+    connect(ui->action_importModel_FEW_SHOT, &QAction::triggered, this, [this]{importModel("FEW_SHOT");});
+    connect(ui->action_importModel_FEA_OPTI, &QAction::triggered, this, [this]{importModel("FEA_OPTI");});
     // 模型删除事件
     connect(ui->action_dele_model, &QAction::triggered, this, &ModelDock::deleteModel);
 
@@ -61,7 +65,7 @@ void ModelDock::reloadTreeView(){
     modelTreeView->setModel(typeTreeModel);
     //链接节点点击事件
     connect(modelTreeView, SIGNAL(clicked(QModelIndex)), this, SLOT(treeItemClicked(QModelIndex)));
-    terminal->print("i am here!");
+    // terminal->print("i am here!");
 }
 
 
@@ -89,12 +93,18 @@ void ModelDock::treeItemClicked(const QModelIndex &index){
 
 
 void ModelDock::importModel(string type){
-    QString modelPath = QFileDialog::getOpenFileName(NULL, "打开网络模型文件", "../../db/models/");
+    QString modelPath = QFileDialog::getOpenFileName(NULL, "打开网络模型文件", "../db/models/", "Mar files(*.mar)");
     if(modelPath == ""){
         QMessageBox::warning(NULL, "提示", "文件打开失败!");
         return;
     }
     QString modelName = modelPath.split('/').last();
+
+    // 讲模型导入TorchServe模型库
+    torchServe->postModel(modelName, QString::fromStdString(type), 2);
+    // QString torchServePOST = "curl -X POST \"http://localhost:8081/models?initial_workers=2&url="+modelName+'\"';
+    // terminal->execute(torchServePOST);
+
     string savePath = modelPath.toStdString();
     QString rootPath = modelPath.remove(modelPath.length()-modelName.length()-1, modelPath.length());
     QString xmlPath;
@@ -102,11 +112,12 @@ void ModelDock::importModel(string type){
     vector<string> allXmlNames;
     bool existXml = false;
     dirTools->getFiles(allXmlNames, ".xml",rootPath.toStdString());
-    // 寻找与.pt文件相同的.xml文件
+    // 寻找与.mar文件相同命名的.xml文件
     for(auto &xmlName: allXmlNames){
         if(QString::fromStdString(xmlName).split(".").first() == modelName.split(".").first()){
             existXml = true;
             xmlPath = rootPath + "/" + QString::fromStdString(xmlName);
+            break;
         }
     }
     if(existXml){
@@ -131,6 +142,12 @@ void ModelDock::deleteModel(){
     confirmMsg.setText(QString::fromStdString("确认要删除模型："+previewType+"->"+previewName));
     confirmMsg.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
     if(confirmMsg.exec() == QMessageBox::Yes){
+        // 从TorchServe模型库删除模型
+        torchServe->deleteModel(QString::fromStdString(previewName), QString::fromStdString(previewType));
+        // QString torchServeDELETE = "curl -X DELETE http://localhost:8081/models/" +
+        //                             QString::fromStdString(previewName).split(".")[0];
+        // terminal->print(torchServeDELETE);
+        //  terminal->execute(torchServeDELETE);
         this->modelInfo->deleteItem(previewType,previewName);
         this->reloadTreeView();
         this->modelInfo->writeToXML(modelInfo->defaultXmlPath);

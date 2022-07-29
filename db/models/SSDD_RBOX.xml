@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<ModelInfo>
+    <RBOX_DET typeID="4">
+        <SSDD_RBOX.mar nameID="1">
+            <PATH>未定义</PATH>
+            <algorithm>Rotate Faster R-CNN</algorithm>
+            <batch>32</batch>
+            <class>1</class>
+            <framework>PyTorch</framework>
+            <mAP>87.67%</mAP>
+            <mAP_50> - </mAP_50>
+            <name>SSDD旋转框检测</name>
+            <note>初步实验</note>
+            <other>其他参数</other>
+            <trainDataset>SSDD旋转框数据集</trainDataset>
+            <trainEpoch>12轮</trainEpoch>
+            <trainLR>0.005</trainLR>
+        </SSDD_RBOX.mar>
+    </RBOX_DET>
+</ModelInfo>

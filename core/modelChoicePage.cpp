@@ -11,8 +11,9 @@ ModelChoicePage::ModelChoicePage(Ui_MainWindow *main_ui, BashTerminal *bash_term
     // 模型类别选择框事件相应
     BtnGroup_typeChoice->addButton(ui->radioButton__TRA_DL__choice, 0);
     BtnGroup_typeChoice->addButton(ui->radioButton__FEA_RELE__choice, 1);
-    BtnGroup_typeChoice->addButton(ui->radioButton__FEA_OPTI__choice, 2);
-    BtnGroup_typeChoice->addButton(ui->radioButton__INCRE__choice, 3);
+    BtnGroup_typeChoice->addButton(ui->radioButton__FEW_SHOT__choice, 2);
+    BtnGroup_typeChoice->addButton(ui->radioButton__FEA_OPTI__choice, 3);
+    BtnGroup_typeChoice->addButton(ui->radioButton__RBOX_DET__choice, 4);
     connect(this->BtnGroup_typeChoice, &QButtonGroup::buttonClicked, this, &ModelChoicePage::changeType);
 
     // 确定
@@ -24,11 +25,13 @@ ModelChoicePage::ModelChoicePage(Ui_MainWindow *main_ui, BashTerminal *bash_term
     // 模型属性显示框
     attriLabelGroup["name"] = ui->lineEdit_modelChoice_name;
     attriLabelGroup["algorithm"] = ui->lineEdit_modelChoice_algorithm;
-    attriLabelGroup["accuracy"] = ui->lineEdit_modelChoice_accuracy;
+    attriLabelGroup["framework"] = ui->lineEdit_modelChoice_framework;
+    attriLabelGroup["class"] = ui->lineEdit_modelChoice_class;
+    attriLabelGroup["mAP"] = ui->lineEdit_modelChoice_mAP;
+    attriLabelGroup["mAP_50"] = ui->lineEdit_modelChoice_mAP_50;
     attriLabelGroup["trainDataset"] = ui->lineEdit_modelChoice_trainDataset;
     attriLabelGroup["trainEpoch"] = ui->lineEdit_modelChoice_trainEpoch;
     attriLabelGroup["trainLR"] = ui->lineEdit_modelChoice_trainLR;
-    attriLabelGroup["framework"] = ui->lineEdit_modelChoice_framework;
     attriLabelGroup["PATH"] = ui->lineEdit_modelChoice_PATH;
     attriLabelGroup["batch"] = ui->lineEdit_modelChoice_batch;
     attriLabelGroup["other"] = ui->lineEdit_modelChoice_other;
@@ -72,9 +75,9 @@ void ModelChoicePage::confirmModel(bool notDialog = false){
         updateAttriLabel();
         // 网络图像展示
         QString rootPath = QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH"));
-        QString imgPath = rootPath.split(".pt").first()+".png";
+        QString imgPath = rootPath.split(".mar").first()+".png";
         terminal->print(imgPath);
-        ui->label_modelImg->setPixmap(QPixmap(imgPath).scaled(QSize(400,400), Qt::KeepAspectRatio));
+        ui->label_modelImg->setPixmap(QPixmap(imgPath).scaled(QSize(600,600), Qt::KeepAspectRatio));
 
         if(!notDialog)
             QMessageBox::information(NULL, "模型切换提醒", "已成功切换模型为->"+selectedType+"->"+selectedName+"！");

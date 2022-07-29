@@ -15,8 +15,8 @@ class BashTerminal: public QObject{
         ~BashTerminal();
 
     public slots:
-        void print(QString msg);        // 开放在终端打印str的接口
-        void runCommand(QString cmd);   // 开放在终端运行命令接口
+        void print(QString msg);     // 开放在终端打印str的接口
+        void execute(QString cmd);   // 开放在终端运行命令接口
 
         void commitBash();          // 手动输入向终端提交命令
         void cleanBash();           // 清空并重启终端

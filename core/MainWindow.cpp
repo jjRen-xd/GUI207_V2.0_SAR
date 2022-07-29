@@ -30,9 +30,12 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
     connect(ui->pushButton_bashCommit, &QPushButton::clicked, terminal, &BashTerminal::commitBash);
     connect(ui->pushButton_bashClean, &QPushButton::clicked, terminal, &BashTerminal::cleanBash);
 
+    // 模型部署初始化
+    this->torchServe = new TorchServe(this->terminal, this->globalModelInfo);
+
     // 数据集悬浮窗设置
     this->datasetDock = new DatasetDock(this->ui, this->terminal, this->globalDatasetInfo);
-    this->modelDock = new ModelDock(this->ui, this->terminal, this->globalModelInfo);
+    this->modelDock = new ModelDock(this->ui, this->terminal, this->globalModelInfo, this->torchServe);
 
     // 场景选择页面
     this->senseSetPage = new SenseSetPage(this->ui, this->terminal, this->globalDatasetInfo);

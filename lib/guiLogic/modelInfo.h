@@ -24,10 +24,10 @@ class ModelInfo{
         void clear();   // 清空所有模型
 
         size_t typeNum();
-        std::vector<std::string> getTypes();                  // 获取所有的模型类型
-        std::vector<std::string> getNamesInType(std::string type); // 获取特定类型下的模型名称
-        std::map<std::string,std::string> getAllAttri(std::string Type, std::string Name);   // 获取指定模型的所有属性
-        std::string getAttri(std::string type, std::string name, std::string attri);    // 获取指定模型指定属性的值
+        std::vector<std::string> getTypes();                        // 获取所有的模型类型
+        std::vector<std::string> getNamesInType(std::string type);  // 获取特定类型下的模型名称
+        std::map<std::string,std::string> getAllAttri(std::string Type, std::string Name);      // 获取指定模型的所有属性
+        std::string getAttri(std::string type, std::string name, std::string attri);            // 获取指定模型指定属性的值
 
         void modifyAttri(std::string Type, std::string Name, std::string Attri, std::string AttriValue);   //修改指定数据集的指定属性
 
