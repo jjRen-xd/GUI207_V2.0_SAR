@@ -5,8 +5,12 @@
 #include <QImage>
 #include <QPixmap>
 
+
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/imgproc/types_c.h"
+
+using namespace std;
+
 
 namespace CVS 
 {
@@ -151,6 +155,8 @@ inline cv::Mat QPixmapToCvMat( const QPixmap &inPixmap, bool inCloneImageData = 
 {
     return QImageToCvMat( inPixmap.toImage(), inCloneImageData );
 }
+
+
 }
 
 #endif // CONVERTTOOLS_H

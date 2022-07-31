@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
     // 场景选择页面
     this->senseSetPage = new SenseSetPage(this->ui, this->terminal, this->globalDatasetInfo);
     this->modelChoicePage = new ModelChoicePage(this->ui, this->terminal, this->globalModelInfo);
-    // this->modelEvalPage = new ModelEvalPage(this->ui, this->terminal,this->globalDatasetInfo, this->globalModelInfo);
+    this->modelEvalPage = new ModelEvalPage(this->ui, this->terminal,this->globalDatasetInfo, this->globalModelInfo, this->torchServe);
 }
 
 
@@ -57,7 +57,7 @@ void MainWindow::switchPage(){
         ui->stackedWidget_MultiPage->setCurrentWidget(ui->page_modelChoice);
     else if(action==ui->action_Evaluate){
         ui->stackedWidget_MultiPage->setCurrentWidget(ui->page_modelEval);
-        // this->modelEvalPage->refreshGlobalInfo();
+        this->modelEvalPage->refreshGlobalInfo();
     }
 }
 

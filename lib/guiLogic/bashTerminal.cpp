@@ -33,6 +33,16 @@ void BashTerminal::execute(QString cmd){
     process_bash->write(cmd.toLocal8Bit() + '\n');
 }
 
+void BashTerminal::execute(QString cmd, QString* output){
+    /* 阻塞式运行命令接口, 并保存结果 */
+    QProcess p;
+    p.start(bashApi, QStringList() <<"-c" << cmd);
+    p.waitForFinished();
+    QString strResult = p.readAllStandardOutput();
+    this->print(strResult);
+    *output = strResult;
+}
+
 
 void BashTerminal::commitBash(){
     /* 在GUI上手动输入向终端提交命令 */
@@ -58,6 +68,8 @@ void BashTerminal::readBashOutput(){
         bashOutShow->append(QString::fromLocal8Bit(cmdOut));
     }
     bashOutShow->update();
+    QString* message = new QString(QString::fromLocal8Bit(cmdOut));
+    this->mesQueue.push(message);
 }
 
 
@@ -68,4 +80,7 @@ void BashTerminal::readBashError(){
         bashOutShow->append(QString::fromLocal8Bit(cmdOut));
     }
     bashOutShow->update();
+
+    QString* error = new QString(QString::fromLocal8Bit(cmdOut));
+    this->errQueue.push(error);
 }

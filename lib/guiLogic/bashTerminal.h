@@ -6,6 +6,8 @@
 #include <QLineEdit>
 #include <QTextEdit>
 
+#include <queue>
+
 
 class BashTerminal: public QObject{
     Q_OBJECT
@@ -14,9 +16,14 @@ class BashTerminal: public QObject{
         BashTerminal(QLineEdit *inWidget, QTextEdit *outWidget);
         ~BashTerminal();
 
+        std::queue<QString*> mesQueue;        // 维护一个消息队列，用于终端输出消息的排队
+        std::queue<QString*> errQueue;        // 维护一个错误队列，用于终端输出错误的排队  
+
+
     public slots:
         void print(QString msg);     // 开放在终端打印str的接口
         void execute(QString cmd);   // 开放在终端运行命令接口
+        void execute(QString cmd, QString* output);   // 阻塞式运行命令接口,并保存结果
 
         void commitBash();          // 手动输入向终端提交命令
         void cleanBash();           // 清空并重启终端

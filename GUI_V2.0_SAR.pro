@@ -34,6 +34,7 @@ HEADERS += \
     lib/guiLogic/tools/convertTools.h \
     lib/guiLogic/tools/searchFolder.h
 SOURCES += \
+    core/modelEvalPage.cpp \
     lib/algorithm/torchServe.cpp \
     main.cpp \
     conf/QRibbon/QRibbon.cpp \
@@ -41,7 +42,6 @@ SOURCES += \
     core/datasetsWindow/chart.cpp \
     core/datasetsWindow/datasetDock.cpp \
     core/modelChoicePage.cpp \
-    core/modelEvalPage.cpp \
     core/modelsWindow/modelDock.cpp \
     core/sensePage.cpp \
     lib/algorithm/libtorchTest.cpp \

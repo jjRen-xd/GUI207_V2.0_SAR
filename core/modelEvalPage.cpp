@@ -1,209 +1,168 @@
-// #include "modelEvalPage.h"
-// #include <QMessageBox>
+#include "modelEvalPage.h"
 
-// #include <QChart>
-// #include <QBarSeries>
-// #include <QBarSet>
-// #include <QBarCategoryAxis>
+#include "lib/guiLogic/tools/convertTools.h"
 
+#include <QMessageBox>
 
-// using namespace std;
+using namespace std;
+#define PI 3.1415926
 
-// ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, DatasetInfo *globalDatasetInfo, ModelInfo *globalModelInfo):
-//     ui(main_ui),
-//     terminal(bash_terminal),
-//     datasetInfo(globalDatasetInfo),
-//     modelInfo(globalModelInfo)
-// {
-//     // 网络输出标签对应类别名称初始化
-//     label2class[0] = "XQ";
-//     label2class[1] = "DQ";
-//     label2class[2] = "Z";
-//     label2class[3] = "QDZ";
-//     label2class[4] = "DT";
-//     for(auto &item: label2class){
-//         class2label[item.second] = item.first;
-//     }
+ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui,
+                             BashTerminal *bash_terminal,
+                             DatasetInfo *globalDatasetInfo,
+                             ModelInfo *globalModelInfo,
+                             TorchServe *globalTorchServe):
+    ui(main_ui),
+    terminal(bash_terminal),
+    datasetInfo(globalDatasetInfo),
+    modelInfo(globalModelInfo),
+    torchServe(globalTorchServe)
+{   
+    // 刷新模型、数据集、参数信息
+    refreshGlobalInfo();
 
-//     // 先用libtorch
-//     // libtorchTest = new LibtorchTest(class2label);
-//     // 随机选取样本按钮
-//     connect(ui->pushButton_mE_randone, &QPushButton::clicked, this, &ModelEvalPage::randSample);
-//     // 测试按钮
-//     connect(ui->pushButton_testOneSample, &QPushButton::clicked, this, &ModelEvalPage::testOneSample);
-//     connect(ui->pushButton_testAllSample, &QPushButton::clicked, this, &ModelEvalPage::testAllSample);
-// }
+    // 按钮信号链接
+    connect(ui->pushButton_mE_random, &QPushButton::clicked, this, &ModelEvalPage::randSample);
+    connect(ui->pushButto_mE_importImg, &QPushButton::clicked, this, &ModelEvalPage::importSample);
+    connect(ui->pushButton_mE_testOneSample, &QPushButton::clicked, this, &ModelEvalPage::testOneSample);
 
-// ModelEvalPage::~ModelEvalPage(){
-
-// }
+}
 
 
-// void ModelEvalPage::refreshGlobalInfo(){
-//     // 基本信息更新
-//     ui->label_mE_dataset->setText(QString::fromStdString(datasetInfo->selectedName));
-//     ui->label_mE_model->setText(QString::fromStdString(modelInfo->selectedName));
-//     ui->label_mE_batch->setText(QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "batch")));
-//     this->choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
-//     this->choicedModelPATH = modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH");
-//     // 单样本测试下拉框刷新
-//     vector<string> comboBoxContents = datasetInfo->selectedClassNames;
-//     ui->comboBox_sampleType->clear();
-//     for(auto &item: comboBoxContents){
-//         ui->comboBox_sampleType->addItem(QString::fromStdString(item));
-//     }
+ModelEvalPage::~ModelEvalPage(){
 
-// }
+}
 
 
-// void ModelEvalPage::randSample(){
-//     // 获取下拉框类别内容
-//     string selectedClass = ui->comboBox_sampleType->currentText().toStdString();
-//     // 已选类别的随机取样
-//     if(!selectedClass.empty()){
-//         string classPath = choicedDatasetPATH +"/" +selectedClass;
-//         vector<string> sampleNames;
+void ModelEvalPage::refreshGlobalInfo(){
+    // 基本信息更新
+    this->choicedModelName = QString::fromStdString(modelInfo->selectedName);
+    this->choicedModelType = QString::fromStdString(modelInfo->selectedType);
+    
+    ui->label_mE_dataset->setText(QString::fromStdString(datasetInfo->selectedName));
+    ui->label_mE_model->setText(choicedModelName);
+    ui->label_mE_batch->setText(QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "batch")));
+    this->choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
 
-//         if(dirTools->getFiles(sampleNames,".txt",classPath)){
-//             srand((unsigned)time(NULL));
-
-//             string choicedFile = sampleNames[(rand())%sampleNames.size()];
-//             QString txtFilePath = QString::fromStdString(classPath + "/" + choicedFile);
-//             this->choicedSamplePATH = txtFilePath.toStdString();
-
-//             // 可视化所选样本
-//             ui->label_mE_choicedSample->setText(QString::fromStdString(choicedFile).split(".").first());
-
-//             QString imgPath = QString::fromStdString(choicedDatasetPATH +"/"+ selectedClass +".png");
-//             ui->label_mE_imgGT->setPixmap(QPixmap(imgPath).scaled(QSize(100,100), Qt::KeepAspectRatio));
-
-//             Chart *previewChart = new Chart(ui->label_mE_chartGT,"HRRP(Ephi),Polarization HP(1)[Magnitude in dB]",txtFilePath);
-//             previewChart->drawHRRPimage(ui->label_mE_chartGT);
-//         }
-//     }
-//     else{
-//         QMessageBox::warning(NULL, "数据取样", "数据取样失败，请指定数据集类型!");
-//     }
+}
 
 
-// }
+int ModelEvalPage::randSample(){
+    // 获取所有子文件夹，并判断是否是图片、标注文件夹
+    vector<string> allSubDirs;
+    dirTools->getDirs(allSubDirs, choicedDatasetPATH);
+    vector<string> targetKeys = {"images","labelTxt"};
+    for (auto &targetKey: targetKeys){
+        if(!(std::find(allSubDirs.begin(), allSubDirs.end(), targetKey) != allSubDirs.end())){
+            // 目标路径不存在目标文件夹
+            QMessageBox::warning(NULL,"错误","该数据集路径下不存在"+QString::fromStdString(targetKey)+"文件夹！");
+            return -1;
+        }
+    }
+    // 获取图片文件夹下的所有图片文件名
+    vector<string> imageFileNames;
+    dirTools->getFiles(imageFileNames, ".png", choicedDatasetPATH+"/images");
+    
+    // 随机选取一张图片作为预览图片
+    srand((unsigned)time(NULL));
+    string choicedImageFile = imageFileNames[(rand())%imageFileNames.size()];
+    string choicedImagePath = choicedDatasetPATH+"/images/"+choicedImageFile;
+    this->choicedSamplePATH = QString::fromStdString(choicedImagePath);
+    cv::Mat imgSrc = cv::imread(choicedImagePath.c_str(), cv::IMREAD_COLOR);
+
+    // 记录GroundTruth，包含四个坐标和类别信息
+    vector<string> label_GT;
+    vector<vector<cv::Point>> points_GT;
+    string labelPath = choicedDatasetPATH+"/labelTxt/"+choicedImageFile.substr(0,choicedImageFile.size()-4)+".txt";
+    dirTools->getGroundTruth(label_GT, points_GT, labelPath);
+    // 绘制旋转框到图片上
+    cv::drawContours(imgSrc, points_GT, -1, cv::Scalar(16, 124, 16), 2);
+    // 绘制类别标签到图片上
+    for(size_t i = 0; i<label_GT.size(); i++){
+        cv::putText(imgSrc, label_GT[i], points_GT[i][1], cv::FONT_HERSHEY_COMPLEX, 0.4, cv::Scalar(0, 204, 0), 1);
+    }
+    // 将图片显示到界面上
+    QPixmap pixmap = CVS::cvMatToQPixmap(imgSrc);
+    ui->label_mE_img->setPixmap(pixmap.scaled(QSize(700,700), Qt::KeepAspectRatio));
+    ui->label_mE_imgName->setText(QString::fromStdString(choicedImageFile));
+
+}
 
 
-// void ModelEvalPage::testOneSample(){
-//     // if(!choicedModelPATH.empty() && !choicedSamplePATH.empty()){
-//     //     std::cout<<choicedSamplePATH<<endl;
-//     //     std::vector<float> degrees(datasetInfo->selectedClassNames.size());  //隶属度
-//     //     double predTime;
-//     //     int predIdx = libtorchTest->testOneSample(choicedSamplePATH, choicedModelPATH, degrees, predTime);
-//     //     QString predClass = QString::fromStdString(label2class[predIdx]);   // 预测类别
+int ModelEvalPage::importSample(){
 
-//     //     terminal->print("识别结果： " + predClass);
-//     //     terminal->print(QString("隶属度：%1").arg(degrees[predIdx]));
-
-//     //     // 可视化结果
-//     //     ui->label_predClass->setText(predClass);
-//     //     ui->label_predDegree->setText(QString("%1").arg(degrees[predIdx]*100));
-//     //     ui->label_predTime->setText(QString("%1").arg(predTime));
-//     //     QString imgPath = QString::fromStdString(choicedDatasetPATH) +"/"+ predClass +".png";
-//     //     ui->label_predImg->setPixmap(QPixmap(imgPath).scaled(QSize(200,200), Qt::KeepAspectRatio));
-
-//     //     // 绘制隶属度柱状图
-//     //     disDegreeChart(predClass, degrees, label2class);
-
-//     //     QMessageBox::information(NULL, "单样本测试", "识别成果，结果已输出！");
-//     // }
-//     // else{
-//     //     QMessageBox::warning(NULL, "单样本测试", "数据或模型未指定！");
-//     // }
-// }
+    // TODO
+}
 
 
+int ModelEvalPage::testOneSample(){
+    // TODO
+    if(!choicedModelName.isEmpty() && !choicedSamplePATH.isEmpty()){
+        // 使用TorchServe进行预测
+        std::vector<std::map<QString,QString>> predMapStr = torchServe->inferenceOne(
+            choicedModelName.split(".mar")[0], 
+            choicedModelType, 
+            choicedSamplePATH
+        );
 
-// // 移除布局子控件
-// void removeLayout(QLayout *layout){
-//     QLayoutItem *child;
-//     if (layout == nullptr)
-//         return;
-//     while ((child = layout->takeAt(0)) != nullptr){
-//         // child可能为QLayoutWidget、QLayout、QSpaceItem
-//         // QLayout、QSpaceItem直接删除、QLayoutWidget需删除内部widget和自身
-//         if (QWidget* widget = child->widget()){
-//             widget->setParent(nullptr);
-//             delete widget;
-//             widget = nullptr;
-//         }
+        // 解析预测结果predMapStr
+        std::vector<std::vector<cv::Point>> predPoints;
+        std::vector<QString> predLabels;
+        std::vector<float> predScores;
 
-//         else if (QLayout* childLayout = child->layout())
-//             removeLayout(childLayout);
+        // 旋转框检测模型
+        if(choicedModelType == "RBOX_DET"){
+            // std::vector<cv::RotatedRect> predRRects;
+            for(size_t i = 0; i<predMapStr.size(); i++){
+                predLabels.push_back(predMapStr[i]["class_name"]);
+                predScores.push_back(predMapStr[i]["score"].toFloat());
 
-//         delete child;
-//         child = nullptr;
-//     }
-// }
+                QStringList predCoordStr = predMapStr[i]["bbox"].remove('[').remove(']').split(',');
+                cv::RotatedRect predRRect;
+                if(predCoordStr[4].toFloat()<0){
+                    predRRect = cv::RotatedRect(
+                        cv::Point2f(predCoordStr[0].toFloat(), predCoordStr[1].toFloat()),
+                        cv::Size2f(predCoordStr[2].toFloat(), predCoordStr[3].toFloat()),
+                        (predCoordStr[4].toFloat())*180
+                    );
+                }
+                else{
+                    predRRect = cv::RotatedRect(
+                        cv::Point2f(predCoordStr[0].toFloat(), predCoordStr[1].toFloat()),
+                        cv::Size2f(predCoordStr[3].toFloat(), predCoordStr[2].toFloat()),
+                        (predCoordStr[4].toFloat()-PI/2)*180
+                    );
+                }
 
+                cv::Point2f predPoint[4];
+                predRRect.points(predPoint);
+                std::vector<cv::Point> predPointVec;
+                for(size_t j = 0; j<4; j++){
+                    // std::cout<<predPoint[j].x<<"  "<<predPoint[j].y<<endl;
+                    // 对predPoint进行深拷贝，保存至predPointVec
+                    predPointVec.push_back(cv::Point(predPoint[j]));
+                }
+                // std::cout<<std::endl;
+               predPoints.push_back(predPointVec);
+            }   
+        }
 
-// void ModelEvalPage::disDegreeChart(QString &classGT, std::vector<float> &degrees, std::map<int, std::string> &classNames){
-//     QChart *chart = new QChart;
-// //    std::vector<int> list0 = { 101,505,200,301 };
-
-//     std::map<QString, vector<float>> mapnum;
-//     mapnum.insert(pair<QString, vector<float>>(classGT, degrees));  //后续可拓展
-
-//     QBarSeries *series = new QBarSeries();
-//     map<QString, vector<float>>::iterator it = mapnum.begin();
-//     //将数据读入
-//     while (it != mapnum.end()){
-//         QString tit = it->first;
-//         QBarSet *set = new QBarSet(tit);
-//         std::vector<float> vecnum = it->second;
-//         for (auto &a : vecnum){
-//             *set << a;
-//         }
-//         series->append(set);
-//         it++;
-//     }
-//     series->setVisible(true);
-//     series->setLabelsVisible(true);
-//     // 横坐标参数
-//     QBarCategoryAxis *axis = new QBarCategoryAxis;
-//     for(int i = 0; i<classNames.size(); i++){
-//         axis->append(QString::fromStdString(classNames[i]));
-//     }
-//     QValueAxis *axisy = new QValueAxis;
-//     axisy->setTitleText("隶属度");
-//     chart->addSeries(series);
-//     chart->setTitle("识别目标对各类别隶属度分析图");
-
-//     chart->setAxisX(axis, series);
-//     chart->setAxisY(axisy, series);
-//     chart->legend()->setVisible(true);
-
-//     QChartView *view = new QChartView(chart);
-//     view->setRenderHint(QPainter::Antialiasing);
-//     removeLayout(ui->horizontalLayout_degreeChart);
-//     ui->horizontalLayout_degreeChart->addWidget(view);
-// }
-
-
-
-// // TODO 待优化
-// void ModelEvalPage::testAllSample(){
-//     // if(!choicedDatasetPATH.empty() && !choicedModelPATH.empty()){
-//     //     float acc = 0.0;
-//     //     std::vector<std::vector<int>> confusion_matrix(5, std::vector<int>(5, 0));
-//     //     libtorchTest->testAllSample(choicedDatasetPATH, choicedModelPATH, acc, confusion_matrix);
-//     //     QMessageBox::information(NULL, "所有样本测试", "识别成果，结果已输出！");
-
-//     //     ui->label_testAllAcc->setText(QString("%1").arg(acc*100));
-//     //     for(int i=0;i<5;i++){
-//     //         for(int j=0;j<5;j++){
-//     //             QLabel *valuelabel = ui->confusion_matrix->findChild<QLabel *>("cfmx_"+QString::number(i)+QString::number(j));
-//     //             valuelabel->setText(QString::number(confusion_matrix[i][j]));
-//     //         }
-//     //     }
-//     // }
-//     // else{
-//     //     QMessageBox::warning(NULL, "所有样本测试", "数据集或模型未指定！");
-//     // }
-// }
-
+       // 绘制预测结果到图片上
+       cv::Mat imgSrc = cv::imread(choicedSamplePATH.toStdString(), cv::IMREAD_COLOR);
+       cv::drawContours(imgSrc, predPoints, -1, cv::Scalar(16, 124, 16), 2);
+       // 绘制类别标签到图片上
+       for(size_t i = 0; i<predLabels.size(); i++){
+           cv::putText(imgSrc,
+               predLabels[i].toStdString()+": "+std::to_string(predScores[i]).substr(0,5),
+               predPoints[i][1],
+               cv::FONT_HERSHEY_COMPLEX,
+               0.4, cv::Scalar(0, 204, 0),
+               1
+           );
+       }
+       // 将图片显示到界面上
+       QPixmap pixmap = CVS::cvMatToQPixmap(imgSrc);
+       ui->label_mE_img->setPixmap(pixmap.scaled(QSize(700,700), Qt::KeepAspectRatio));
+       ui->label_mE_imgName->setText(choicedSamplePATH.split("/").last());
+    }
+}

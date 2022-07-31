@@ -9,7 +9,7 @@
 // 主页面类
 #include "./core/sensePage.h"
 #include "./core/modelChoicePage.h"
-// #include "./core/modelEvalPage.h"
+#include "./core/modelEvalPage.h"
 
 // 悬浮窗部件类
 #include "./core/datasetsWindow/datasetDock.h"
@@ -55,7 +55,7 @@ class MainWindow: public QMainWindow{
         // 主页面
         SenseSetPage *senseSetPage;
         ModelChoicePage *modelChoicePage;
-        // ModelEvalPage *modelEvalPage;
+        ModelEvalPage *modelEvalPage;
 
         // 数据记录
         DatasetInfo *globalDatasetInfo;

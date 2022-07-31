@@ -1,58 +1,52 @@
-// #ifndef MODELEVALPAGE_H
-// #define MODELEVALPAGE_H
+#ifndef MODELEVALPAGE_H
+#define MODELEVALPAGE_H
 
-// #include <vector>
-// #include <string>
-// #include <map>
-// #include <QObject>
-// #include "ui_MainWindow.h"
-// #include "./lib/guiLogic/bashTerminal.h"
-
-// #include "./lib/guiLogic/modelInfo.h"
-// #include "./lib/guiLogic/datasetInfo.h"
-// #include "./core/datasetsWindow/chart.h"
-
-// #include "./lib/guiLogic/tools/searchFolder.h"
-
-// // #include "lib/algorithm/libtorchTest.h"
+#include <QObject>
+#include <string>
+#include <QString>
+#include <vector>
 
 
-// class ModelEvalPage:public QObject{
-//     Q_OBJECT
-// public:
-//     ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, DatasetInfo *globalDatasetInfo, ModelInfo *globalModelInfo);
-//     ~ModelEvalPage();
+#include "ui_MainWindow.h"
 
-//     std::map<int, std::string> label2class;
-//     std::map<std::string, int> class2label;
+#include "./lib/guiLogic/bashTerminal.h"
+#include "./lib/guiLogic/tools/searchFolder.h"
 
-//     void disDegreeChart(QString &classGT, std::vector<float> &degrees, std::map<int, std::string> &classNames);
+#include "./lib/guiLogic/modelInfo.h"
+#include "./lib/guiLogic/datasetInfo.h"
 
-// public slots:
-//     void refreshGlobalInfo();
+#include "./lib/algorithm/torchServe.h"
 
-//     // 针对全部样本
 
-//     // 针对单样本
-//     void randSample();
-//     void testOneSample();
-//     void testAllSample();
+class ModelEvalPage:public QObject{
+    Q_OBJECT
+public:
+    ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, DatasetInfo *globalDatasetInfo, ModelInfo *globalModelInfo, TorchServe *globalTorchServe);
+    ~ModelEvalPage();
 
-// private:
-//     Ui_MainWindow *ui;
-//     BashTerminal *terminal;
-//     DatasetInfo *datasetInfo;
-//     ModelInfo *modelInfo;
 
-//     std::string choicedDatasetPATH;
-//     std::string choicedModelPATH;
-//     std::string choicedSamplePATH;
+public slots:
+    void refreshGlobalInfo();
 
-//     // 不同平台下文件夹搜索工具
-//     SearchFolder *dirTools = new SearchFolder();
+    int randSample();
+    int importSample();
 
-//     // LibtorchTest *libtorchTest;
+    int testOneSample();
 
-// };
 
-// #endif // MODELEVALPAGE_H
+private:
+    Ui_MainWindow *ui;
+    BashTerminal *terminal;
+    DatasetInfo *datasetInfo;
+    ModelInfo *modelInfo;
+    TorchServe *torchServe;
+    SearchFolder *dirTools = new SearchFolder();
+
+    std::string choicedDatasetPATH;
+    QString choicedModelName;
+    QString choicedModelType;
+    QString choicedSamplePATH;
+
+};
+
+#endif // MODELEVALPAGE_H

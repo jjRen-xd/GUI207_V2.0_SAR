@@ -5,6 +5,11 @@
 #include <QString>
 #include <QThread>
 
+#include <iostream>
+#include <string>
+#include <regex>
+#include <vector>
+
 TorchServe::TorchServe(BashTerminal *bash_terminal, ModelInfo *globalModelInfo):
     terminal(bash_terminal),
     modelInfo(globalModelInfo)
@@ -93,8 +98,18 @@ QString TorchServe::getModelList(){
 
 
 // 推理接口
-QString TorchServe::inferenceOne(QString modelName, QString dataPath){
+std::vector<std::map<QString,QString>> TorchServe::inferenceOne(QString modelName, QString modelType, QString dataPath){
+    QString torchServeInfer = "curl http://127.0.0.1:"+
+                                QString::number(serverPortList[modelType]["Inference"])+
+                                "/predictions/" + modelName + " -T" + dataPath;
+    QString respones;
+    auto parsedMap = std::vector<std::map<QString,QString>>();
 
+    this->terminal->execute(torchServeInfer, &respones);
+    std::cout<<respones.toStdString()<<std::endl;
+    parseInferenceResult(respones, parsedMap);
+
+    return parsedMap;
 }
 
 
@@ -106,6 +121,61 @@ QString TorchServe::inferenceAll(QString modelName, QString datasetPath){
 
 
 // 推理结果解析接口
-std::vector<std::map<QString,QString>> TorchServe::parseInferenceResult(QString resultStr){
-
+void TorchServe::parseInferenceResult(QString resultStr, std::vector<std::map<QString,QString>> &parsedMap){
+    resultStr = resultStr.simplified();
+    resultStr = resultStr.remove(' ');
+    std::vector<QString> samplesStr = getRegex(resultStr.toStdString(), std::string("\\{(.+?)\\}"));
+    for(auto &sampleStr: samplesStr){   // 对于每个识别个体，包含class_name, bbox, score共三个key
+        std::map<QString,QString> sampleMap;
+        QStringList attriStr = sampleStr.split(",\"");  // 分离三个key
+        for(auto &attri: attriStr){
+            attri = attri.remove(QChar('\"'));
+            attri = attri.remove(QChar(' '));
+            attri = attri.remove(QChar('{'));
+            attri = attri.remove(QChar('}'));
+            QStringList attriKeyValue = attri.split(":");
+            if(attriKeyValue.size() == 2){
+                sampleMap[attriKeyValue[0]] = attriKeyValue[1];
+            }
+        }
+        parsedMap.push_back(sampleMap);
+    }
+        // inferenceResult.push_back(sampleMap);
 }
+
+// 正则表达式匹配接口
+std::vector<QString> TorchServe::getRegex(std::string s, std::string pattern){
+    auto res = std::vector<QString>();
+    std::regex r(pattern);
+    std::sregex_iterator pos(s.cbegin(), s.cend(), r), end;
+    for (; pos != end; ++pos)
+        res.push_back(QString::fromStdString(pos->str(0)));
+    return res;
+}
+
+/* 
+[
+  {
+    "class_name": "ship",
+    "bbox": [
+      331.0644226074219,
+      274.12567138671875,
+      44.357879638671875,
+      16.865642547607422,
+      1.1950498819351196
+    ],
+    "score": 0.9955195188522339
+  },
+  {
+    "class_name": "ship",
+    "bbox": [
+      156.04086303710938,
+      65.87517547607422,
+      41.56586837768555,
+      14.430924415588379,
+      1.1693059206008911
+    ],
+    "score": 0.9905607104301453
+  }
+]
+*/
