@@ -99,8 +99,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>735</width>
-             <height>586</height>
+             <width>683</width>
+             <height>526</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -942,7 +942,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>721</width>
+             <width>453</width>
              <height>711</height>
             </rect>
            </property>
@@ -2037,6 +2037,25 @@
                   </widget>
                  </item>
                  <item>
+                  <widget class="QPushButton" name="pushButto_mE_importLabel">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>120</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>手动导入标签</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
                   <widget class="QPushButton" name="pushButton_mE_testOneSample">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -2058,13 +2077,6 @@
                 </layout>
                </item>
                <item>
-                <widget class="QProgressBar" name="progressBar_3">
-                 <property name="value">
-                  <number>24</number>
-                 </property>
-                </widget>
-               </item>
-               <item>
                 <widget class="Line" name="line_14">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
@@ -2074,14 +2086,110 @@
                <item>
                 <layout class="QVBoxLayout" name="verticalLayout_25">
                  <item>
-                  <widget class="QLabel" name="label_mE_img">
-                   <property name="text">
-                    <string/>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
+                  <layout class="QHBoxLayout" name="horizontalLayout_3">
+                   <item>
+                    <layout class="QVBoxLayout" name="verticalLayout_15">
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_7">
+                       <item>
+                        <widget class="QLabel" name="label_5">
+                         <property name="text">
+                          <string>真实数量:</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="label_4">
+                         <property name="text">
+                          <string>-</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_17">
+                       <item>
+                        <widget class="QLabel" name="label_15">
+                         <property name="text">
+                          <string>-</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="label_10">
+                         <property name="text">
+                          <string>-</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_mE_img">
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <layout class="QVBoxLayout" name="verticalLayout_26">
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_20">
+                       <item>
+                        <widget class="QLabel" name="label_14">
+                         <property name="text">
+                          <string>预测数量:</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="label_16">
+                         <property name="text">
+                          <string>-</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_23">
+                       <item>
+                        <widget class="QLabel" name="label_19">
+                         <property name="text">
+                          <string>正确数量:</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="label_25">
+                         <property name="text">
+                          <string>-</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
                  </item>
                  <item>
                   <widget class="QLabel" name="label_mE_imgName">
@@ -2096,7 +2204,7 @@
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_16">
                    <item>
-                    <widget class="QCheckBox" name="checkBox_mE_BOX_GT">
+                    <widget class="QCheckBox" name="checkBox_mE_showGT">
                      <property name="layoutDirection">
                       <enum>Qt::LeftToRight</enum>
                      </property>
@@ -2106,7 +2214,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QCheckBox" name="checkBox_mE_BOX_PRE">
+                    <widget class="QCheckBox" name="checkBox_mE_showPred">
                      <property name="layoutDirection">
                       <enum>Qt::LeftToRight</enum>
                      </property>
@@ -2135,7 +2243,7 @@
                    <item>
                     <widget class="QLabel" name="label_predTime">
                      <property name="text">
-                      <string>xxx</string>
+                      <string>-</string>
                      </property>
                      <property name="alignment">
                       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>

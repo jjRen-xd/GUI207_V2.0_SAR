@@ -24,14 +24,27 @@ public:
     ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, DatasetInfo *globalDatasetInfo, ModelInfo *globalModelInfo, TorchServe *globalTorchServe);
     ~ModelEvalPage();
 
+    void calcuRectangle(cv::Point centerXY, cv::Size wh, float angle, std::vector<cv::Point> &fourPoints);
+
+
 
 public slots:
     void refreshGlobalInfo();
 
     int randSample();
-    int importSample();
+    int importImage();
+    int importLabel();
 
     int testOneSample();
+
+
+    // 绘图展示相关接口
+    void showImg_Ori();
+    void showImg_GT(cv::Mat &img);
+    void showImg_Pred(cv::Mat &img);
+
+    // 复选框相关接口
+    void checkboxResponse();
 
 
 private:
@@ -42,10 +55,19 @@ private:
     TorchServe *torchServe;
     SearchFolder *dirTools = new SearchFolder();
 
+    // 选择的数据集、模型、样本信息
     std::string choicedDatasetPATH;
     QString choicedModelName;
     QString choicedModelType;
     QString choicedSamplePATH;
+
+    // 预览图的真实及预测标签信息
+    cv::Mat imgSrc;
+    std::vector<std::vector<cv::Point>> points_GT;
+    std::vector<std::string> labels_GT;
+    std::vector<std::vector<cv::Point>> points_Pred;
+    std::vector<std::string> labels_Pred;
+    std::vector<float> scores_Pred;
 
 };
 
