@@ -39,7 +39,7 @@ void BashTerminal::execute(QString cmd, QString* output){
     p.start(bashApi, QStringList() <<"-c" << cmd);
     p.waitForFinished();
     QString strResult = p.readAllStandardOutput();
-    this->print(strResult);
+    // this->print(strResult);
     *output = strResult;
 }
 
