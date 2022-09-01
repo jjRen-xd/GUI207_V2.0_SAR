@@ -10,6 +10,7 @@
 #include "./core/sensePage.h"
 #include "./core/modelChoicePage.h"
 #include "./core/modelEvalPage.h"
+#include "./core/dataEvalPage.h"
 
 // 悬浮窗部件类
 #include "./core/datasetsWindow/datasetDock.h"
@@ -44,7 +45,7 @@ class MainWindow: public QMainWindow{
         void switchPage();      // 页面切换
         void fullScreen();      // 全屏
 
-    private:
+private:
         Ui::MainWindow *ui; 
         
         // 悬浮窗
@@ -56,6 +57,7 @@ class MainWindow: public QMainWindow{
         SenseSetPage *senseSetPage;
         ModelChoicePage *modelChoicePage;
         ModelEvalPage *modelEvalPage;
+        DataEvalPage *dataEvalPage;
 
         // 数据记录
         DatasetInfo *globalDatasetInfo;
