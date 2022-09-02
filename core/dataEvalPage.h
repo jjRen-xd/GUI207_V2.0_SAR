@@ -44,6 +44,7 @@ public:
     std::map<std::string, QLabel*> uiResult;
     void updateUiResult();
 
+
 public slots:
     void refreshGlobalInfo();
     int importData();
@@ -57,6 +58,8 @@ private:
         std::vector<int> det;       // 每个gt所对应的匹配标志
     };
 
+
+
     struct pre_info
     {
         std::string imgName;
@@ -66,6 +69,19 @@ private:
         {
             return score>x.score; //降序排列
         }
+    };
+    //混淆矩阵存储格式
+    struct gt_info_cm
+    {
+        cv::RotatedRect gtRect;        // 一个图片有多个gt
+        std::string className;
+    };
+
+    struct pre_info_cm
+    {
+        cv::RotatedRect preRect;
+        float score;        // 置信度
+        std::string className;
     };
 
     struct result_
@@ -106,10 +122,10 @@ private:
     //指标计算用到参数
 
     //所有类别的ap存储
-    std::map<std::string,float> classAp;
-
     std::map<std::string,float> resultMean;
+    std::map<std::string,std::map<std::string, int>> conMatrix;
 
+    void confusionMatrix(std::map<std::string,std::vector<gt_info_cm>> gtInfo,std::map<std::string,std::vector<pre_info_cm>> preInfo,std::vector<std::string> matrixType,std::map<std::string,std::map<std::string, int>> &Matrix,float iouThresh,float scoreThresh);
 };
 
 

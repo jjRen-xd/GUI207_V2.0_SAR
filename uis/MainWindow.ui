@@ -99,8 +99,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>754</width>
-             <height>596</height>
+             <width>640</width>
+             <height>450</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -942,7 +942,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>743</width>
+             <width>399</width>
              <height>628</height>
             </rect>
            </property>
@@ -1885,8 +1885,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>752</width>
-             <height>594</height>
+             <width>531</width>
+             <height>196</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -2689,26 +2689,7 @@
                   </layout>
                  </item>
                  <item>
-                  <widget class="QLabel" name="label_mE_imgName_2">
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>250</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>16777215</width>
-                     <height>1000</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string>未导入图像</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
+                  <widget class="QTableWidget" name="qTable"/>
                  </item>
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_42">

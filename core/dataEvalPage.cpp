@@ -47,25 +47,6 @@ DataEvalPage::~DataEvalPage(){
 
 }
 
-void DataEvalPage::updateUiResult(){
-    for(auto &subResult: this->uiResult){
-        subResult.second->setText(QString("%1").arg(resultMean[subResult.first]));
-    }
-}
-
-void DataEvalPage::refreshGlobalInfo(){
-    // 基本信息更新
-    this->choicedModelName = QString::fromStdString(modelInfo->selectedName);
-    this->choicedModelType = QString::fromStdString(modelInfo->selectedType);
-    
-    ui->label_mE_dataset_2->setText(QString::fromStdString(datasetInfo->selectedName));
-    ui->label_mE_model_2->setText(choicedModelName);
-    ui->label_mE_batch_2->setText(QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "batch")));
-    this->choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
-
-}
-
-
 int DataEvalPage::importData(){
 
 }
@@ -116,6 +97,24 @@ int DataEvalPage::testAll(){
     std::map<std::string, std::vector<pre_info>> preInfo;
     std::map<std::string, std::vector<gt_info>> gtInfo;
 
+    // 为混淆矩阵做准备，每张图存好多框
+    std::map<std::string,std::vector<gt_info_cm>> gtInfoMatrix;
+    std::map<std::string,std::vector<pre_info_cm>> preInfoMatrix;
+
+    // 混淆矩阵有背景，所以类别要多一个
+    std::vector<std::string> matrixType(classType);
+    matrixType.push_back("background");
+
+    // 混淆矩阵初始化,+1是因为有背景
+    for (size_t i = 0; i < matrixType.size(); i++)
+    {
+        for (size_t j = 0; j < matrixType.size(); j++)
+        {
+            conMatrix[matrixType[i]][matrixType[j]] = 0;
+        }
+    }
+    
+
     // 第一层存放pre类别初始化，gtNum初始化
     for (size_t i = 0; i < classType.size(); i++)
     {
@@ -141,12 +140,13 @@ int DataEvalPage::testAll(){
         std::vector<string>  label_GT;      //存放真实框类别标签
         // 获取当前图片的标注信息
         dirTools->getGroundTruth(label_GT,points_GT, labelPath);
-
+        // 当前图片名字
+        std::string localFileName = imageFileName.substr(0,imageFileName.size()-4);
         // 获取当前图片的真实框信息，存在对应类别里
         for (size_t i = 0; i < classType.size(); i++)
         {
             gt_info gtTemp;
-            gtTemp.imgName = imageFileName.substr(0,imageFileName.size()-4);
+            gtTemp.imgName = localFileName;
             //遍历单张图片里的所有真实框
             for (size_t j = 0; j < label_GT.size(); j++)
             {
@@ -159,6 +159,19 @@ int DataEvalPage::testAll(){
             }
             gtInfo[classType[i]].push_back(gtTemp);
         }
+
+        // 混淆矩阵真实框的存储
+        for (size_t i = 0; i < label_GT.size(); i++)
+        {
+            gt_info_cm matrixGtTmp;
+            matrixGtTmp.className = label_GT[i];
+            matrixGtTmp.gtRect = cv::minAreaRect(cv::Mat(points_GT[i]));
+            gtInfoMatrix[localFileName].push_back(matrixGtTmp);
+        }
+
+        
+
+        
         // cout << "gtTempRect.size:" << gtTemp.gtRect.size() << endl;
 
         //预测当前图片并且将预测框存到对应的类别中
@@ -172,14 +185,14 @@ int DataEvalPage::testAll(){
             predAll = predAll + predMapStr.size();
             // 解析预测结果predMapStr
             if(choicedModelType == "RBOX_DET"){
-                // 旋转框检测模型
+                // 旋转框检测模型，map指标计算预测框存储
                 for (size_t i = 0; i < classType.size(); i++)
                 {
                     for(size_t j = 0; j < predMapStr.size(); j++){
                         if (predMapStr[j]["class_name"].toStdString() == classType[i]){
                             QStringList predCoordStr = predMapStr[j]["bbox"].remove('[').remove(']').split(',');
                             pre_info preTemp;
-                            preTemp.imgName = imageFileName.substr(0,imageFileName.size()-4);
+                            preTemp.imgName = localFileName;
                             preTemp.preRect.center.x = predCoordStr[0].toFloat();
                             preTemp.preRect.center.y = predCoordStr[1].toFloat();
                             preTemp.preRect.size.width = predCoordStr[2].toFloat();
@@ -190,6 +203,21 @@ int DataEvalPage::testAll(){
                         }
                     }
                 }
+                // 混淆矩阵预测框存储
+                for (size_t i = 0; i < predMapStr.size(); i++)
+                {
+                    QStringList predCoordStr = predMapStr[i]["bbox"].remove('[').remove(']').split(',');
+                    pre_info_cm matrixPreTmp;
+                    matrixPreTmp.className = predMapStr[i]["class_name"].toStdString();
+                    matrixPreTmp.preRect.center.x = predCoordStr[0].toFloat();
+                    matrixPreTmp.preRect.center.y = predCoordStr[1].toFloat();
+                    matrixPreTmp.preRect.size.width = predCoordStr[2].toFloat();
+                    matrixPreTmp.preRect.size.height = predCoordStr[3].toFloat();
+                    matrixPreTmp.preRect.angle = predCoordStr[4].toFloat() * 180 / PI;
+                    matrixPreTmp.score = predMapStr[i]["score"].toFloat();
+                    preInfoMatrix[localFileName].push_back(matrixPreTmp);
+                }
+                
 
             }
             else if(choicedModelType == "XXX"){
@@ -270,11 +298,11 @@ int DataEvalPage::testAll(){
 
     for (size_t i = 0; i < classType.size(); i++)
     {
-        cout << result[i].className << " ap:" << result[i].ap << endl;
-        cout << "gtNum:" << result[i].gtNUm << " detNum:" << result[i].detNUm << endl;
-        cout << "fp:" << result[i].fp << " tp:" << result[i].tp << endl;
-        cout << "recall:" << result[i].recall << " precision:" << result[i].precision << endl;
-        cout << "cfar:" << result[i].cfar << endl;
+        // cout << result[i].className << " ap:" << result[i].ap << endl;
+        // cout << "gtNum:" << result[i].gtNUm << " detNum:" << result[i].detNUm << endl;
+        // cout << "fp:" << result[i].fp << " tp:" << result[i].tp << endl;
+        // cout << "recall:" << result[i].recall << " precision:" << result[i].precision << endl;
+        // cout << "cfar:" << result[i].cfar << endl;
         resultMean["mAP50"] = resultMean["mAP50"] + result[i].ap;
         resultMean["mPrec"] = resultMean["mPrec"] + result[i].precision;
         resultMean["mRecall"] = resultMean["mRecall"] + result[i].recall;
@@ -288,8 +316,35 @@ int DataEvalPage::testAll(){
     resultMean["mRecall"] = resultMean["mRecall"] / classType.size();
     resultMean["mcfar"] = resultMean["mcfar"] / classType.size();
     updateUiResult();
+
+    confusionMatrix(gtInfoMatrix,preInfoMatrix,matrixType,conMatrix,iouThresh,0.3);
+    cout << "confusionMatrix:" <<endl;
+    for (size_t i = 0; i < matrixType.size()+1; i++)
+    {
+        for (size_t j = 0; j < matrixType.size()+1; j++)
+        {
+            cout << conMatrix[matrixType[i]][matrixType[j]] << endl;
+        }
+    }
 }
 
+void DataEvalPage::updateUiResult(){
+    for(auto &subResult: this->uiResult){
+        subResult.second->setText(QString("%1").arg(resultMean[subResult.first]));
+    }
+}
+
+void DataEvalPage::refreshGlobalInfo(){
+    // 基本信息更新
+    this->choicedModelName = QString::fromStdString(modelInfo->selectedName);
+    this->choicedModelType = QString::fromStdString(modelInfo->selectedType);
+    
+    ui->label_mE_dataset_2->setText(QString::fromStdString(datasetInfo->selectedName));
+    ui->label_mE_model_2->setText(choicedModelName);
+    ui->label_mE_batch_2->setText(QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "batch")));
+    this->choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
+
+}
 
 void DataEvalPage::calcuRectangle(cv::Point centerXY, cv::Size wh, float angle, std::vector<cv::Point> &fourPoints){
     // 计算旋转框四个顶点坐标\
@@ -459,3 +514,81 @@ float DataEvalPage::apCulcu(std::vector<float> precision,std::vector<float> reca
     return apSum;
 }
 // void DataEvalPage::
+
+void DataEvalPage::confusionMatrix(
+    std::map<std::string,std::vector<gt_info_cm>> gtInfo,
+    std::map<std::string,std::vector<pre_info_cm>> preInfo,
+    std::vector<std::string> matrixType,
+    std::map<std::string,std::map<std::string, int>> &Matrix,
+    float iouThresh,float scoreThresh){
+
+    //获取混淆矩阵维度
+    for (auto perImgPre:preInfo)
+    {
+        std::vector<int> true_positives(gtInfo[perImgPre.first].size(),0.0);
+        std::map<int,std::map<int,float>> ious;
+        for (size_t i = 0; i < perImgPre.second.size(); i++)
+        {
+            for (size_t j = 0; j < gtInfo[perImgPre.first].size(); j++)
+            {
+                ious[i][j] = rotateIOUcv(perImgPre.second[i].preRect,gtInfo[perImgPre.first][j].gtRect);
+                // ious.push_back(rotateIOUcv(perImgPre.second[i].preRect,gtInfo[perImgPre.first][j].gtRect));
+            }
+        }
+        for (size_t i = 0; i < perImgPre.second.size(); i++)
+        {
+            int det_match = 0;
+            if(perImgPre.second[i].score > scoreThresh){
+                for (size_t j = 0; j < gtInfo[perImgPre.first].size(); j++)
+                {
+                    if(ious[i][j] >= iouThresh){
+                        det_match = det_match + 1;
+                        if(perImgPre.second[i].className == gtInfo[perImgPre.first][j].className){
+                            true_positives[j] += 1;
+                        }
+                        Matrix[gtInfo[perImgPre.first][j].className][perImgPre.second[i].className] += 1;
+                    }
+                }
+                if(det_match == 0){
+                    Matrix[matrixType.back()][perImgPre.second[i].className] += 1;
+                }
+            }
+
+        }
+        for (size_t i = 0; i < true_positives.size(); i++)
+        {
+            if(true_positives[i] == 0){
+                Matrix[gtInfo[perImgPre.first][i].className][matrixType.back()] += 1;
+            }
+        }
+        
+    }
+    
+
+
+    // for (size_t i = 0; i < preInfo.size(); i++)
+    // {
+    //     float iouMax = 0.0;
+    //     std::vector<float> IOU;
+    //     int det_match = 0;
+    //     for (size_t j = 0; j < gtInfo.size(); j++)
+    //     {
+    //         if( preInfo[i].imgName == gtInfo[j].imgName){
+    //             for(size_t k = 0; k < gtInfo[j].gtRect.size();k++){
+    //                 IOU.push_back(rotateIOUcv(preInfo[i].preRect,gtInfo[j].gtRect[k]));
+    //             }
+    //             for (size_t m = 0; m < IOU.size(); m++)
+    //             {
+    //                 if(m>iouThresh){
+    //                     det_match = det_match + 1;
+    //                     if(preInfo[i].className == gtInfo[j].className){
+                            
+    //                     }
+    //                     Matrix[preInfo[i].className][gtInfo[j].className] += 1;
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+    // cout << "usedDt:" << num << endl;
+}
