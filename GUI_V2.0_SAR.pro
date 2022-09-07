@@ -22,6 +22,8 @@ HEADERS += \
     core/datasetsWindow/datasetDock.h \
     core/modelChoicePage.h \
     core/modelEvalPage.h \
+    core/modelTrain.h \
+    core/modelTrainPage.h \
     core/modelsWindow/modelDock.h \
     core/sensePage.h \
     lib/algorithm/torchServe.h \
@@ -34,6 +36,8 @@ HEADERS += \
     lib/guiLogic/tools/searchFolder.h
 SOURCES += \
     core/modelEvalPage.cpp \
+    core/modelTrain.cpp \
+    core/modelTrainPage.cpp \
     lib/algorithm/torchServe.cpp \
     main.cpp \
     conf/QRibbon/QRibbon.cpp \

@@ -7,6 +7,13 @@
 #include <vector>
 #include <map>
 #include <time.h>
+#include <QBarSet>
+#include <QChart>
+#include <QBarSeries>
+#include <QBarCategoryAxis>
+#include <QChartView>
+#include <QValueAxis>
+#include <iomanip>
 
 #include "ui_MainWindow.h"
 
@@ -19,6 +26,8 @@
 #include "./lib/algorithm/torchServe.h"
 
 #include "./core/modelEvalPage.h"
+
+#include "./core/datasetsWindow/chart.h"
 
 // class NewBashTerminal:public BashTerminal
 // {
@@ -43,6 +52,7 @@ public:
     void getClassName(std::string dirPath);
     std::map<std::string, QLabel*> uiResult;
     void updateUiResult();
+    void plotConMatrix(std::map<std::string,std::map<std::string, float>> conMatrix,std::vector<std::string> matrixType);
 
 
 public slots:
@@ -57,9 +67,6 @@ private:
         std::vector<cv::RotatedRect> gtRect;        // 一个图片有多个gt
         std::vector<int> det;       // 每个gt所对应的匹配标志
     };
-
-
-
     struct pre_info
     {
         std::string imgName;
@@ -95,6 +102,7 @@ private:
         float recall;
         float precision;
         float cfar;
+        float score;
     };
 
     std::vector<result_> result;
@@ -117,15 +125,14 @@ private:
 
     //数据集所有类别
     std::vector<std::string> classType;
-    // std::vector<std::vector<cv::Point>> points_GT;
-    // std::vector<std::string> labels_GT;
     //指标计算用到参数
 
-    //所有类别的ap存储
     std::map<std::string,float> resultMean;
-    std::map<std::string,std::map<std::string, int>> conMatrix;
+    std::map<std::string,std::map<std::string, float>> conMatrix;
 
-    void confusionMatrix(std::map<std::string,std::vector<gt_info_cm>> gtInfo,std::map<std::string,std::vector<pre_info_cm>> preInfo,std::vector<std::string> matrixType,std::map<std::string,std::map<std::string, int>> &Matrix,float iouThresh,float scoreThresh);
+    void confusionMatrix(std::map<std::string,std::vector<gt_info_cm>> gtInfo,std::map<std::string,std::vector<pre_info_cm>> preInfo,std::vector<std::string> matrixType,std::map<std::string,std::map<std::string, float>> &Matrix,float iouThresh,float scoreThresh);
+    void histogram(std::vector<result_> result,std::map<std::string,float> resultMean);
+    void disDegreeChart(QString &classGT, std::vector<float> &degrees, std::map<int, std::string> &classNames);
 };
 
 

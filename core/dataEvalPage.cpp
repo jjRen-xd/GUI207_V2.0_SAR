@@ -32,6 +32,7 @@ DataEvalPage::DataEvalPage(Ui_MainWindow *main_ui,
     uiResult.emplace("gtAll",ui->label_79);
     uiResult.emplace("preAll",ui->label_31);
     uiResult.emplace("tp",ui->label_34);
+    uiResult.emplace("score",ui->label_52);
 
     resultMean.emplace("mAP50",0.0);
     resultMean.emplace("mPrec",0.0);
@@ -40,6 +41,9 @@ DataEvalPage::DataEvalPage(Ui_MainWindow *main_ui,
     resultMean.emplace("gtAll",0.0);
     resultMean.emplace("preAll",0.0);
     resultMean.emplace("tp",0.0);
+    resultMean.emplace("score",0.0);
+
+    
 }
 
 
@@ -54,6 +58,7 @@ int DataEvalPage::importData(){
 int DataEvalPage::testAll(){
     result.clear();
     classType.clear();
+    conMatrix.clear();
     clock_t start,finish;
     start = clock();
     float iouThresh = 0.5;
@@ -63,8 +68,6 @@ int DataEvalPage::testAll(){
     // std::vector<float> prec = {1., 0.6666, 0.6666, 0.4285, 0.3043};
     // float app = apCulcu(prec,rec);
     // printf("test_ap:%.4f\n",app);
-
-
     dirTools->getDirs(allSubDirs, choicedDatasetPATH);
 
     // printf("choicedDatasetPATH:",choicedDatasetPATH.c_str());
@@ -110,7 +113,7 @@ int DataEvalPage::testAll(){
     {
         for (size_t j = 0; j < matrixType.size(); j++)
         {
-            conMatrix[matrixType[i]][matrixType[j]] = 0;
+            conMatrix[matrixType[i]][matrixType[j]] = 0.0;
         }
     }
     
@@ -169,11 +172,6 @@ int DataEvalPage::testAll(){
             gtInfoMatrix[localFileName].push_back(matrixGtTmp);
         }
 
-        
-
-        
-        // cout << "gtTempRect.size:" << gtTemp.gtRect.size() << endl;
-
         //预测当前图片并且将预测框存到对应的类别中
         if(!choicedModelName.isEmpty() && !choicedSamplePATH.isEmpty()){
             // 使用TorchServe进行预测
@@ -225,27 +223,10 @@ int DataEvalPage::testAll(){
                 // TODO
             }
         }
-        // if (imageNum == 10) {
+        // if (imageNum == 100) {
         //     break;
         // }
     }
-    // 防止崩溃
-    // if(preNum == 0){
-    //     classAp.emplace(classType[cls],0);
-    //     continue;
-    // }
-    // 计算每个类别的真实框数量
-
-    // cout << "imgNum:" <<imageNum << endl;
-    // for (size_t i = 0; i < classType.size(); i++)
-    // {
-    //     cout << "className:" << classType[i] << " " << "gtNum:" << gtNum[i] << endl;
-    // }
-    // cout << "dtAllNum:" << predAll << endl;
-    // for (size_t i = 0; i < classType.size(); i++)
-    // {
-    //     cout << "className:" << classType[i] << " " << "dtNum:" << preInfo[classType[i]].size() << endl;
-    // }
     
     // 计算ap
     for (size_t cls = 0; cls < classType.size(); cls++)
@@ -257,13 +238,14 @@ int DataEvalPage::testAll(){
         std::vector<float> fp(preInfo[classType[cls]].size(),0.0);
         std::vector<float> precision(preInfo[classType[cls]].size(),0.0);
         std::vector<float> recall(preInfo[classType[cls]].size(),0.0);
+        float score = 0.0;
         // 计算tpfp
         tpfp(preInfo[classType[cls]],gtInfo[classType[cls]],tp,fp,iouThresh);
         // cumsum累加实现
         for(size_t i = 1;i<fp.size();i++){
             fp[i]=fp[i-1]+fp[i];
             tp[i]=tp[i-1]+tp[i];
-            // cout << "fp:" << fp[i] << "  tp:" << tp[i] <<endl;
+            score = preInfo[classType[cls]][i].score + score;
         }
         // recall和precision计算
         for (size_t i = 0; i < precision.size(); i++)
@@ -278,13 +260,13 @@ int DataEvalPage::testAll(){
             }else{
                 recall[i] = tp[i] / gtNum[cls];
             }
-            // printf("num:%d\tscore:%.2f\tprecision:%.2f\trecall:%.2f\n",i,preInfo[i].score,precision[i],recall[i]);
         }
         float ap = apCulcu(precision,recall);
         float prec = tp.back() / (tp.back()+fp.back());
         float rec = tp.back() / gtNum[cls];
         float cfar = 1 - prec;
-        result_ resultTmp = {classType[cls],gtNum[cls],int(preInfo[classType[cls]].size()),fp.back(),tp.back(),ap,rec,prec,cfar};
+        score = score / tp.size();
+        result_ resultTmp = {classType[cls],gtNum[cls],int(preInfo[classType[cls]].size()),fp.back(),tp.back(),ap,rec,prec,cfar,score};
         result.push_back(resultTmp);
         
 
@@ -310,28 +292,37 @@ int DataEvalPage::testAll(){
         resultMean["gtAll"] = resultMean["gtAll"] + float(result[i].gtNUm);
         resultMean["preAll"] = resultMean["preAll"] + float(result[i].detNUm);
         resultMean["tp"] = resultMean["tp"] + float(result[i].tp);
+        resultMean["score"] = resultMean["score"] + float(result[i].score);
     }
     resultMean["mAP50"] = resultMean["mAP50"] / classType.size();
     resultMean["mPrec"] = resultMean["mPrec"] / classType.size();
     resultMean["mRecall"] = resultMean["mRecall"] / classType.size();
     resultMean["mcfar"] = resultMean["mcfar"] / classType.size();
+    resultMean["score"] = resultMean["score"] / classType.size();
     updateUiResult();
 
     confusionMatrix(gtInfoMatrix,preInfoMatrix,matrixType,conMatrix,iouThresh,0.3);
-    cout << "confusionMatrix:" <<endl;
-    for (size_t i = 0; i < matrixType.size()+1; i++)
-    {
-        for (size_t j = 0; j < matrixType.size()+1; j++)
-        {
-            cout << conMatrix[matrixType[i]][matrixType[j]] << endl;
-        }
-    }
+    plotConMatrix(conMatrix,matrixType);
+    histogram(result,resultMean);
+
+
 }
 
 void DataEvalPage::updateUiResult(){
-    for(auto &subResult: this->uiResult){
-        subResult.second->setText(QString("%1").arg(resultMean[subResult.first]));
+    // for(auto &subResult: this->uiResult){
+    //     subResult.second->setText(QString("%1").arg(resultMean[subResult.first]));
+    // }
+    
+    for(auto subResult: this->uiResult){
+        std::string type = subResult.first;
+        if(type == "gtAll" || type == "preAll" || type == "tp"){
+            subResult.second->setText(QString("%1").arg(resultMean[subResult.first]));
+        }else{
+            subResult.second->setText(QString::number(resultMean[subResult.first]*100,'f',2).append("%"));
+        }
+        
     }
+    
 }
 
 void DataEvalPage::refreshGlobalInfo(){
@@ -515,11 +506,12 @@ float DataEvalPage::apCulcu(std::vector<float> precision,std::vector<float> reca
 }
 // void DataEvalPage::
 
+// 计算混淆矩阵
 void DataEvalPage::confusionMatrix(
     std::map<std::string,std::vector<gt_info_cm>> gtInfo,
     std::map<std::string,std::vector<pre_info_cm>> preInfo,
     std::vector<std::string> matrixType,
-    std::map<std::string,std::map<std::string, int>> &Matrix,
+    std::map<std::string,std::map<std::string, float>> &Matrix,
     float iouThresh,float scoreThresh){
 
     //获取混淆矩阵维度
@@ -546,11 +538,11 @@ void DataEvalPage::confusionMatrix(
                         if(perImgPre.second[i].className == gtInfo[perImgPre.first][j].className){
                             true_positives[j] += 1;
                         }
-                        Matrix[gtInfo[perImgPre.first][j].className][perImgPre.second[i].className] += 1;
+                        Matrix[gtInfo[perImgPre.first][j].className][perImgPre.second[i].className] += 1.0;
                     }
                 }
                 if(det_match == 0){
-                    Matrix[matrixType.back()][perImgPre.second[i].className] += 1;
+                    Matrix[matrixType.back()][perImgPre.second[i].className] += 1.0;
                 }
             }
 
@@ -558,37 +550,166 @@ void DataEvalPage::confusionMatrix(
         for (size_t i = 0; i < true_positives.size(); i++)
         {
             if(true_positives[i] == 0){
-                Matrix[gtInfo[perImgPre.first][i].className][matrixType.back()] += 1;
+                Matrix[gtInfo[perImgPre.first][i].className][matrixType.back()] += 1.0;
             }
         }
-        
     }
+}
+
+
+
+
+// 绘制混淆矩阵
+void DataEvalPage::plotConMatrix(std::map<std::string,std::map<std::string, 
+    float>> conMatrix,std::vector<std::string> matrixType){
+    ui->qTable->setWindowTitle("Confusion Matrix");
+    ui->qTable->setColumnCount(matrixType.size());
+    ui->qTable->setRowCount(matrixType.size());
+    // 行列标题设置
+    QStringList h_Header;
+    QStringList v_Header;
+    for (size_t i = 0; i < matrixType.size(); i++)
+    {
+        h_Header.append(QString::fromStdString(matrixType[i]));
+        v_Header.append(QString::fromStdString(matrixType[i]));
+    }
+    ui->qTable->setHorizontalHeaderLabels(h_Header);
+    ui->qTable->setVerticalHeaderLabels(v_Header);
+    ui->qTable->setStyleSheet("QHeaderView::section{background:white;}");
+    ui->qTable->horizontalHeader()->setVisible(true);
+    ui->qTable->verticalHeader()->setVisible(true);
+    //窗口自适应
+    // ui->qTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    // ui->qTable->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    // 不可以编辑
+    ui->qTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    // 根据内容设置行列长度
+    // ui->qTable->resizeColumnsToContents();
+    // ui->qTable->resizeRowsToContents();
+
+    std::vector<float> iSum;
+    for (size_t i = 0; i < matrixType.size(); i++)
+    {
+        float iSumTmp = 0;
+        for (size_t j = 0; j < matrixType.size(); j++)
+        {
+            iSumTmp = iSumTmp + conMatrix[matrixType[i]][matrixType[j]];
+        }
+        iSum.push_back(iSumTmp);
+    }
+    // 单元格赋值
+    for (size_t i = 0; i < matrixType.size(); i++)
+    {
+        for (size_t j = 0; j < matrixType.size(); j++)
+        {
+            
+            if(iSum[i]>0){
+                float res = conMatrix[matrixType[i]][matrixType[j]] / iSum[i] *100;
+                ui->qTable->setItem(i,j,new QTableWidgetItem(QString::number(res,'f',0).append("%")));
+                ui->qTable->item(i,j)->setTextAlignment(Qt::AlignCenter);
+            }else{
+                ui->qTable->setItem(i,j,new QTableWidgetItem(QString::number(0).append("%")));
+            }
+        }
+    }
+    // 单元格细节美化
+    for (size_t i = 0; i < matrixType.size(); i++)
+    {
+        for (size_t j = 0; j < matrixType.size(); j++)
+        {
+            // 文本居中
+            ui->qTable->item(i,j)->setTextAlignment(Qt::AlignCenter);
+        }
+    }
+}
+
+void removeLayout(QLayout *layout){
+    QLayoutItem *child;
+    if (layout == nullptr)
+        return;
+    while ((child = layout->takeAt(0)) != nullptr){
+        // child可能为QLayoutWidget、QLayout、QSpaceItem
+        // QLayout、QSpaceItem直接删除、QLayoutWidget需删除内部widget和自身
+        if (QWidget* widget = child->widget()){
+            widget->setParent(nullptr);
+            delete widget;
+            widget = nullptr;
+        }
+
+        else if (QLayout* childLayout = child->layout())
+            removeLayout(childLayout);
+
+        delete child;
+        child = nullptr;
+    }
+}
+
+
+// 绘制柱状图
+void DataEvalPage::histogram(std::vector<result_> result,std::map<std::string,float> resultMean){
+    //创建条形组
+    std::vector<float> ap50;
+    std::vector<float> recall;
+    std::vector<float> score;
+    std::vector<std::string> chartType(classType);
+    chartType.push_back("平均");
+    for (size_t i = 0; i < classType.size(); i++)
+    {
+        ap50.push_back(result[i].ap);
+        recall.push_back(result[i].recall);
+        score.push_back(result[i].score);
+    }
+    // 加入总的值
+    ap50.push_back(resultMean["mAP50"]);
+    recall.push_back(resultMean["mRecall"]);
+    score.push_back(resultMean["score"]);
     
+    QChart *chart = new QChart;
+    std::map<QString, vector<float>> mapnum;
+    mapnum.insert(pair<QString, std::vector<float>>("AP50", ap50));  //后续可拓展
+    mapnum.insert(pair<QString, std::vector<float>>("Recall", recall));
+    mapnum.insert(pair<QString, std::vector<float>>("Score", score));
 
+    QBarSeries *series = new QBarSeries();
+    map<QString, vector<float>>::iterator it = mapnum.begin();
+    //将数据读入
+    while (it != mapnum.end()){
+        QString tit = it->first;
+        QBarSet *set = new QBarSet(tit);
+        std::vector<float> vecnum = it->second;
+        for (auto a : vecnum){
+            // 百分号
+            a = a * 100;
+            // 保留两位
+            a = ((float)((int)((a + 0.005) * 100 ))) / 100;
+            *set << a;
+        }
+        series->append(set);
+        it++;
+    }
+    // QString::number(resultMean[subResult.first],'f',2).append("%")
+    series->setVisible(true);
+    series->setLabelsVisible(true);
+    // 横坐标参数
+    QBarCategoryAxis *axis = new QBarCategoryAxis;
+    for(int i = 0; i<chartType.size(); i++){
+        axis->append(QString::fromStdString(chartType[i]));
+    }
+    QValueAxis *axisy = new QValueAxis;
+    axisy->setRange(0,100);
+    axisy->setTitleText("%");
+    QFont chartLabel;
+    chartLabel.setPixelSize(14);
+    chart->addSeries(series);
+    chart->setTitle("各类别具体参数图");
+    chart->setTitleFont(chartLabel);
 
-    // for (size_t i = 0; i < preInfo.size(); i++)
-    // {
-    //     float iouMax = 0.0;
-    //     std::vector<float> IOU;
-    //     int det_match = 0;
-    //     for (size_t j = 0; j < gtInfo.size(); j++)
-    //     {
-    //         if( preInfo[i].imgName == gtInfo[j].imgName){
-    //             for(size_t k = 0; k < gtInfo[j].gtRect.size();k++){
-    //                 IOU.push_back(rotateIOUcv(preInfo[i].preRect,gtInfo[j].gtRect[k]));
-    //             }
-    //             for (size_t m = 0; m < IOU.size(); m++)
-    //             {
-    //                 if(m>iouThresh){
-    //                     det_match = det_match + 1;
-    //                     if(preInfo[i].className == gtInfo[j].className){
-                            
-    //                     }
-    //                     Matrix[preInfo[i].className][gtInfo[j].className] += 1;
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-    // cout << "usedDt:" << num << endl;
+    chart->setAxisX(axis, series);
+    chart->setAxisY(axisy, series);
+    chart->legend()->setVisible(true);
+
+    QChartView *view = new QChartView(chart);
+    view->setRenderHint(QPainter::Antialiasing);
+    removeLayout(ui->horizontalLayout_histogram);
+    ui->horizontalLayout_histogram->addWidget(view);
 }
