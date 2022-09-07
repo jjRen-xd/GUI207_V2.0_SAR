@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
     connect(ui->action_ModelChoice, &QAction::triggered, this, &MainWindow::switchPage);
     connect(ui->action_Evaluate, &QAction::triggered, this, &MainWindow::switchPage);
     connect(ui->action_DataEval,&QAction::triggered, this, &MainWindow::switchPage);
+    connect(ui->action_ModelTrian,&QAction::triggered, this, &MainWindow::switchPage);
 
     // 视图设置
 	connect(ui->actionFullScreen, &QAction::triggered, this, &MainWindow::fullScreen);
@@ -43,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
     this->modelChoicePage = new ModelChoicePage(this->ui, this->terminal, this->globalModelInfo);
     this->modelEvalPage = new ModelEvalPage(this->ui, this->terminal,this->globalDatasetInfo, this->globalModelInfo, this->torchServe);
     this->dataEvalPage = new DataEvalPage(this->ui, this->terminal,this->globalDatasetInfo, this->globalModelInfo, this->torchServe);
+    this->modelTrainPage = new ModelTrainPage(this->ui, this->terminal,this->globalDatasetInfo, this->globalModelInfo);
     //
 }
 
@@ -65,6 +67,9 @@ void MainWindow::switchPage(){
     else if(action==ui->action_DataEval){
         ui->stackedWidget_MultiPage->setCurrentWidget(ui->page_dataEval);
         this->dataEvalPage->refreshGlobalInfo();
+    }
+    else if(action==ui->action_ModelTrian){
+        ui->stackedWidget_MultiPage->setCurrentWidget(ui->page_modelTrain);
     }
 }
 

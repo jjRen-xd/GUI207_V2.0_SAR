@@ -25,14 +25,14 @@ DataEvalPage::DataEvalPage(Ui_MainWindow *main_ui,
     connect(ui->pushButton_mE_importData, &QPushButton::clicked, this, &DataEvalPage::importData);
     connect(ui->pushButton_mE_testAll, &QPushButton::clicked, this, &DataEvalPage::testAll);
 
-    uiResult.emplace("mAP50",ui->label_50);
-    uiResult.emplace("mPrec",ui->label_27);
-    uiResult.emplace("mRecall",ui->label_29);
-    uiResult.emplace("mcfar",ui->label_41);
-    uiResult.emplace("gtAll",ui->label_79);
-    uiResult.emplace("preAll",ui->label_31);
-    uiResult.emplace("tp",ui->label_34);
-    uiResult.emplace("score",ui->label_52);
+    uiResult.emplace("mAP50",ui->label_map50Num);
+    uiResult.emplace("mPrec",ui->label_precNum);
+    uiResult.emplace("mRecall",ui->label_recNum);
+    uiResult.emplace("mcfar",ui->label_cfarNum);
+    uiResult.emplace("gtAll",ui->label_gtNum);
+    uiResult.emplace("preAll",ui->label_dtNum);
+    uiResult.emplace("tp",ui->label_tpNum);
+    uiResult.emplace("score",ui->label_scoreNum);
 
     resultMean.emplace("mAP50",0.0);
     resultMean.emplace("mPrec",0.0);
@@ -117,7 +117,6 @@ int DataEvalPage::testAll(){
         }
     }
     
-
     // 第一层存放pre类别初始化，gtNum初始化
     for (size_t i = 0; i < classType.size(); i++)
     {

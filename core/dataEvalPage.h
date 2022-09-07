@@ -15,6 +15,7 @@
 #include <QValueAxis>
 #include <iomanip>
 
+
 #include "ui_MainWindow.h"
 
 #include "./lib/guiLogic/bashTerminal.h"
@@ -134,10 +135,5 @@ private:
     void histogram(std::vector<result_> result,std::map<std::string,float> resultMean);
     void disDegreeChart(QString &classGT, std::vector<float> &degrees, std::map<int, std::string> &classNames);
 };
-
-
-
-
-
 
 #endif // DATAEVALPAGE_H
