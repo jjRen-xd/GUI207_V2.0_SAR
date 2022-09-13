@@ -53,6 +53,11 @@ void ModelEvalPage::refreshGlobalInfo(){
 
 
 int ModelEvalPage::randSample(){
+
+    // 清空GroundTruth
+    labels_GT.clear();
+    points_GT.clear();
+
     // 获取所有子文件夹，并判断是否是图片、标注文件夹
     vector<string> allSubDirs;
     dirTools->getDirs(allSubDirs, choicedDatasetPATH);
@@ -89,6 +94,7 @@ int ModelEvalPage::randSample(){
     points_Pred.clear();
     labels_Pred.clear();
     scores_Pred.clear();
+
 }
 
 
