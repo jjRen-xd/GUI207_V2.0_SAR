@@ -1,7 +1,7 @@
 #include "searchFolder.h"
 #include <string.h>
 #include <string>
-
+#include <fstream>
 #include <QObject>
 
 using namespace std;

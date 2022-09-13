@@ -22,9 +22,10 @@ HEADERS += \
     core/datasetsWindow/datasetDock.h \
     core/modelChoicePage.h \
     core/modelEvalPage.h \
+    core/modelTrain.h \
+    core/modelTrainPage.h \
     core/modelsWindow/modelDock.h \
     core/sensePage.h \
-    lib/algorithm/libtorchTest.h \
     lib/algorithm/torchServe.h \
     lib/guiLogic/bashTerminal.h \
     lib/guiLogic/datasetInfo.h \
@@ -35,6 +36,8 @@ HEADERS += \
     lib/guiLogic/tools/searchFolder.h
 SOURCES += \
     core/modelEvalPage.cpp \
+    core/modelTrain.cpp \
+    core/modelTrainPage.cpp \
     lib/algorithm/torchServe.cpp \
     main.cpp \
     conf/QRibbon/QRibbon.cpp \
@@ -44,7 +47,6 @@ SOURCES += \
     core/modelChoicePage.cpp \
     core/modelsWindow/modelDock.cpp \
     core/sensePage.cpp \
-    lib/algorithm/libtorchTest.cpp \
     lib/guiLogic/bashTerminal.cpp \
     lib/guiLogic/datasetInfo.cpp \
     lib/guiLogic/modelInfo.cpp \
@@ -53,7 +55,7 @@ SOURCES += \
     lib/guiLogic/tinyXml/tinyxmlerror.cpp \
     lib/guiLogic/tinyXml/tinyxmlparser.cpp \
     lib/guiLogic/tools/searchFolder.cpp
-
+    
 FORMS += \
     ./conf/QRibbon/qribbon.ui \
     ./uis/MainWindow.ui
@@ -72,6 +74,6 @@ RESOURCES += \
     conf/QRibbon/QRibbon.qrc \
     sources/MainWindow_sources.qrc
 
-include("./conf/libtorch.pri")
+include("/home/207/GUI207_V2.0_SAR/subGUI/subGUI.pri")
 
 RC_ICONS = "./sources/LOGO.ico"
