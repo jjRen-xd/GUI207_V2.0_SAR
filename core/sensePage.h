@@ -8,6 +8,7 @@
 #include "ui_MainWindow.h"
 #include "./lib/guiLogic/bashTerminal.h"
 #include "./lib/guiLogic/datasetInfo.h"
+#include <string.h>
 
 #include "./lib/guiLogic/tools/searchFolder.h"
 
@@ -33,6 +34,7 @@ public slots:
     void updateAttriLabel();
     void drawClassImage();
     void nextBatchImage();
+    // void nextBatchImage();
 
 
 private:

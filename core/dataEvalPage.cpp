@@ -59,6 +59,7 @@ int DataEvalPage::testAll(){
     result.clear();
     classType.clear();
     conMatrix.clear();
+    resultMean.clear();
     clock_t start,finish;
     start = clock();
     float iouThresh = 0.5;
@@ -90,11 +91,21 @@ int DataEvalPage::testAll(){
     // 遍历所有的类别，分别计算指标
     // 获取图片文件夹下的所有图片文件名
     vector<string> imageFileNames;
-    dirTools->getFiles(imageFileNames, ".png", choicedDatasetPATH+"/images");
-    std::cout << "\n imageSize:" <<imageFileNames.size() << endl;
+    // dirTools->getFiles(imageFileNames, ".png", choicedDatasetPATH+"/images");
+    // std::cout << "\n imageSize:" <<imageFileNames.size() << endl;
+
+    if(0 == datasetInfo->selectedType.compare("BBOX")){
+        dirTools->getFiles(imageFileNames, ".jpg", choicedDatasetPATH+"/images");
+        std::cout << "\n imageSize:" <<imageFileNames.size() << endl;
+    }else{
+        dirTools->getFiles(imageFileNames, ".png", choicedDatasetPATH+"/images");
+    }
     int imageNum = 0;
     int predAll = 0;
     std::vector<int> gtNum;
+
+    // 根据正框还是旋转框做出判断
+    
 
     //存放全部的gt信息和pre信息，每个类别的不同，所以要放在类别循环内
     std::map<std::string, std::vector<pre_info>> preInfo;
@@ -134,54 +145,57 @@ int DataEvalPage::testAll(){
         // std::cout << "imagefileName:" <<imageFileName<<endl;
         string choicedImagePath = choicedDatasetPATH+"/images/"+imageFileName;
         this->choicedSamplePATH = QString::fromStdString(choicedImagePath);
-        // 读取GroundTruth，包含四个坐标和类别信息
-        string labelPath = choicedDatasetPATH+"/labelTxt/"+imageFileName.substr(0,imageFileName.size()-4)+".txt";
+        // cout << imageFileName << endl;
+        // if (imageNum == 1) {
+        //     break;
+        // }
+        if(choicedModelType == "RBOX_DET"){
+            // 读取GroundTruth，包含四个坐标和类别信息
+            string labelPath = choicedDatasetPATH+"/labelTxt/"+imageFileName.substr(0,imageFileName.size()-4)+".txt";
 
-
-        std::vector<std::vector<cv::Point>> points_GT;      // 存放真实框坐标
-        std::vector<string>  label_GT;      //存放真实框类别标签
-        // 获取当前图片的标注信息
-        dirTools->getGroundTruth(label_GT,points_GT, labelPath);
-        // 当前图片名字
-        std::string localFileName = imageFileName.substr(0,imageFileName.size()-4);
-        // 获取当前图片的真实框信息，存在对应类别里
-        for (size_t i = 0; i < classType.size(); i++)
-        {
-            gt_info gtTemp;
-            gtTemp.imgName = localFileName;
-            //遍历单张图片里的所有真实框
-            for (size_t j = 0; j < label_GT.size(); j++)
+            std::vector<std::vector<cv::Point>> points_GT;      // 存放真实框坐标
+            std::vector<string>  label_GT;      //存放真实框类别标签
+            // 获取当前图片的标注信息
+            dirTools->getGroundTruth(label_GT,points_GT, labelPath);
+            // 当前图片名字
+            std::string localFileName = imageFileName.substr(0,imageFileName.size()-4);
+            // 获取当前图片的真实框信息，存在对应类别里
+            for (size_t i = 0; i < classType.size(); i++)
             {
-                if(classType[i] == label_GT[j]){
-                    gtTemp.gtRect.push_back(cv::minAreaRect(cv::Mat(points_GT[j])));
-                    gtTemp.det.push_back(0);
-                    // 计算真实框
-                    gtNum[i] = gtNum[i] + 1;
+                gt_info gtTemp;
+                gtTemp.imgName = localFileName;
+                //遍历单张图片里的所有真实框
+                for (size_t j = 0; j < label_GT.size(); j++)
+                {
+                    if(classType[i] == label_GT[j]){
+                        gtTemp.gtRect.push_back(cv::minAreaRect(cv::Mat(points_GT[j])));
+                        gtTemp.det.push_back(0);
+                        // 真实框数量计算
+                        gtNum[i] = gtNum[i] + 1;
+                    }
                 }
+                gtInfo[classType[i]].push_back(gtTemp);
             }
-            gtInfo[classType[i]].push_back(gtTemp);
-        }
 
-        // 混淆矩阵真实框的存储
-        for (size_t i = 0; i < label_GT.size(); i++)
-        {
-            gt_info_cm matrixGtTmp;
-            matrixGtTmp.className = label_GT[i];
-            matrixGtTmp.gtRect = cv::minAreaRect(cv::Mat(points_GT[i]));
-            gtInfoMatrix[localFileName].push_back(matrixGtTmp);
-        }
+            // 混淆矩阵真实框的存储
+            for (size_t i = 0; i < label_GT.size(); i++)
+            {
+                gt_info_cm matrixGtTmp;
+                matrixGtTmp.className = label_GT[i];
+                matrixGtTmp.gtRect = cv::minAreaRect(cv::Mat(points_GT[i]));
+                gtInfoMatrix[localFileName].push_back(matrixGtTmp);
+            }
 
-        //预测当前图片并且将预测框存到对应的类别中
-        if(!choicedModelName.isEmpty() && !choicedSamplePATH.isEmpty()){
-            // 使用TorchServe进行预测
-            std::vector<std::map<QString,QString>> predMapStr = torchServe->inferenceOne(
-                choicedModelName.split(".mar")[0], 
-                choicedModelType, 
-                choicedSamplePATH
-            );
-            predAll = predAll + predMapStr.size();
-            // 解析预测结果predMapStr
-            if(choicedModelType == "RBOX_DET"){
+            //预测当前图片并且将预测框存到对应的类别中
+            if(!choicedModelName.isEmpty() && !choicedSamplePATH.isEmpty()){
+                // 使用TorchServe进行预测
+                std::vector<std::map<QString,QString>> predMapStr = torchServe->inferenceOne(
+                    choicedModelName.split(".mar")[0], 
+                    choicedModelType, 
+                    choicedSamplePATH
+                );
+                predAll = predAll + predMapStr.size();
+                // 解析预测结果predMapStr
                 // 旋转框检测模型，map指标计算预测框存储
                 for (size_t i = 0; i < classType.size(); i++)
                 {
@@ -194,6 +208,7 @@ int DataEvalPage::testAll(){
                             preTemp.preRect.center.y = predCoordStr[1].toFloat();
                             preTemp.preRect.size.width = predCoordStr[2].toFloat();
                             preTemp.preRect.size.height = predCoordStr[3].toFloat();
+                            // rad转angle
                             preTemp.preRect.angle = predCoordStr[4].toFloat() * 180 / PI;
                             preTemp.score = predMapStr[j]["score"].toFloat();
                             preInfo[classType[i]].push_back(preTemp);
@@ -214,18 +229,109 @@ int DataEvalPage::testAll(){
                     matrixPreTmp.score = predMapStr[i]["score"].toFloat();
                     preInfoMatrix[localFileName].push_back(matrixPreTmp);
                 }
-                
-
-            }
-            else if(choicedModelType == "XXX"){
-                // 正框检测模型
-                // TODO
             }
         }
-        // if (imageNum == 100) {
-        //     break;
-        // }
+        else{
+            // 如果是正框，读取xml标注
+
+            // 读取GroundTruth,正框xy极大极小值
+            string labelPath = choicedDatasetPATH+"/labelTxt/"+imageFileName.substr(0,imageFileName.size()-4)+".xml";
+            std::vector<std::vector<cv::Point>> points_GT;      // 存放真实框坐标
+            std::vector<string>  label_GT;      //存放真实框类别标签
+            // 获取当前图片的标注信息
+            dirTools->getGtXML(label_GT,points_GT, labelPath);
+            // 当前图片名字
+            std::string localFileName = imageFileName.substr(0,imageFileName.size()-4);
+
+            // 获取当前图片的真实框信息，存在对应类别里
+            for (size_t i = 0; i < classType.size(); i++)
+            {
+                gt_info gtTemp;
+                gtTemp.imgName = localFileName;
+                //遍历单张图片里的所有真实框
+                for (size_t j = 0; j < label_GT.size(); j++)
+                {
+                    if(classType[i] == label_GT[j]){
+                        gtTemp.gtRect.push_back(cv::minAreaRect(cv::Mat(points_GT[j])));
+                        gtTemp.det.push_back(0);
+                        // 真实框数量计算
+                        gtNum[i] = gtNum[i] + 1;
+                    }
+                }
+                gtInfo[classType[i]].push_back(gtTemp);
+            }
+
+            // 混淆矩阵真实框的存储
+            for (size_t i = 0; i < label_GT.size(); i++)
+            {
+                gt_info_cm matrixGtTmp;
+                matrixGtTmp.className = label_GT[i];
+                matrixGtTmp.gtRect = cv::minAreaRect(cv::Mat(points_GT[i]));
+                gtInfoMatrix[localFileName].push_back(matrixGtTmp);
+            }
+
+            //预测当前图片并且将预测框存到对应的类别中
+            if(!choicedModelName.isEmpty() && !choicedSamplePATH.isEmpty()){
+                // 使用TorchServe进行预测
+                std::vector<std::map<QString,QString>> predMapStr = torchServe->inferenceOne(
+                    choicedModelName.split(".mar")[0], 
+                    choicedModelType, 
+                    choicedSamplePATH
+                );
+                predAll = predAll + predMapStr.size();
+                // 解析预测结果predMapStr
+                // 旋转框检测模型，map指标计算预测框存储
+
+                // 预测框获取和存储
+                for (size_t i = 0; i < classType.size(); i++)
+                {
+                    for(size_t j = 0; j < predMapStr.size(); j++){
+                        if (predMapStr[j]["class_name"].toStdString() == classType[i]){
+                            // 三点构造正框矩形
+                            QStringList predCoordStr = predMapStr[j]["bbox"].remove('[').remove(']').split(',');
+                            pre_info preTemp;
+                            cv::Point2f points[3];
+                            float xmin = predCoordStr[0].toFloat();
+                            float ymin = predCoordStr[1].toFloat();
+                            float xmax = predCoordStr[2].toFloat();
+                            float ymax = predCoordStr[3].toFloat();
+                            // 左上，左下，右下，逆时针三个点坐标
+                            points[0] = cv::Point2f(xmin,ymax);
+                            points[1] = cv::Point2f(xmin,ymin);
+                            points[2] = cv::Point2f(xmax,ymin);
+                            preTemp.preRect.points(points);
+                            preTemp.imgName = localFileName;
+                            preTemp.score = predMapStr[j]["score"].toFloat();
+                            preInfo[classType[i]].push_back(preTemp);
+                        }
+                    }
+                }
+                // 混淆矩阵预测框存储
+                for (size_t i = 0; i < predMapStr.size(); i++)
+                {
+                    QStringList predCoordStr = predMapStr[i]["bbox"].remove('[').remove(']').split(',');
+                    pre_info_cm matrixPreTmp;
+                    matrixPreTmp.className = predMapStr[i]["class_name"].toStdString();
+                    cv::Point2f points[3];
+                    float xmin = predCoordStr[0].toFloat();
+                    float ymin = predCoordStr[1].toFloat();
+                    float xmax = predCoordStr[2].toFloat();
+                    float ymax = predCoordStr[3].toFloat();
+                    // 左上，左下，右下，逆时针三个点坐标
+                    points[0] = cv::Point2f(xmin,ymax);
+                    points[1] = cv::Point2f(xmin,ymin);
+                    points[2] = cv::Point2f(xmax,ymin);
+                    matrixPreTmp.preRect.points(points);
+                    matrixPreTmp.score = predMapStr[i]["score"].toFloat();
+                    preInfoMatrix[localFileName].push_back(matrixPreTmp);
+                }
+            }
+            // if(imageNum == 50){
+            //     break;
+            // }
+        }
     }
+
     
     // 计算ap
     for (size_t cls = 0; cls < classType.size(); cls++)
@@ -308,10 +414,6 @@ int DataEvalPage::testAll(){
 }
 
 void DataEvalPage::updateUiResult(){
-    // for(auto &subResult: this->uiResult){
-    //     subResult.second->setText(QString("%1").arg(resultMean[subResult.first]));
-    // }
-    
     for(auto subResult: this->uiResult){
         std::string type = subResult.first;
         if(type == "gtAll" || type == "preAll" || type == "tp"){
@@ -321,7 +423,6 @@ void DataEvalPage::updateUiResult(){
         }
         
     }
-    
 }
 
 void DataEvalPage::refreshGlobalInfo(){
@@ -357,16 +458,16 @@ void DataEvalPage::calcuRectangle(cv::Point centerXY, cv::Size wh, float angle, 
 }
 
 
-float DataEvalPage::mmdetIOUcalcu(cv::RotatedRect rect1,cv::RotatedRect rect2){
+float DataEvalPage::mmdetIOUcalcu(cv::Rect rect1,cv::Rect rect2){
 
-    if (rect1.center.x > rect2.center.x+rect2.size.width) { return 0.0; }
-    if (rect1.center.y > rect2.center.y+rect2.size.height) { return 0.0; }
-    if (rect1.center.x+rect1.size.width < rect2.center.x) { return 0.0; }
-    if (rect1.center.y+rect1.size.height < rect2.center.y) { return 0.0; }
-    float area1 = rect1.size.width * rect1.size.height;
-    float area2 = rect2.size.width * rect2.size.height;
-    float colInt = min(rect1.center.x + rect1.size.width,rect2.center.x + rect2.size.width) - max(rect1.center.x,rect2.center.x);
-    float rowInt = min(rect1.center.y + rect1.size.height,rect2.center.y + rect2.size.height) - max(rect1.center.y,rect2.center.y);
+    if (rect1.x > rect2.x+rect2.width) { return 0.0; }
+    if (rect1.y > rect2.y+rect2.height) { return 0.0; }
+    if (rect1.x+rect1.width < rect2.x) { return 0.0; }
+    if (rect1.y+rect1.height < rect2.y) { return 0.0; }
+    float area1 = rect1.width * rect1.height;
+    float area2 = rect2.width * rect2.height;
+    float colInt = min(rect1.x + rect1.width,rect2.x + rect2.width) - max(rect1.x,rect2.x);
+    float rowInt = min(rect1.y + rect1.height,rect2.y + rect2.height) - max(rect1.y,rect2.y);
     float intersection = colInt * rowInt;       //交集
     float iou = intersection / (area1 + area2 -intersection);
     return iou;
@@ -396,7 +497,12 @@ void DataEvalPage::getClassName(std::string dirPath){
     vector<string> class_GT;
     std::vector<string> gtLabel;
     std::vector<std::vector<cv::Point>> gtPoints;
-    dirTools->getFiles(imageFileNames, ".png", dirPath);
+    if(0 == datasetInfo->selectedType.compare("BBOX")){
+        dirTools->getFiles(imageFileNames, ".jpg", dirPath);
+    }else{
+        dirTools->getFiles(imageFileNames, ".png", dirPath);
+    }
+    
     std::cout << "\n imageSize:" <<imageFileNames.size() << endl;
     std::int8_t num = 0;
     
@@ -407,8 +513,17 @@ void DataEvalPage::getClassName(std::string dirPath){
         string choicedImagePath = choicedDatasetPATH+"/images/"+imageFileName;
         this->choicedSamplePATH = QString::fromStdString(choicedImagePath);
         // 读取GroundTruth，包含四个坐标和类别信息
-        string labelPath = choicedDatasetPATH+"/labelTxt/"+imageFileName.substr(0,imageFileName.size()-4)+".txt";
-        dirTools->getGroundTruth(gtLabel, gtPoints, labelPath);
+
+        if(datasetInfo->selectedType == "BBOX"){
+            string labelPath = choicedDatasetPATH+"/labelTxt/"+imageFileName.substr(0,imageFileName.size()-4)+".xml";
+            dirTools->getGtXML(gtLabel, gtPoints, labelPath);
+        }else{
+            string labelPath = choicedDatasetPATH+"/labelTxt/"+imageFileName.substr(0,imageFileName.size()-4)+".txt";
+            dirTools->getGroundTruth(gtLabel, gtPoints, labelPath);
+        }
+
+
+
         for (int i = 0;i<gtLabel.size();++i){
             if (find(classType.begin(),classType.end(),gtLabel[i])!=classType.end()){
                 continue;
@@ -485,8 +600,6 @@ float DataEvalPage::apCulcu(std::vector<float> precision,std::vector<float> reca
     {
         precision[i-1] = max(precision[i],precision[i-1]);
     }
-    
-
     // 寻找recall中值变化的序号
     for (size_t i = 1; i < recall.size()-1; i++)
     {

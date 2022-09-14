@@ -89,6 +89,7 @@ void SenseSetPage::confirmDataset(bool notDialog = false){
     QString selectedName = ui->comboBox_datasetNameChoice->currentText();
     datasetInfo->selectedName = selectedName.toStdString(); // save name
     terminal->print("Selected Type: " + selectedType + ", Selected Name: " + selectedName);
+    // cout << "selectedType:" << datasetInfo->selectedType << endl;
 
     if(!selectedType.isEmpty() && !selectedName.isEmpty()){
         // 更新属性显示标签
@@ -145,6 +146,49 @@ void SenseSetPage::drawClassImage(){
 }
 
 
+// void SenseSetPage::nextBatchImage(){
+//     string rootPath = datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
+//     // 获取所有子文件夹，并判断是否是图片、标注文件夹
+//     vector<string> allSubDirs;
+//     dirTools->getDirs(allSubDirs, rootPath);
+//     vector<string> targetKeys = {"images","labelTxt"};
+//     for (auto &targetKey: targetKeys){
+//         if(!(std::find(allSubDirs.begin(), allSubDirs.end(), targetKey) != allSubDirs.end())){
+//             // 目标路径不存在目标文件夹
+//             QMessageBox::warning(NULL,"错误","该数据集路径下不存在"+QString::fromStdString(targetKey)+"文件夹！");
+//             return;
+//         }
+//     }
+//     // 获取图片文件夹下的所有图片文件名
+//     vector<string> imageFileNames;
+//     dirTools->getFiles(imageFileNames, ".png", rootPath+"/images");
+
+//     for(size_t i = 0; i<chartGroup.size(); i++){
+//         // 随机选取一张图片作为预览图片
+//         srand((unsigned)time(NULL));
+//         string choicedImageFile = imageFileNames[(rand()+i)%imageFileNames.size()];
+//         string choicedImagePath = rootPath+"/images/"+choicedImageFile;
+//         cv::Mat imgSrc = cv::imread(choicedImagePath.c_str(), cv::IMREAD_COLOR);
+
+//         // 记录GroundTruth，包含四个坐标和类别信息
+//         vector<string> label_GT;
+//         vector<vector<cv::Point>> points_GT;
+//         string labelPath = rootPath+"/labelTxt/"+choicedImageFile.substr(0,choicedImageFile.size()-4)+".txt";
+//         dirTools->getGroundTruth(label_GT, points_GT, labelPath);
+//         // 绘制旋转框到图片上
+//         cv::drawContours(imgSrc, points_GT, -1, cv::Scalar(16, 124, 16), 2);
+//         // 绘制类别标签到图片上
+//         for(size_t i = 0; i<label_GT.size(); i++){
+//             cv::putText(imgSrc, label_GT[i], points_GT[i][1], cv::FONT_HERSHEY_COMPLEX, 0.4, cv::Scalar(0, 204, 0), 1);
+//         }
+//         // 将图片显示到界面上
+//         QPixmap pixmap = CVS::cvMatToQPixmap(imgSrc);
+//         chartGroup[i]->setPixmap(pixmap.scaled(QSize(500,500),Qt::KeepAspectRatio));
+//         chartInfoGroup[i]->setText("图像名："+QString::fromStdString(choicedImageFile));
+//     }
+// }
+
+
 void SenseSetPage::nextBatchImage(){
     string rootPath = datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
     // 获取所有子文件夹，并判断是否是图片、标注文件夹
@@ -160,7 +204,12 @@ void SenseSetPage::nextBatchImage(){
     }
     // 获取图片文件夹下的所有图片文件名
     vector<string> imageFileNames;
-    dirTools->getFiles(imageFileNames, ".png", rootPath+"/images");
+    if(0 == datasetInfo->selectedType.compare("BBOX")){
+        dirTools->getFiles(imageFileNames, ".jpg", rootPath+"/images");
+    }else{
+        dirTools->getFiles(imageFileNames, ".png", rootPath+"/images");
+    }
+
 
     for(size_t i = 0; i<chartGroup.size(); i++){
         // 随机选取一张图片作为预览图片
@@ -172,9 +221,16 @@ void SenseSetPage::nextBatchImage(){
         // 记录GroundTruth，包含四个坐标和类别信息
         vector<string> label_GT;
         vector<vector<cv::Point>> points_GT;
-        string labelPath = rootPath+"/labelTxt/"+choicedImageFile.substr(0,choicedImageFile.size()-4)+".txt";
-        dirTools->getGroundTruth(label_GT, points_GT, labelPath);
-        // 绘制旋转框到图片上
+        if(datasetInfo->selectedType == "BBOX"){
+            string labelPath = rootPath+"/labelTxt/"+choicedImageFile.substr(0,choicedImageFile.size()-4)+".xml";
+            dirTools->getGtXML(label_GT, points_GT, labelPath);
+        }else{
+            string labelPath = rootPath+"/labelTxt/"+choicedImageFile.substr(0,choicedImageFile.size()-4)+".txt";
+            dirTools->getGroundTruth(label_GT, points_GT, labelPath);
+        }
+
+
+        // 绘制框到图片上
         cv::drawContours(imgSrc, points_GT, -1, cv::Scalar(16, 124, 16), 2);
         // 绘制类别标签到图片上
         for(size_t i = 0; i<label_GT.size(); i++){
@@ -186,7 +242,6 @@ void SenseSetPage::nextBatchImage(){
         chartInfoGroup[i]->setText("图像名："+QString::fromStdString(choicedImageFile));
     }
 }
-
 
 void SenseSetPage::saveDatasetAttri(){
     // 保存至内存

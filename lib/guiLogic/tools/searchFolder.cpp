@@ -118,3 +118,57 @@ bool SearchFolder::getGroundTruth(
     }
     infile.close();
 }
+
+
+bool SearchFolder::getGtXML(
+    std::vector<std::string>  &label_GT, 
+    std::vector<std::vector<cv::Point>> &points_GT, 
+    std::string labelPath)
+{
+	TiXmlDocument doc;
+	if(!doc.LoadFile(labelPath.c_str()))
+	{
+		cerr << doc.ErrorDesc() << endl;
+		return -1;
+	}
+	TiXmlElement* root = doc.FirstChildElement();
+	if(root == NULL)
+	{
+		cerr << "Failed to load file: No root element." << endl;
+		doc.Clear();
+		return -1;
+	}
+	// cout<< "1: " <<root->Value()<<endl;//根节点 annotation
+	for(TiXmlElement* elem = root->FirstChildElement(); elem != NULL; elem = elem->NextSiblingElement())
+	{
+        if(elem->FirstChildElement() && elem->ValueTStr() == "object")//嵌套有子节点
+		{
+			for (TiXmlElement* childelem=elem->FirstChildElement();childelem!=NULL;childelem=childelem->NextSiblingElement())
+			{
+				if(childelem->ValueTStr() == "name" )//子节点中还有子节点
+				{
+                    label_GT.push_back(childelem->GetText());
+				}else if (childelem->ValueTStr() == "bndbox")
+                {
+                    std::vector<float> coordi;
+                    for (TiXmlElement* local=childelem->FirstChildElement();local!=NULL;local=local->NextSiblingElement())
+                    {
+                        coordi.push_back(atof(local->GetText()));
+                    }
+                    float xmin = coordi[0];
+                    float ymin = coordi[1];
+                    float xmax = coordi[2];
+                    float ymax = coordi[3];
+                    vector<cv::Point> currPoints = {
+                        cv::Point(xmin,ymax),
+                        cv::Point(xmin,ymin),
+                        cv::Point(xmax,ymin),
+                        cv::Point(xmax,ymax)
+                    };
+                    points_GT.push_back(currPoints);
+                }
+			}
+		}
+	}
+	doc.Clear();
+}

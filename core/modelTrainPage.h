@@ -2,6 +2,7 @@
 #define MODELTRAINPAGE_H
 
 #include <QObject>
+#include "qlistwidget.h"
 #include "ui_MainWindow.h"
 #include "modelTrain.h"
 #include "./lib/guiLogic/bashTerminal.h"
@@ -17,20 +18,20 @@ public:
     DatasetInfo *datasetInfo;
     ModelInfo *modelInfo;
     BashTerminal *train_terminal;
+    QListWidget* featureListWidget;
+    QString featureIds = "";
+    QStringList features={"Scatter","Peak","Cfar","Harris","Hog","Canny","Countar","Glcm"};
 
     ModelTrainPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, DatasetInfo *globalDatasetInfo, ModelInfo *globalModelInfo);
 
 public slots:
-    void chooseDataDir();
     void startTrain();
     void stopTrain();
-    void useFeaConfusion();
-    void useFeaAutoChoose();
 
 signals:
 
 private:
-//    ModelTrain* processTrain;
+    ModelTrain* processTrain;
 //    int trainModelType=0;
     QString dataDir;
 //    int batchSize;
