@@ -290,16 +290,22 @@ int DataEvalPage::testAll(){
                             // 三点构造正框矩形
                             QStringList predCoordStr = predMapStr[j]["bbox"].remove('[').remove(']').split(',');
                             pre_info preTemp;
-                            cv::Point2f points[3];
+                            cv::Point points[4];
                             float xmin = predCoordStr[0].toFloat();
                             float ymin = predCoordStr[1].toFloat();
                             float xmax = predCoordStr[2].toFloat();
                             float ymax = predCoordStr[3].toFloat();
                             // 左上，左下，右下，逆时针三个点坐标
-                            points[0] = cv::Point2f(xmin,ymax);
-                            points[1] = cv::Point2f(xmin,ymin);
-                            points[2] = cv::Point2f(xmax,ymin);
-                            preTemp.preRect.points(points);
+                            points[0] = cv::Point(xmin,ymax);
+                            points[1] = cv::Point(xmin,ymin);
+                            points[2] = cv::Point(xmax,ymin);
+                            points[3] = cv::Point(xmax,ymax);
+                            std::vector<cv::Point> pointVec;
+                            for (size_t j = 0; j < 4; j++)
+                            {
+                                pointVec.push_back(points[j]);
+                            }
+                            preTemp.preRect = cv::minAreaRect(cv::Mat(pointVec));
                             preTemp.imgName = localFileName;
                             preTemp.score = predMapStr[j]["score"].toFloat();
                             preInfo[classType[i]].push_back(preTemp);
@@ -312,16 +318,22 @@ int DataEvalPage::testAll(){
                     QStringList predCoordStr = predMapStr[i]["bbox"].remove('[').remove(']').split(',');
                     pre_info_cm matrixPreTmp;
                     matrixPreTmp.className = predMapStr[i]["class_name"].toStdString();
-                    cv::Point2f points[3];
+                    cv::Point points[4];
                     float xmin = predCoordStr[0].toFloat();
                     float ymin = predCoordStr[1].toFloat();
                     float xmax = predCoordStr[2].toFloat();
                     float ymax = predCoordStr[3].toFloat();
                     // 左上，左下，右下，逆时针三个点坐标
-                    points[0] = cv::Point2f(xmin,ymax);
-                    points[1] = cv::Point2f(xmin,ymin);
-                    points[2] = cv::Point2f(xmax,ymin);
-                    matrixPreTmp.preRect.points(points);
+                    points[0] = cv::Point(xmin,ymax);
+                    points[1] = cv::Point(xmin,ymin);
+                    points[2] = cv::Point(xmax,ymin);
+                    points[3] = cv::Point(xmax,ymax);
+                    std::vector<cv::Point> pointVec;
+                    for (size_t j = 0; j < 4; j++)
+                    {
+                        pointVec.push_back(points[j]);
+                    }
+                    matrixPreTmp.preRect = cv::minAreaRect(cv::Mat(pointVec));
                     matrixPreTmp.score = predMapStr[i]["score"].toFloat();
                     preInfoMatrix[localFileName].push_back(matrixPreTmp);
                 }
@@ -472,6 +484,21 @@ float DataEvalPage::mmdetIOUcalcu(cv::Rect rect1,cv::Rect rect2){
     float iou = intersection / (area1 + area2 -intersection);
     return iou;
 }
+
+// float DataEvalPage::mmdetIOUcalcu(cv::RotatedRect rect1,cv::RotatedRect rect2){
+
+//     if (rect1.center.x > rect2.center.x+rect2.size.width/2) { return 0.0; }
+//     if (rect1.center.y > rect2.center.y+rect2.size.height/2) { return 0.0; }
+//     if (rect1.center.x+rect1.size.width/2 < rect2.center.x) { return 0.0; }
+//     if (rect1.center.y+rect1.size.height/2 < rect2.center.y) { return 0.0; }
+//     float area1 = rect1.width * rect1.height;
+//     float area2 = rect2.width * rect2.height;
+//     float colInt = min(rect1.center.x + rect1.size.width/2,rect2.center.x + rect2.size.width/2) - max(rect1.center.x,rect2.center.x);
+//     float rowInt = min(rect1.center.y + rect1.size.height/2,rect2.center.y + rect2.size.height/2) - max(rect1.center.y,rect2.center.y);
+//     float intersection = colInt * rowInt;       //交集
+//     float iou = intersection / (area1 + area2 -intersection);
+//     return iou;
+// }
 
 
 float DataEvalPage::rotateIOUcv(cv::RotatedRect rect1,cv::RotatedRect rect2){
