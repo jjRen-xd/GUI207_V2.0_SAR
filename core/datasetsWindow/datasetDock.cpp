@@ -53,7 +53,6 @@ DatasetDock::DatasetDock(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, Da
 
 DatasetDock::~DatasetDock(){
 
-
 }
 
 
@@ -79,6 +78,7 @@ void DatasetDock::importDataset(string type){
         QMessageBox::information(NULL, "添加数据集", "添加数据集成功！");
     }
     this->datasetInfo->modifyAttri(type, datasetName.toStdString(),"PATH", rootPath.toStdString());
+    this->datasetInfo->modifyAttri(type, datasetName.toStdString(),"claName", rootPath.toStdString());
     this->reloadTreeView();
     this->datasetInfo->print();
     this->datasetInfo->writeToXML(datasetInfo->defaultXmlPath);
@@ -148,8 +148,13 @@ void DatasetDock::treeItemClicked(const QModelIndex &index){
 
     // 获取图片文件夹下的所有图片文件名
     vector<string> imageFileNames;
-    dirTools->getFiles(imageFileNames, ".png", rootPath+"/images");
-    
+    if(0 == datasetInfo->selectedType.compare("BBOX")){
+        dirTools->getFiles(imageFileNames, ".jpg", rootPath+"/images");
+    }else{
+        dirTools->getFiles(imageFileNames, ".png", rootPath+"/images");
+    }
+
+
     for(size_t i = 0; i<imageViewGroup.size(); i++){
         // 随机选取一张图片作为预览图片
         srand((unsigned)time(NULL));
@@ -160,8 +165,13 @@ void DatasetDock::treeItemClicked(const QModelIndex &index){
         // 记录GroundTruth，包含四个坐标和类别信息
         vector<string> label_GT;
         vector<vector<cv::Point>> points_GT;
-        string labelPath = rootPath+"/labelTxt/"+choicedImageFile.substr(0,choicedImageFile.size()-4)+".txt";
-        dirTools->getGroundTruth(label_GT, points_GT, labelPath);
+        if(datasetInfo->selectedType == "BBOX"){
+            string labelPath = rootPath+"/labelTxt/"+choicedImageFile.substr(0,choicedImageFile.size()-4)+".xml";
+            dirTools->getGtXML(label_GT, points_GT, labelPath);
+        }else{
+            string labelPath = rootPath+"/labelTxt/"+choicedImageFile.substr(0,choicedImageFile.size()-4)+".txt";
+            dirTools->getGroundTruth(label_GT, points_GT, labelPath);
+        }
         // 绘制旋转框到图片上
         cv::drawContours(imgSrc, points_GT, -1, cv::Scalar(16, 124, 16), 2);
         // 绘制类别标签到图片上

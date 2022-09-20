@@ -6,7 +6,7 @@
 #include <vector>
 
 #include <opencv2/opencv.hpp>
-
+#include "./lib/guiLogic/tinyXml/tinyxml.h"
 class SearchFolder{
     public:
         SearchFolder(){};
@@ -18,6 +18,10 @@ class SearchFolder{
         
         // 从TXT中读取ground truth
         bool getGroundTruth(std::vector<std::string>  &label_GT, std::vector<std::vector<cv::Point>> &points_GT, std::string labelPath);
+
+
+        // 从XML中读取ground truth
+        bool getGtXML(std::vector<std::string>  &label_GT, std::vector<std::vector<cv::Point>> &points_GT, std::string labelPath);
     private:
 
 };

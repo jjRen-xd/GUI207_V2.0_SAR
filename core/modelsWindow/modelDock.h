@@ -21,6 +21,7 @@ public:
     std::map<std::string, QLabel*> attriLabelGroup;
 
     void reloadTreeView();
+    void importModelAfterTrain(QString type, QString modelName);
 
     std::string previewType;
     std::string previewName;

@@ -137,6 +137,60 @@ void ModelDock::importModel(string type){
 }
 
 
+void ModelDock::importModelAfterTrain(QString type, QString modelName){
+
+    QString modelPath = "../db/models/";
+
+    // TODO 解决模型重名问题
+    // QString tempModelName = modelName;
+    // while(1){
+    //     QFileInfo srcFileInfo = QFileInfo(modelPath+tempModelName+".mar");
+    //     if(srcFileInfo.isFile()){
+    //         modelName = tempModelName;
+    //         tempModelName += "_copy";
+    //     }
+    //     else{
+    //         break;
+    //     }
+        
+    // }
+
+    // 讲模型导入TorchServe模型库
+    torchServe->postModel(modelName, type, 2);
+    // QString torchServePOST = "curl -X POST \"http://localhost:8081/models?initial_workers=2&url="+modelName+'\"';
+    // terminal->execute(torchServePOST);
+
+    string savePath = modelPath.toStdString();
+    QString rootPath = modelPath.remove(modelPath.length()-modelName.length()-1, modelPath.length());
+    QString xmlPath;
+
+    vector<string> allXmlNames;
+    bool existXml = false;
+    dirTools->getFiles(allXmlNames, ".xml",rootPath.toStdString());
+    // 寻找与.mar文件相同命名的.xml文件
+    for(auto &xmlName: allXmlNames){
+        if(QString::fromStdString(xmlName).split(".").first() == modelName.split(".").first()){
+            existXml = true;
+            xmlPath = rootPath + "/" + QString::fromStdString(xmlName);
+            break;
+        }
+    }
+    if(existXml){
+        modelInfo->addItemFromXML(xmlPath.toStdString());
+
+        terminal->print("添加模型成功:"+xmlPath);
+        QMessageBox::information(NULL, "添加模型", "添加模型成功！");
+    }
+    else{
+        terminal->print("添加模型成功，但该模型没有说明文件.xml！");
+        QMessageBox::warning(NULL, "添加模型", "添加模型成功，但该模型没有说明文件.xml！");
+    }
+
+    this->modelInfo->modifyAttri(type.toStdString(), modelName.toStdString(), "PATH", savePath);
+    this->reloadTreeView();
+    this->modelInfo->writeToXML(modelInfo->defaultXmlPath);
+}
+
 void ModelDock::deleteModel(){
     QMessageBox confirmMsg;
     confirmMsg.setText(QString::fromStdString("确认要删除模型："+previewType+"->"+previewName));

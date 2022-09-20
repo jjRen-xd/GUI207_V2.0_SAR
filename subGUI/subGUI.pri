@@ -5,10 +5,12 @@ HEADERS += \
 SOURCES += \
     core/dataEvalPage.cpp
 
+
 INCLUDEPATH += \
     /usr/local/include \
     /usr/local/include/opencv4 \
     /usr/local/include/opencv4/opencv2 
+
 
 LIBS += /usr/local/lib/libopencv_calib3d.so \
 /usr/local/lib/libopencv_core.so \

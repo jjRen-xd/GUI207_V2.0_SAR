@@ -22,10 +22,11 @@ HEADERS += \
     core/datasetsWindow/datasetDock.h \
     core/modelChoicePage.h \
     core/modelEvalPage.h \
-    core/modelTrain.h \
     core/modelTrainPage.h \
     core/modelsWindow/modelDock.h \
+    core/reinforceTrainPage.h \
     core/sensePage.h \
+    core/transferTrainPage.h \
     lib/algorithm/torchServe.h \
     lib/guiLogic/bashTerminal.h \
     lib/guiLogic/datasetInfo.h \
@@ -36,8 +37,9 @@ HEADERS += \
     lib/guiLogic/tools/searchFolder.h
 SOURCES += \
     core/modelEvalPage.cpp \
-    core/modelTrain.cpp \
     core/modelTrainPage.cpp \
+    core/reinforceTrainPage.cpp \
+    core/transferTrainPage.cpp \
     lib/algorithm/torchServe.cpp \
     main.cpp \
     conf/QRibbon/QRibbon.cpp \
@@ -74,6 +76,27 @@ RESOURCES += \
     conf/QRibbon/QRibbon.qrc \
     sources/MainWindow_sources.qrc
 
-include("/home/207/GUI207_V2.0_SAR/subGUI/subGUI.pri")
+include("/home/GUI207_V2.0_SAR/subGUI/subGUI.pri")
+INCLUDEPATH += \
+    /usr/local/include \
+    /usr/local/include/opencv4 \
+    /usr/local/include/opencv4/opencv2
+
+LIBS += /usr/local/lib/libopencv_calib3d.so \
+/usr/local/lib/libopencv_core.so \
+/usr/local/lib/libopencv_features2d.so \
+/usr/local/lib/libopencv_flann.so \
+/usr/local/lib/libopencv_highgui.so \
+/usr/local/lib/libopencv_imgcodecs.so \
+/usr/local/lib/libopencv_imgproc.so \
+/usr/local/lib/libopencv_ml.so \
+/usr/local/lib/libopencv_objdetect.so \
+/usr/local/lib/libopencv_photo.so \
+/usr/local/lib/libopencv_shape.so \
+/usr/local/lib/libopencv_stitching.so \
+/usr/local/lib/libopencv_superres.so \
+/usr/local/lib/libopencv_videoio.so \
+/usr/local/lib/libopencv_video.so \
+/usr/local/lib/libopencv_videostab.so
 
 RC_ICONS = "./sources/LOGO.ico"
