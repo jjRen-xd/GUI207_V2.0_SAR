@@ -20,9 +20,9 @@ TorchServe::TorchServe(BashTerminal *bash_terminal, ModelInfo *globalModelInfo):
         {"FEA_RELE", {{"Inference", 0}, {"Management", 0}, {"Metrics", 0}}},
         {"FEW_SHOT", {{"Inference", 0}, {"Management", 0}, {"Metrics", 0}}},
         {"FEA_OPTI", {{"Inference", 0}, {"Management", 0}, {"Metrics", 0}}},
-        {"RBOX_DET", {{"Inference", 7080}, {"Management", 7081}, {"Metrics", 7082}}}
+        {"RBOX_DET", {{"Inference", 8080}, {"Management", 8081}, {"Metrics", 8082}}}
     };
-    initTorchServe();
+    // initTorchServe();
 }
 
 
@@ -40,15 +40,15 @@ int TorchServe::initTorchServe(){
 docker run --rm \
 --cpus 16 \
 --gpus all \
--p7080:8080 -p7081:8081 -p7082:8082 \
+-p8080:8080 -p8081:8081 -p8082:8082 \
 --mount type=bind,\
-source=/run/media/dell_3090/软件/jwk/207/GUI207_V2.0_SAR/db/models,\
+source=/media/z840/HDD_1/LINUX/GUI207_V2.0_SAR/db/models,\
 target=/home/model-server/model-store mmrotate-serve:latest; \
 exec bash -l\"";
     this->terminal->execute(dockerRunCmd);
     // 延时
     DELAY::sleep_msec(15000);
-    // QThread::sleep(20);
+//     QThread::sleep(20);
 
     // 根据已经导入的模型，上传.mar模型至torchServe服务器
     std::vector<std::string> modelTypes = modelInfo->getTypes();

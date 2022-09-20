@@ -18,16 +18,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 HEADERS += \
     conf/QRibbon/QRibbon.h \
     core/MainWindow.h \
+    core/dataEvalPage.h \
     core/datasetsWindow/chart.h \
     core/datasetsWindow/datasetDock.h \
     core/modelChoicePage.h \
     core/modelEvalPage.h \
-    core/modelTrain.h \
     core/modelTrainPage.h \
+    core/modelVisPage.h \
     core/modelsWindow/modelDock.h \
     core/sensePage.h \
     lib/algorithm/torchServe.h \
     lib/guiLogic/bashTerminal.h \
+    lib/guiLogic/customWidget/imagewidget.h \
     lib/guiLogic/datasetInfo.h \
     lib/guiLogic/modelInfo.h \
     lib/guiLogic/tinyXml/tinystr.h \
@@ -35,10 +37,12 @@ HEADERS += \
     lib/guiLogic/tools/convertTools.h \
     lib/guiLogic/tools/searchFolder.h
 SOURCES += \
+    core/dataEvalPage.cpp \
     core/modelEvalPage.cpp \
-    core/modelTrain.cpp \
     core/modelTrainPage.cpp \
+    core/modelVisPage.cpp \
     lib/algorithm/torchServe.cpp \
+    lib/guiLogic/customWidget/imagewidget.cpp \
     main.cpp \
     conf/QRibbon/QRibbon.cpp \
     core/MainWindow.cpp \
@@ -55,7 +59,7 @@ SOURCES += \
     lib/guiLogic/tinyXml/tinyxmlerror.cpp \
     lib/guiLogic/tinyXml/tinyxmlparser.cpp \
     lib/guiLogic/tools/searchFolder.cpp
-    
+
 FORMS += \
     ./conf/QRibbon/qribbon.ui \
     ./uis/MainWindow.ui
@@ -74,6 +78,6 @@ RESOURCES += \
     conf/QRibbon/QRibbon.qrc \
     sources/MainWindow_sources.qrc
 
-include("/home/207/GUI207_V2.0_SAR/subGUI/subGUI.pri")
+include("./conf/libtorch.pri")
 
 RC_ICONS = "./sources/LOGO.ico"

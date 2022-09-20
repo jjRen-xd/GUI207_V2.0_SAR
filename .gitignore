@@ -17,3 +17,5 @@
 conf/libtorch.pri
 
 db/models/*.mar
+
+lib/algorithm/modelVisOutput/

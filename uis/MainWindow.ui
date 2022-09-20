@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1366</width>
-    <height>907</height>
+    <height>979</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -33,7 +33,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>5</number>
       </property>
       <widget class="QWidget" name="page_senseSet">
        <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -99,8 +99,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>640</width>
-             <height>450</height>
+             <width>683</width>
+             <height>526</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -942,8 +942,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>399</width>
-             <height>628</height>
+             <width>453</width>
+             <height>711</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -1885,8 +1885,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>531</width>
-             <height>196</height>
+             <width>542</width>
+             <height>235</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -2328,8 +2328,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>732</width>
-             <height>594</height>
+             <width>356</width>
+             <height>575</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -2831,8 +2831,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>732</width>
-             <height>604</height>
+             <width>336</width>
+             <height>367</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_37">
@@ -3094,6 +3094,265 @@
                 </layout>
                </item>
               </layout>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="page_modelVis">
+       <layout class="QVBoxLayout" name="verticalLayout_52">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_97" stretch="0,0">
+          <item>
+           <widget class="Line" name="line_30">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_148">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>100000</width>
+              <height>80</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:20pt; font-weight:696;&quot;&gt;6、模型隐层可视化&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="Line" name="line_31">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QScrollArea" name="scrollArea_6">
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents_6">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>692</width>
+             <height>923</height>
+            </rect>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_46">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_84">
+              <item>
+               <widget class="QLabel" name="label_97">
+                <property name="text">
+                 <string>可视化隐层指定：</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="comboBox_mV_L1"/>
+              </item>
+              <item>
+               <widget class="QComboBox" name="comboBox_mV_L2"/>
+              </item>
+              <item>
+               <widget class="QComboBox" name="comboBox_mV_L3"/>
+              </item>
+              <item>
+               <widget class="QComboBox" name="comboBox_mV_L4"/>
+              </item>
+              <item>
+               <widget class="QComboBox" name="comboBox_mV_L5"/>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_mV_clear">
+                <property name="text">
+                 <string>重置</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_87">
+              <item>
+               <widget class="QLabel" name="label_mV_visLayer">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_mV_choicedImgName">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_86">
+              <item>
+               <widget class="QGraphicsView" name="graphicsView_mV_modelImg">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>300</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QGraphicsView" name="graphicsView_mV_choicedImg"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_83">
+              <item>
+               <widget class="QLabel" name="label_mE_14">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>40</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>数据集已设定：</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_mV_dataset">
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>40</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>空</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_96">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>40</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>模型已设定：</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_mV_model">
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>40</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>空</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_mV_randomImg">
+                <property name="text">
+                 <string>数据集取样</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_mV_importImg">
+                <property name="text">
+                 <string>导入图像</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_confirmVis">
+                <property name="text">
+                 <string>可视化</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="Line" name="line_27">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupBox_14">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>500</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>600</height>
+               </size>
+              </property>
+              <property name="title">
+               <string>可视化结果</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_47"/>
              </widget>
             </item>
            </layout>
@@ -3426,7 +3685,7 @@
    <property name="minimumSize">
     <size>
      <width>312</width>
-     <height>679</height>
+     <height>754</height>
     </size>
    </property>
    <property name="windowTitle">
@@ -3769,7 +4028,7 @@
      <x>0</x>
      <y>0</y>
      <width>1366</width>
-     <height>18</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="minimumSize">
@@ -3799,6 +4058,7 @@
     <addaction name="separator"/>
     <addaction name="action12"/>
     <addaction name="separator"/>
+    <addaction name="action_modelVis"/>
    </widget>
    <widget class="QMenu" name="menu_dataset">
     <property name="title">
@@ -4149,6 +4409,15 @@
   <action name="action12">
    <property name="text">
     <string>12</string>
+   </property>
+  </action>
+  <action name="action_modelVis">
+   <property name="icon">
+    <iconset resource="../sources/MainWindow_sources.qrc">
+     <normaloff>:/icon/model_vis.png</normaloff>:/icon/model_vis.png</iconset>
+   </property>
+   <property name="text">
+    <string> 隐层可视化</string>
    </property>
   </action>
  </widget>
