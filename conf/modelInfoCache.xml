@@ -1,13 +1,3 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<globalModelInfo datasetTypeNum="2">
-    < typeID="1">
-        < nameID="1">
-            <batch></batch>
-        </>
-    </>
-    <TRA_DL typeID="2">
-        <SSDD_Baseline nameID="2">
-            <PATH>../db/models/</PATH>
-        </SSDD_Baseline>
-    </TRA_DL>
+<globalModelInfo datasetTypeNum="0s">
 </globalModelInfo>

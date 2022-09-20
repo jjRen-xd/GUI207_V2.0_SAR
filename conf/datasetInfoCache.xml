@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <globalDatasetInfo datasetTypeNum="3">
     <BBOX typeID="2">
-        <SSDD_TEST_ALL_BBOX nameID="2">
-            <PATH>/home/GUI207_V2.0_SAR/db/datasets/SSDD/test</PATH>
-            <claName>/home/GUI207_V2.0_SAR/db/datasets/SSDD/test</claName>
-            <claNum>1</claNum>
-            <datasetName>SSDD</datasetName>
-            <datasetType>正框</datasetType>
-            <imgSize>512*512</imgSize>
-            <note>测试下备注</note>
-            <targetNumEachCla>1657</targetNumEachCla>
-        </SSDD_TEST_ALL_BBOX>
-        <SSDD_TRAIN_ALL_BBOX nameID="3">
+        <SSDD_TRAIN_ALL_BBOX nameID="2">
             <PATH>/home/GUI207_V2.0_SAR/db/datasets/SSDD/train</PATH>
             <claName>/home/GUI207_V2.0_SAR/db/datasets/SSDD/train</claName>
             <claNum>1</claNum>
@@ -21,16 +11,6 @@
             <note>测试下备注</note>
             <targetNumEachCla>1657</targetNumEachCla>
         </SSDD_TRAIN_ALL_BBOX>
-        <SSDD_VAL_ALL_BBOX nameID="4">
-            <PATH>/home/GUI207_V2.0_SAR/db/datasets/SSDD/val</PATH>
-            <claName>/home/GUI207_V2.0_SAR/db/datasets/SSDD/val</claName>
-            <claNum>1</claNum>
-            <datasetName>SSDD</datasetName>
-            <datasetType>正框</datasetType>
-            <imgSize>512*512</imgSize>
-            <note>测试下备注</note>
-            <targetNumEachCla>1657</targetNumEachCla>
-        </SSDD_VAL_ALL_BBOX>
     </BBOX>
     <RBOX typeID="3" />
 </globalDatasetInfo>

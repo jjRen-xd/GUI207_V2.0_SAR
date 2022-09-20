@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
     ui = new Ui::MainWindow();
     ui->setupUi(this);
     QRibbon::install(this);
-
+    
     // 全局数据记录设置
     this->globalDatasetInfo = new DatasetInfo("../conf/datasetInfoCache.xml");
     this->globalModelInfo = new ModelInfo("../conf/modelInfoCache.xml");

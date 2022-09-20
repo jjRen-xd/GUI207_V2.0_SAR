@@ -28,7 +28,7 @@ public:
     QString choicedSARData="";
     QString choicedPreModel="";
     QString volume="10";
-    QString modelType="TRA_DL";
+    QString modelType="FEW_SHOT";
     std::vector<QString> times;
     std::vector<QPushButton *> starTrainBts;
     std::vector<QLineEdit *> saveModelNameEdits;

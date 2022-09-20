@@ -137,24 +137,23 @@ void ModelDock::importModel(string type){
 }
 
 
-void ModelDock::importModelAfterTrain(QString type, QString modelName){
+void ModelDock::importModelAfterTrain(QString type, QString modelName, QString modelSuffix){
 
     QString modelPath = "../db/models/";
 
     // TODO 解决模型重名问题
-    // QString tempModelName = modelName;
-    // while(1){
-    //     QFileInfo srcFileInfo = QFileInfo(modelPath+tempModelName+".mar");
-    //     if(srcFileInfo.isFile()){
-    //         modelName = tempModelName;
-    //         tempModelName += "_copy";
-    //     }
-    //     else{
-    //         break;
-    //     }
+    QString tempModelName = modelName;
+    while(1){
+        QFileInfo srcFileInfo = QFileInfo(modelPath+tempModelName+modelSuffix);
+        if(srcFileInfo.isFile()){
+            modelName = tempModelName;
+            tempModelName += "_copy";
+        }
+        else{
+            break;
+        }
         
-    // }
-
+    }
     // 讲模型导入TorchServe模型库
     torchServe->postModel(modelName, type, 2);
     // QString torchServePOST = "curl -X POST \"http://localhost:8081/models?initial_workers=2&url="+modelName+'\"';

@@ -151,7 +151,7 @@ void ModelTrainPage::readLogOutput(){
                 showLog=false;
                 ui->startTrainButton->setEnabled(true);
             //    导入训练好的模型至系统
-                modelDock->importModelAfterTrain(modelType, saveModelName);
+                modelDock->importModelAfterTrain(modelType, saveModelName, ".mar");
                 showTrianResult();
                 if(processTrain->state()==QProcess::Running){
                     processTrain->close();
@@ -207,44 +207,4 @@ void ModelTrainPage::showTrianResult(){
             return;
         }
     }
-}
-
-void ModelTrainPage::importModelToSys(QString type, QString modelName){
-
-//    QString modelPath = "../db/models/";
-
-//    // 讲模型导入TorchServe模型库
-//    torchServe->postModel(modelName, type, 2);
-//    // QString torchServePOST = "curl -X POST \"http://localhost:8081/models?initial_workers=2&url="+modelName+'\"';
-//    // terminal->execute(torchServePOST);
-
-//    std::string savePath = modelPath.toStdString();
-//    QString rootPath = modelPath.remove(modelPath.length()-modelName.length()-1, modelPath.length());
-//    QString xmlPath;
-
-//    std::vector<std::string> allXmlNames;
-//    bool existXml = false;
-//    dirTools->getFiles(allXmlNames, ".xml",rootPath.toStdString());
-//    // 寻找与.mar文件相同命名的.xml文件
-//    for(auto &xmlName: allXmlNames){
-//        if(QString::fromStdString(xmlName).split(".").first() == modelName.split(".").first()){
-//            existXml = true;
-//            xmlPath = rootPath + "/" + QString::fromStdString(xmlName);
-//            break;
-//        }
-//    }
-//    if(existXml){
-//        modelInfo->addItemFromXML(xmlPath.toStdString());
-
-//        terminal->print("添加模型成功:"+xmlPath);
-//        QMessageBox::information(NULL, "添加模型", "添加模型成功！");
-//    }
-//    else{
-//        terminal->print("添加模型成功，但该模型没有说明文件.xml！");
-//        QMessageBox::warning(NULL, "添加模型", "添加模型成功，但该模型没有说明文件.xml！");
-//    }
-
-//    this->modelInfo->modifyAttri(type.toStdString(), modelName.toStdString(), "PATH", savePath);
-//    this->reloadTreeView();
-//    this->modelInfo->writeToXML(modelInfo->defaultXmlPath);
 }

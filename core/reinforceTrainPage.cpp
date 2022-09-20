@@ -63,6 +63,7 @@ void ReinfoceTrainPage::startTrain(){
         choicedModelPATH = "../db/traindirs/pretrained/dqn.pth";
         cmd = "source activate && source deactivate && conda activate 207_base && python ../api/bash/mmdetection/GUI/DQNtrain.py"
         " --load_from "+choicedModelPATH+" --num_of_state "+QString::number(featureWeightEdits.size());
+        execuCmd(cmd);
     }
     qDebug() << cmd;
 //    execuCmd(cmd);
@@ -109,6 +110,7 @@ void ReinfoceTrainPage::readLogOutput(){
                 ui->startRfTrainButton->setEnabled(true);
                 ui->reinforceTrainBar->setMaximum(100);
                 ui->reinforceTrainBar->setValue(100);
+                modelDock->importModelAfterTrain(modelType, saveModelName, ".pth");
                 if(processTrain->state()==QProcess::Running){
                     processTrain->close();
                     processTrain->kill();

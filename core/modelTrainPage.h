@@ -47,7 +47,6 @@ public:
     void execuCmd(QString cmd);   // 开放在终端运行命令接口
     void uiInitial();
     void refreshGlobalInfo();
-    void importModelToSys(QString type, QString modelName);
     
 public slots:
     void startTrain();

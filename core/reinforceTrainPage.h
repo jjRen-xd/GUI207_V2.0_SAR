@@ -32,7 +32,7 @@ public:
     QString lr = "";
     QString saveModelName = "";
     QString fusionType="";
-    QString modelType="TRA_DL";
+    QString modelType="FEA_OPTI";
     QString reinforceDataType="BBOX";
     QString choicedDatasetPATH;
     QString choicedModelPATH;

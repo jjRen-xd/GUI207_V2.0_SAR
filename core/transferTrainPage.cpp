@@ -181,6 +181,7 @@ void TransferTrainPage::monitorTrainProcess(int modeltypeId){
                 starTrainBts[modeltypeId]->setEnabled(true);
                 trainProgressBars[modeltypeId]->setMaximum(100);
                 trainProgressBars[modeltypeId]->setValue(100);
+                modelDock->importModelAfterTrain(modelType, saveModelNames[modeltypeId], ".mar");
                 showTrianResult(modeltypeId);
                 if(processTrain[modeltypeId]->state()==QProcess::Running){
                     processTrain[modeltypeId]->close();
