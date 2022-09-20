@@ -19,6 +19,8 @@
         <file>icon/save.png</file>
         <file>icon/sense.png</file>
         <file>icon/share.png</file>
+        <file>icon/dataset_evaluation.png</file>
         <file>icon/train.png</file>
+        <file>icon/fewshot_transfer.png</file>
     </qresource>
 </RCC>

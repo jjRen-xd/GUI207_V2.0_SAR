@@ -33,7 +33,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="page_senseSet">
        <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -942,7 +942,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>399</width>
+             <width>723</width>
              <height>628</height>
             </rect>
            </property>
@@ -2480,25 +2480,6 @@
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_68">
                  <item>
-                  <widget class="QPushButton" name="pushButton_mE_importData">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>120</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string>导入数据集</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
                   <widget class="QPushButton" name="pushButton_mE_testAll">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -2514,6 +2495,25 @@
                    </property>
                    <property name="text">
                     <string>开始测试</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="pushButton_mE_stop">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>120</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>停止测试</string>
                    </property>
                   </widget>
                  </item>
@@ -2555,7 +2555,7 @@
                        <item>
                         <widget class="QLabel" name="label_prec">
                          <property name="text">
-                          <string>Precision:</string>
+                          <string>精确率:</string>
                          </property>
                          <property name="alignment">
                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -2576,7 +2576,7 @@
                        <item>
                         <widget class="QLabel" name="label_rec">
                          <property name="text">
-                          <string>Recall:</string>
+                          <string>召回率:</string>
                          </property>
                          <property name="alignment">
                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -2597,7 +2597,7 @@
                        <item>
                         <widget class="QLabel" name="label_cfar">
                          <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Cfar:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;虚警率:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
@@ -2698,7 +2698,7 @@
                           <enum>Qt::LeftToRight</enum>
                          </property>
                          <property name="text">
-                          <string>score:</string>
+                          <string>隶属度:</string>
                          </property>
                          <property name="alignment">
                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -2833,8 +2833,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>732</width>
-             <height>604</height>
+             <width>730</width>
+             <height>417</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_37">
@@ -4112,8 +4112,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>732</width>
-             <height>604</height>
+             <width>73</width>
+             <height>16</height>
             </rect>
            </property>
           </widget>
@@ -5172,6 +5172,10 @@
    </property>
   </action>
   <action name="action_DataEval">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/icon/dataset_evaluation.png</normaloff>:/icon/dataset_evaluation.png</iconset>
+   </property>
    <property name="text">
     <string>数据集测试</string>
    </property>
@@ -5192,6 +5196,10 @@
    </property>
   </action>
   <action name="action_3">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/icon/fewshot_transfer.png</normaloff>:/icon/fewshot_transfer.png</iconset>
+   </property>
    <property name="text">
     <string>小样本迁移训练</string>
    </property>

@@ -1,9 +1,12 @@
 HEADERS += \
-    core/dataEvalPage.h
-
-
+    core/dataEvalPage.h \
+    lib/algorithm/evaluationIndex.h \
+    lib/guiLogic/testThread.h \
+    /lib/algorithm/myStruct.h
 SOURCES += \
-    core/dataEvalPage.cpp
+    core/dataEvalPage.cpp \
+    lib/algorithm/evaluationIndex.cpp \
+    lib/guiLogic/testThread.cpp
 
 INCLUDEPATH += \
     /usr/local/include \

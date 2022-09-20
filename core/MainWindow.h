@@ -24,6 +24,9 @@
 // 界面美化类
 #include "./conf/QRibbon/QRibbon.h"
 
+// 后台计算
+#include "./lib/algorithm/evaluationIndex.h"
+
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
     static const std::string slash="\\";
@@ -67,5 +70,8 @@ private:
 
         // 模型部署
         TorchServe *torchServe;
+
+        // 指标测试后台
+        EvaluationIndex *evalBack;
 
 };

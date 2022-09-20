@@ -25,22 +25,22 @@ bool SearchFolder::getFiles(vector<string> &files, string filesType, string fold
     return true;
 }
 
-bool SearchFolder::getDirs(vector<string> &dirs, string folderPath){
-    intptr_t hFile = 0;
-    struct _finddata_t fileInfo;
+// bool SearchFolder::getDirs(vector<string> &dirs, string folderPath){
+//     intptr_t hFile = 0;
+//     struct _finddata_t fileInfo;
 
-    if ((hFile = _findfirst((folderPath+"/*").c_str(), &fileInfo)) != -1){
-        do{
-            if ((fileInfo.attrib & _A_SUBDIR) && strcmp(fileInfo.name, ".") != 0 && strcmp(fileInfo.name, "..") != 0) {  //比较文件类型是否是文件夹
-                dirs.push_back(fileInfo.name);
-            }
-        } while(_findnext(hFile, &fileInfo) == 0);
-    }
-    else{
-        return false;
-    }
-    return true;
-}
+//     if ((hFile = _findfirst((folderPath+"/*").c_str(), &fileInfo)) != -1){
+//         do{
+//             if ((fileInfo.attrib & _A_SUBDIR) && strcmp(fileInfo.name, ".") != 0 && strcmp(fileInfo.name, "..") != 0) {  //比较文件类型是否是文件夹
+//                 dirs.push_back(fileInfo.name);
+//             }
+//         } while(_findnext(hFile, &fileInfo) == 0);
+//     }
+//     else{
+//         return false;
+//     }
+//     return true;
+// }
 
 #else
 #include <dirent.h>
