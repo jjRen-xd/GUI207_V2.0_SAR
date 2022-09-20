@@ -38,6 +38,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
     // 模型部署初始化
     this->torchServe = new TorchServe(this->terminal, this->globalModelInfo);
 
+    // 后台计算
+    this->evalBack = new EvaluationIndex(this->globalDatasetInfo,this->globalModelInfo,this->torchServe);
     // 数据集悬浮窗设置
     this->datasetDock = new DatasetDock(this->ui, this->terminal, this->globalDatasetInfo);
     this->modelDock = new ModelDock(this->ui, this->terminal, this->globalModelInfo, this->torchServe);

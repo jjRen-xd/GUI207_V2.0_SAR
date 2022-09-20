@@ -126,7 +126,8 @@ void DatasetDock::treeItemClicked(const QModelIndex &index){
     string clickedName = datasetTreeViewGroup[clickedType]->model()->itemData(index).values()[0].toString().toStdString();
     this->previewName = clickedName;
     this->previewType = clickedType;
-
+    // qDebug() << "clickedName:" << QString::fromStdString(clickedName);
+    // qDebug() << "clickedType:" << QString::fromStdString(clickedType);
     // 显示数据集预览属性信息
     map<string,string> attriContents = datasetInfo->getAllAttri(previewType, previewName);
     for(auto &currAttriLabel: attriLabelGroup){
@@ -148,7 +149,7 @@ void DatasetDock::treeItemClicked(const QModelIndex &index){
 
     // 获取图片文件夹下的所有图片文件名
     vector<string> imageFileNames;
-    if(0 == datasetInfo->selectedType.compare("BBOX")){
+    if(previewType == "BBOX"){
         dirTools->getFiles(imageFileNames, ".jpg", rootPath+"/images");
     }else{
         dirTools->getFiles(imageFileNames, ".png", rootPath+"/images");
@@ -165,7 +166,7 @@ void DatasetDock::treeItemClicked(const QModelIndex &index){
         // 记录GroundTruth，包含四个坐标和类别信息
         vector<string> label_GT;
         vector<vector<cv::Point>> points_GT;
-        if(datasetInfo->selectedType == "BBOX"){
+        if(previewType == "BBOX"){
             string labelPath = rootPath+"/labelTxt/"+choicedImageFile.substr(0,choicedImageFile.size()-4)+".xml";
             dirTools->getGtXML(label_GT, points_GT, labelPath);
         }else{

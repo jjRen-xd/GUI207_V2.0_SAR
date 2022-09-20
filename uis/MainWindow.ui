@@ -2480,25 +2480,6 @@
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_68">
                  <item>
-                  <widget class="QPushButton" name="pushButton_mE_importData">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>120</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string>导入数据集</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
                   <widget class="QPushButton" name="pushButton_mE_testAll">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -2514,6 +2495,25 @@
                    </property>
                    <property name="text">
                     <string>开始测试</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="pushButton_mE_stop">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>120</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>停止测试</string>
                    </property>
                   </widget>
                  </item>
@@ -2555,7 +2555,7 @@
                        <item>
                         <widget class="QLabel" name="label_prec">
                          <property name="text">
-                          <string>Precision:</string>
+                          <string>精确率:</string>
                          </property>
                          <property name="alignment">
                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -2576,7 +2576,7 @@
                        <item>
                         <widget class="QLabel" name="label_rec">
                          <property name="text">
-                          <string>Recall:</string>
+                          <string>召回率:</string>
                          </property>
                          <property name="alignment">
                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -2597,7 +2597,7 @@
                        <item>
                         <widget class="QLabel" name="label_cfar">
                          <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Cfar:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;虚警率:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
@@ -2698,7 +2698,7 @@
                           <enum>Qt::LeftToRight</enum>
                          </property>
                          <property name="text">
-                          <string>score:</string>
+                          <string>隶属度:</string>
                          </property>
                          <property name="alignment">
                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -2855,7 +2855,7 @@
                  <item>
                   <widget class="QLabel" name="label_68">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                      <horstretch>0</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
@@ -2871,7 +2871,7 @@
                  <item>
                   <widget class="QLabel" name="train_data_path">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                      <horstretch>0</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
@@ -4028,6 +4028,12 @@
                    <property name="text">
                     <string>开始训练</string>
                    </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>200</width>
+                     <height>22</height>
+                    </size>
+                   </property>
                   </widget>
                  </item>
                  <item>
@@ -4077,6 +4083,25 @@
                    </property>
                    <property name="text">
                     <string>中断训练</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_79">
+                   <property name="minimumSize">
+                    <size>
+                     <width>10</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>10</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string/>
                    </property>
                   </widget>
                  </item>
@@ -4244,6 +4269,52 @@
              </widget>
             </item>
            </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="page_transferTrain">
+       <layout class="QVBoxLayout" name="verticalLayout_57">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_85">
+          <item>
+           <widget class="Line" name="line_26">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_96">
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot;font-size:20pt;font-weight:700;&quot;&gt;Ⅵ. 小样本迁移训练&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="Line" name="line_27">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QScrollArea" name="scrollArea_7">
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents_7">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>732</width>
+             <height>604</height>
+            </rect>
+           </property>
           </widget>
          </widget>
         </item>
@@ -8439,6 +8510,7 @@
     <addaction name="action_TransferTrain"/>
     <addaction name="separator"/>
     <addaction name="action_ReinforceTrain"/>
+    <addaction name="action_3"/>
    </widget>
    <widget class="QMenu" name="menu_dataset">
     <property name="title">
@@ -8795,6 +8867,11 @@
     <iconset resource="../sources/MainWindow_sources.qrc">
      <normaloff>:/icon/train.png</normaloff>:/icon/train.png</iconset>
    </property>
+  <action name="action_ModelTrian">
+   <property name="icon">
+    <iconset resource="../sources/MainWindow_sources.qrc">
+     <normaloff>:/icon/train.png</normaloff>:/icon/train.png</iconset>
+   </property>
    <property name="text">
     <string>模型训练</string>
    </property>
@@ -8830,6 +8907,15 @@
    </property>
    <property name="text">
     <string>强化学习</string>
+   </property>
+  </action>
+  <action name="action_3">
+   <property name="icon">
+    <iconset resource="../sources/MainWindow_sources.qrc">
+     <normaloff>:/icon/fewshot_transfer.png</normaloff>:/icon/fewshot_transfer.png</iconset>
+   </property>
+   <property name="text">
+    <string>小样本迁移训练</string>
    </property>
   </action>
  </widget>
