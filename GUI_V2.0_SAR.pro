@@ -29,11 +29,14 @@ HEADERS += \
     core/reinforceTrainPage.h \
     core/sensePage.h \
     core/transferTrainPage.h \
+    lib/algorithm/evaluationIndex.h \
+    lib/algorithm/myStruct.h \
     lib/algorithm/torchServe.h \
     lib/guiLogic/bashTerminal.h \
     lib/guiLogic/customWidget/imagewidget.h \
     lib/guiLogic/datasetInfo.h \
     lib/guiLogic/modelInfo.h \
+    lib/guiLogic/testThread.h \
     lib/guiLogic/tinyXml/tinystr.h \
     lib/guiLogic/tinyXml/tinyxml.h \
     lib/guiLogic/tools/convertTools.h \
@@ -45,8 +48,10 @@ SOURCES += \
     core/modelVisPage.cpp \
     core/reinforceTrainPage.cpp \
     core/transferTrainPage.cpp \
+    lib/algorithm/evaluationIndex.cpp \
     lib/algorithm/torchServe.cpp \
     lib/guiLogic/customWidget/imagewidget.cpp \
+    lib/guiLogic/testThread.cpp \
     main.cpp \
     conf/QRibbon/QRibbon.cpp \
     core/MainWindow.cpp \
@@ -84,21 +89,5 @@ RESOURCES += \
 
 include("./conf/libtorch.pri")
 
-LIBS += /usr/local/lib/libopencv_calib3d.so \
-/usr/local/lib/libopencv_core.so \
-/usr/local/lib/libopencv_features2d.so \
-/usr/local/lib/libopencv_flann.so \
-/usr/local/lib/libopencv_highgui.so \
-/usr/local/lib/libopencv_imgcodecs.so \
-/usr/local/lib/libopencv_imgproc.so \
-/usr/local/lib/libopencv_ml.so \
-/usr/local/lib/libopencv_objdetect.so \
-/usr/local/lib/libopencv_photo.so \
-/usr/local/lib/libopencv_shape.so \
-/usr/local/lib/libopencv_stitching.so \
-/usr/local/lib/libopencv_superres.so \
-/usr/local/lib/libopencv_videoio.so \
-/usr/local/lib/libopencv_video.so \
-/usr/local/lib/libopencv_videostab.so
 
 RC_ICONS = "./sources/LOGO.ico"
