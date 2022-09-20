@@ -33,7 +33,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="page_senseSet">
        <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -942,7 +942,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>723</width>
+             <width>399</width>
              <height>628</height>
             </rect>
            </property>
@@ -1885,8 +1885,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>732</width>
-             <height>594</height>
+             <width>531</width>
+             <height>196</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -2833,8 +2833,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>730</width>
-             <height>417</height>
+             <width>732</width>
+             <height>604</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_37">
@@ -4112,8 +4112,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>73</width>
-             <height>16</height>
+             <width>732</width>
+             <height>604</height>
             </rect>
            </property>
           </widget>
@@ -5173,7 +5173,7 @@
   </action>
   <action name="action_DataEval">
    <property name="icon">
-    <iconset>
+    <iconset resource="../sources/MainWindow_sources.qrc">
      <normaloff>:/icon/dataset_evaluation.png</normaloff>:/icon/dataset_evaluation.png</iconset>
    </property>
    <property name="text">
@@ -5197,7 +5197,7 @@
   </action>
   <action name="action_3">
    <property name="icon">
-    <iconset>
+    <iconset resource="../sources/MainWindow_sources.qrc">
      <normaloff>:/icon/fewshot_transfer.png</normaloff>:/icon/fewshot_transfer.png</iconset>
    </property>
    <property name="text">
