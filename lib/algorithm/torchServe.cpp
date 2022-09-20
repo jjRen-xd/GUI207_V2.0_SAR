@@ -16,10 +16,10 @@ TorchServe::TorchServe(BashTerminal *bash_terminal, ModelInfo *globalModelInfo):
 {
     // 初始化TorchServe服务器端口
     serverPortList = {
-        {"TRA_DL",   {{"Inference", 0}, {"Management", 0}, {"Metrics", 0}}},
-        {"FEA_RELE", {{"Inference", 0}, {"Management", 0}, {"Metrics", 0}}},
-        {"FEW_SHOT", {{"Inference", 0}, {"Management", 0}, {"Metrics", 0}}},
-        {"FEA_OPTI", {{"Inference", 0}, {"Management", 0}, {"Metrics", 0}}},
+        {"TRA_DL",   {{"Inference", 9080}, {"Management", 9081}, {"Metrics", 9082}}},
+        {"FEA_RELE", {{"Inference", 9080}, {"Management", 9081}, {"Metrics", 9082}}},
+        {"FEW_SHOT", {{"Inference", 9080}, {"Management", 9081}, {"Metrics", 9082}}},
+        {"FEA_OPTI", {{"Inference", 9080}, {"Management", 9081}, {"Metrics", 9082}}},
         {"RBOX_DET", {{"Inference", 8080}, {"Management", 8081}, {"Metrics", 8082}}}
     };
     // initTorchServe();
@@ -104,8 +104,9 @@ std::vector<std::map<QString,QString>> TorchServe::inferenceOne(QString modelNam
                                 "/predictions/" + modelName + " -T" + dataPath;
     QString respones;
     auto parsedMap = std::vector<std::map<QString,QString>>();
-
+    
     this->terminal->execute(torchServeInfer, &respones);
+    // this->terminal->print("curl命令已通过");
     // std::cout<<respones.toStdString()<<std::endl;
     parseInferenceResult(respones, parsedMap);
 
@@ -154,6 +155,7 @@ std::vector<QString> TorchServe::getRegex(std::string s, std::string pattern){
 }
 
 /* 
+mmrotate
 [
   {
     "class_name": "ship",
@@ -178,4 +180,42 @@ std::vector<QString> TorchServe::getRegex(std::string s, std::string pattern){
     "score": 0.9905607104301453
   }
 ]
+*/
+
+
+/*
+mmdet
+[
+  {
+    "class_name": "ship",
+    "bbox": [
+      390.70513916015625,
+      104.37030792236328,
+      416.30767822265625,
+      159.0507049560547
+    ],
+    "score": 0.9990222454071045
+  },
+  {
+    "class_name": "ship",
+    "bbox": [
+      75.82829284667969,
+      80.59634399414062,
+      106.52960205078125,
+      129.5918731689453
+    ],
+    "score": 0.9990034699440002
+  },
+  {
+    "class_name": "ship",
+    "bbox": [
+      15.346573829650879,
+      214.0214080810547,
+      32.375064849853516,
+      244.29832458496094
+    ],
+    "score": 0.9919837117195129
+  }
+]
+
 */

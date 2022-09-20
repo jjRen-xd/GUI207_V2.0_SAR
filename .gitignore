@@ -2,6 +2,8 @@
 /.history/
 /db/datasets/*
 /db/models/*
+/db/traindirs/*
+/db/traindirs/pretrained/*
 /build/*
 /GUI_V1.0.pro.user
 /.qt_for_python/*
@@ -9,13 +11,20 @@
 
 !/db/datasets/dataset_here
 !/db/models/model_here
+!/db/traindirs/train_log_here
+!/db/traindirs/pretrained/pretrained_model_here
 !/build/build_here
 
-!/lib\algorithm\code_here
-!/lib\guiLogic\code_here
-!/api\api_here
-conf/libtorch.pri
 
+!/lib/algorithm/code_here
+!/lib/guiLogic/code_here
+!/api/api_here
+
+conf/libtorch.pri
+build/*
+db/datasets/*
 db/models/*.mar
+db/traindirs/*
+db/traindirs/pretrained/*
 
 lib/algorithm/modelVisOutput/

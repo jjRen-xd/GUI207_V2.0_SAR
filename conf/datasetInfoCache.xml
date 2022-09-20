@@ -1,61 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<globalDatasetInfo datasetTypeNum="2">
-    <BBOX typeID="1">
-        <BBOX_001 nameID="1">
-            <PATH>未定义</PATH>
-            <claNum>5</claNum>
-            <datasetName>测试数据集</datasetName>
-            <datasetType>正框</datasetType>
-            <imgSize>256*256</imgSize>
-            <note>测试下备注</note>
-            <targetNumEachCla>1000</targetNumEachCla>
-        </BBOX_001>
-        <BBOX_002 nameID="2">
-            <PATH>未定义</PATH>
-            <claNum>5</claNum>
-            <datasetName>测试数据集</datasetName>
-            <datasetType>正框</datasetType>
-            <imgSize>256*256</imgSize>
-            <note>测试下备注</note>
-            <targetNumEachCla>1000</targetNumEachCla>
-        </BBOX_002>
-    </BBOX>
-    <RBOX typeID="2">
-        <RBOX_001 nameID="3">
-            <PATH>未定义</PATH>
-            <claNum>5</claNum>
-            <datasetName>测试数据集</datasetName>
-            <datasetType>CW旋转框</datasetType>
-            <imgSize>256*256</imgSize>
-            <note>测试下备注</note>
-            <targetNumEachCla>1000</targetNumEachCla>
-        </RBOX_001>
-        <RBOX_002 nameID="4">
-            <PATH>未定义</PATH>
-            <claNum>5</claNum>
-            <datasetName>测试数据集</datasetName>
-            <datasetType>CW旋转框</datasetType>
-            <imgSize>256*256</imgSize>
-            <note>测试下备注</note>
-            <targetNumEachCla>1000</targetNumEachCla>
-        </RBOX_002>
-        <SSDD_test_all nameID="5">
-            <PATH>/media/z840/HDD_1/LINUX/GUI207_V2.0_SAR/db/datasets/ssdd/test/all</PATH>
+<globalDatasetInfo datasetTypeNum="3">
+    <BBOX typeID="2">
+        <SSDD_TRAIN_ALL_BBOX nameID="2">
+            <PATH>/home/GUI207_V2.0_SAR/db/datasets/SSDD/train</PATH>
+            <claName>/home/GUI207_V2.0_SAR/db/datasets/SSDD/train</claName>
             <claNum>1</claNum>
-            <datasetName>SSDD测试数据集_all</datasetName>
-            <datasetType>CW旋转框</datasetType>
-            <imgSize>256*256</imgSize>
-            <note>测试下备注2</note>
-            <targetNumEachCla>1000</targetNumEachCla>
-        </SSDD_test_all>
-        <trainsplit nameID="6">
-            <PATH>/media/z840/HDD_1/LINUX/GUI207_V2.0_SAR/db/datasets/hrsid/trainsplit</PATH>
-            <claNum>未定义</claNum>
-            <datasetName>未定义</datasetName>
-            <datasetType>未定义</datasetType>
-            <imgSize>未定义</imgSize>
-            <note>未定义</note>
-            <targetNumEachCla>未定义</targetNumEachCla>
-        </trainsplit>
-    </RBOX>
+            <datasetName>SSDD</datasetName>
+            <datasetType>正框</datasetType>
+            <imgSize>512*512</imgSize>
+            <note>测试下备注</note>
+            <targetNumEachCla>1657</targetNumEachCla>
+        </SSDD_TRAIN_ALL_BBOX>
+    </BBOX>
+    <RBOX typeID="3" />
 </globalDatasetInfo>

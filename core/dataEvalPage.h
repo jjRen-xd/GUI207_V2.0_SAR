@@ -15,6 +15,7 @@
 #include <QValueAxis>
 #include <iomanip>
 
+
 #include "ui_MainWindow.h"
 
 #include "./lib/guiLogic/bashTerminal.h"
@@ -28,25 +29,13 @@
 #include "./core/modelEvalPage.h"
 
 #include "./core/datasetsWindow/chart.h"
-
-// class NewBashTerminal:public BashTerminal
-// {
-
-// public:
-//     NewBashTerminal:public (QLineEdit *inWidget, QTextEdit *outWidget);
-//     ~NewBashTerminal:public ();
-
-
-// private:
-//     /* data */
-// };
 class DataEvalPage:public QObject{
     Q_OBJECT
 public:
     DataEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, DatasetInfo *globalDatasetInfo, ModelInfo *globalModelInfo, TorchServe *globalTorchServe);
     ~DataEvalPage();
     void calcuRectangle(cv::Point centerXY, cv::Size wh, float angle, std::vector<cv::Point> &fourPoints);
-    float mmdetIOUcalcu(cv::RotatedRect rect1,cv::RotatedRect rect2);
+    float mmdetIOUcalcu(cv::Rect rect1,cv::Rect rect2);
     float rotateIOUcv(cv::RotatedRect rect1,cv::RotatedRect rect2);
     float apCulcu(std::vector<float> precision,std::vector<float> recall);
     void getClassName(std::string dirPath);
@@ -61,6 +50,7 @@ public slots:
     int testAll();
 
 private:
+    // mmrotate
     struct gt_info
     {
         std::string imgName;
@@ -110,6 +100,7 @@ private:
 
     void tpfp(std::vector<pre_info> preInfo,std::vector<gt_info> gtInfo,std::vector<float> &tp,std::vector<float> &fp,float iouThresh);
 
+
     Ui_MainWindow *ui;
     BashTerminal *terminal;
     DatasetInfo *datasetInfo;
@@ -134,10 +125,5 @@ private:
     void histogram(std::vector<result_> result,std::map<std::string,float> resultMean);
     void disDegreeChart(QString &classGT, std::vector<float> &degrees, std::map<int, std::string> &classNames);
 };
-
-
-
-
-
 
 #endif // DATAEVALPAGE_H

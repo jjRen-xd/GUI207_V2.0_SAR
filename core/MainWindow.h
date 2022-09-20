@@ -12,6 +12,9 @@
 #include "./core/modelEvalPage.h"
 #include "./core/dataEvalPage.h"
 #include "./core/modelVisPage.h"
+#include "./core/modelTrainPage.h"
+#include "./core/reinforceTrainPage.h"
+#include "./core/transferTrainPage.h"
 
 // 悬浮窗部件类
 #include "./core/datasetsWindow/datasetDock.h"
@@ -59,6 +62,9 @@ private:
         ModelChoicePage *modelChoicePage;
         ModelEvalPage *modelEvalPage;
         DataEvalPage *dataEvalPage;
+        ModelTrainPage *modelTrainPage;
+        TransferTrainPage *transferTrainPage;
+        ReinfoceTrainPage *reinforceTrainPage;
         ModelVisPage *modelVisPage;
 
         // 数据记录

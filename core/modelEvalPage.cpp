@@ -18,7 +18,7 @@ ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui,
     datasetInfo(globalDatasetInfo),
     modelInfo(globalModelInfo),
     torchServe(globalTorchServe)
-{   
+{
     // 刷新模型、数据集、参数信息
     refreshGlobalInfo();
 
@@ -43,7 +43,7 @@ void ModelEvalPage::refreshGlobalInfo(){
     // 基本信息更新
     this->choicedModelName = QString::fromStdString(modelInfo->selectedName);
     this->choicedModelType = QString::fromStdString(modelInfo->selectedType);
-    
+
     ui->label_mE_dataset->setText(QString::fromStdString(datasetInfo->selectedName));
     ui->label_mE_model->setText(choicedModelName);
     ui->label_mE_batch->setText(QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "batch")));
@@ -59,6 +59,8 @@ int ModelEvalPage::randSample(){
     points_GT.clear();
 
     // 获取所有子文件夹，并判断是否是图片、标注文件夹
+    points_GT.clear();
+    labels_GT.clear();
     vector<string> allSubDirs;
     dirTools->getDirs(allSubDirs, choicedDatasetPATH);
     vector<string> targetKeys = {"images","labelTxt"};
@@ -71,8 +73,11 @@ int ModelEvalPage::randSample(){
     }
     // 获取图片文件夹下的所有图片文件名
     vector<string> imageFileNames;
-    dirTools->getFiles(imageFileNames, ".png", choicedDatasetPATH+"/images");
-    
+    if(0 == datasetInfo->selectedType.compare("BBOX")){
+        dirTools->getFiles(imageFileNames, ".jpg", choicedDatasetPATH+"/images");
+    }else{
+        dirTools->getFiles(imageFileNames, ".png", choicedDatasetPATH+"/images");
+    }
     // 随机选取一张图片作为预览图片
     srand((unsigned)time(NULL));
     string choicedImageFile = imageFileNames[(rand())%imageFileNames.size()];
@@ -83,9 +88,13 @@ int ModelEvalPage::randSample(){
     this->imgSrc = cv::imread(choicedImagePath.c_str(), cv::IMREAD_COLOR);
 
     // 读取GroundTruth，包含四个坐标和类别信息
-    string labelPath = choicedDatasetPATH+"/labelTxt/"+choicedImageFile.substr(0,choicedImageFile.size()-4)+".txt";
-    dirTools->getGroundTruth(labels_GT, points_GT, labelPath);
-
+    if(datasetInfo->selectedType == "BBOX"){
+        string labelPath = choicedDatasetPATH+"/labelTxt/"+choicedImageFile.substr(0,choicedImageFile.size()-4)+".xml";
+        dirTools->getGtXML(labels_GT, points_GT, labelPath);
+    }else{
+        string labelPath = choicedDatasetPATH+"/labelTxt/"+choicedImageFile.substr(0,choicedImageFile.size()-4)+".txt";
+        dirTools->getGroundTruth(labels_GT, points_GT, labelPath);
+    }
     // 在图片上画出GroundTruth的矩形框
     cv::Mat imgShow = imgSrc.clone();
     this->showImg_GT(imgShow);
@@ -94,6 +103,8 @@ int ModelEvalPage::randSample(){
     points_Pred.clear();
     labels_Pred.clear();
     scores_Pred.clear();
+
+
 
 }
 
@@ -113,7 +124,7 @@ int ModelEvalPage::importImage(){
 
     // 清空GroundTruth
     labels_GT.clear();
-    points_GT.clear();    
+    points_GT.clear();
 
     // 清空预测结果
     points_Pred.clear();
@@ -131,7 +142,7 @@ int ModelEvalPage::importLabel(){
     }
     string labelPath = filePath.toStdString();
     dirTools->getGroundTruth(labels_GT, points_GT, labelPath);
-    
+
     // 在图片上画出GroundTruth的矩形框
     cv::Mat imgShow = imgSrc.clone();
     this->showImg_GT(imgShow);
@@ -139,14 +150,17 @@ int ModelEvalPage::importLabel(){
 
 
 int ModelEvalPage::testOneSample(){
+    cout << "choicedModelName:" << choicedModelName.split(".mar")[0].toStdString() << endl;
+    cout << "modelType:" << choicedModelType.toStdString() << endl;
+    cout << "choicedSamplePATH:" << choicedSamplePATH.toStdString() << endl;
     if(!choicedModelName.isEmpty() && !choicedSamplePATH.isEmpty()){
         // 使用TorchServe进行预测
         std::vector<std::map<QString,QString>> predMapStr = torchServe->inferenceOne(
-            choicedModelName.split(".mar")[0], 
-            choicedModelType, 
+            choicedModelName.split(".mar")[0],
+            choicedModelType,
             choicedSamplePATH
         );
-
+        cout << "pred_class:" << predMapStr[0]["class_name"].toStdString() << endl;
         // 解析预测结果predMapStr
         if(choicedModelType == "RBOX_DET"){
             // 旋转框检测模型
@@ -160,11 +174,27 @@ int ModelEvalPage::testOneSample(){
                 std::vector<cv::Point> predPointVec;
                 calcuRectangle(centerXY, rboxSize, predCoordStr[4].toFloat()*(-1), predPointVec);
                 points_Pred.push_back(predPointVec);
-            }   
+            }
         }
-        else if(choicedModelType == "XXX"){
-            // 正框检测模型
-            // TODO
+        else{
+            for(size_t i = 0; i<predMapStr.size(); i++){
+                labels_Pred.push_back(predMapStr[i]["class_name"].toStdString());
+                scores_Pred.push_back(predMapStr[i]["score"].toFloat());
+
+                QStringList predCoordStr = predMapStr[i]["bbox"].remove('[').remove(']').split(',');
+
+                float xmin = predCoordStr[0].toFloat();
+                float ymin = predCoordStr[1].toFloat();
+                float xmax = predCoordStr[2].toFloat();
+                float ymax = predCoordStr[3].toFloat();
+                // 左上，右上，右下
+                std::vector<cv::Point> predPointVec;
+                predPointVec.push_back(cv::Point(xmin,ymax));
+                predPointVec.push_back(cv::Point(xmax,ymax));
+                predPointVec.push_back(cv::Point(xmax,ymin));
+                predPointVec.push_back(cv::Point(xmin,ymin));
+                points_Pred.push_back(predPointVec);
+            }
         }
 
         // 绘制预测结果到图片上
@@ -184,13 +214,12 @@ void ModelEvalPage::calcuRectangle(cv::Point centerXY, cv::Size wh, float angle,
     cv::Point point_L_L = cv::Point(centerXY.x - wh.width / 2, centerXY.y + wh.height / 2);	//左下
 
     std::vector<cv::Point> point = {point_L_U, point_R_U, point_R_L, point_L_L};	//原始矩形数组
-    
+
     //求旋转后的对应坐标
-    for (int i = 0; i < 4; i++){		
+    for (int i = 0; i < 4; i++){
         int x = point[i].x - centerXY.x;
         int y = point[i].y - centerXY.y;
-        fourPoints.push_back(cv::Point(cvRound( x * cos(angle) + y * sin(angle) + centerXY.x),
-                                       cvRound(-x * sin(angle) + y * cos(angle) + centerXY.y)));
+        fourPoints.push_back(cv::Point(cvRound( x * cos(angle) + y * sin(angle) + centerXY.x),cvRound(-x * sin(angle) + y * cos(angle) + centerXY.y)));
     }
 }
 

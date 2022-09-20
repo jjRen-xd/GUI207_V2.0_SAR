@@ -26,7 +26,9 @@ HEADERS += \
     core/modelTrainPage.h \
     core/modelVisPage.h \
     core/modelsWindow/modelDock.h \
+    core/reinforceTrainPage.h \
     core/sensePage.h \
+    core/transferTrainPage.h \
     lib/algorithm/torchServe.h \
     lib/guiLogic/bashTerminal.h \
     lib/guiLogic/customWidget/imagewidget.h \
@@ -41,6 +43,8 @@ SOURCES += \
     core/modelEvalPage.cpp \
     core/modelTrainPage.cpp \
     core/modelVisPage.cpp \
+    core/reinforceTrainPage.cpp \
+    core/transferTrainPage.cpp \
     lib/algorithm/torchServe.cpp \
     lib/guiLogic/customWidget/imagewidget.cpp \
     main.cpp \
@@ -79,5 +83,22 @@ RESOURCES += \
     sources/MainWindow_sources.qrc
 
 include("./conf/libtorch.pri")
+
+LIBS += /usr/local/lib/libopencv_calib3d.so \
+/usr/local/lib/libopencv_core.so \
+/usr/local/lib/libopencv_features2d.so \
+/usr/local/lib/libopencv_flann.so \
+/usr/local/lib/libopencv_highgui.so \
+/usr/local/lib/libopencv_imgcodecs.so \
+/usr/local/lib/libopencv_imgproc.so \
+/usr/local/lib/libopencv_ml.so \
+/usr/local/lib/libopencv_objdetect.so \
+/usr/local/lib/libopencv_photo.so \
+/usr/local/lib/libopencv_shape.so \
+/usr/local/lib/libopencv_stitching.so \
+/usr/local/lib/libopencv_superres.so \
+/usr/local/lib/libopencv_videoio.so \
+/usr/local/lib/libopencv_video.so \
+/usr/local/lib/libopencv_videostab.so
 
 RC_ICONS = "./sources/LOGO.ico"
