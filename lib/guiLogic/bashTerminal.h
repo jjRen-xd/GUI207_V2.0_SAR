@@ -19,6 +19,12 @@ class BashTerminal: public QObject{
         std::queue<QString*> mesQueue;        // 维护一个消息队列，用于终端输出消息的排队
         std::queue<QString*> errQueue;        // 维护一个错误队列，用于终端输出错误的排队  
 
+        // 为了兼容win与linux双平台
+        #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+        QString bashApi = "powershell";            // "Windows" or "Linux"
+        #else
+        QString bashApi = "bash";            // "Windows" or "Linux"
+        #endif
 
     public slots:
         void print(QString msg);     // 开放在终端打印str的接口
@@ -32,12 +38,6 @@ class BashTerminal: public QObject{
         QProcess *process_bash;
         QLineEdit *bashInEdit;      // 终端命令行输入
         QTextEdit *bashOutShow;     // 终端命令行输出
-        // 为了兼容win与linux双平台
-        #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
-        QString bashApi = "powershell";            // "Windows" or "Linux"
-        #else
-        QString bashApi = "bash";            // "Windows" or "Linux"
-        #endif
 
 
     private slots:

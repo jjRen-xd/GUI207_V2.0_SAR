@@ -12,6 +12,7 @@
 #include "./core/modelEvalPage.h"
 #include "./core/dataEvalPage.h"
 #include "./core/modelVisPage.h"
+#include "./core/modelCAMPage.h"
 #include "./core/modelTrainPage.h"
 #include "./core/reinforceTrainPage.h"
 #include "./core/transferTrainPage.h"
@@ -69,6 +70,7 @@ private:
         TransferTrainPage *transferTrainPage;
         ReinfoceTrainPage *reinforceTrainPage;
         ModelVisPage *modelVisPage;
+        ModelCAMPage *modelCAMPage;
 
         // 数据记录
         DatasetInfo *globalDatasetInfo;

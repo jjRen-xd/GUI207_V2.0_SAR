@@ -1,5 +1,5 @@
-#ifndef MODELVISPAGE_H
-#define MODELVISPAGE_H
+#ifndef MODELCAMPAGE_H
+#define MODELCAMPAGE_H
 
 #include <QObject>
 #include <QString>
@@ -18,16 +18,16 @@
 #include "./lib/guiLogic/customWidget/imagewidget.h"
 
 
-class ModelVisPage:public QObject{
+class ModelCAMPage:public QObject{
     Q_OBJECT
 public:
-    ModelVisPage(
+    ModelCAMPage(
         Ui_MainWindow *main_ui, 
         BashTerminal *bash_terminal, 
         DatasetInfo *globalDatasetInfo, 
         ModelInfo *globalModelInfo
     );
-    ~ModelVisPage();
+    ~ModelCAMPage();
 
     // 从xml加载5级模型结构的暴力方法，不优雅 // TODO
     void loadModelStruct_L1(QStringList &currLayers);
@@ -50,7 +50,6 @@ public slots:
     void confirmVis();      // 可视化确认按钮事件
     void execuCmdProcess(QString cmd);
     void processVisFinished();   // 可视化脚本执行结束事件 
-    void nextFeaImgsPage();  // 加载python脚本生成的特征图
 
 
     // 5级下拉框相关槽接口，过于暴力，不优雅 // TODO
@@ -82,7 +81,7 @@ private:
     QString modelConfigPath;
     QString modelCheckpointPath;
 
-    QString feaImgsSavePath;
+    QString camImgsSavePath;
     QString condaPath;
     QString condaEnvName;
 
@@ -96,15 +95,10 @@ private:
     std::map<QGraphicsView*, ImageWidget*> all_Images;     // 防止内存泄露
     void recvShowPicSignal(QPixmap image, QGraphicsView* graphicsView);
 
-    // 特征图预览页面标号
-    int currFeaPage;
-    int allFeaPage;
-    int feaNum;
-
     // 可视化进程
     QProcess *processVis;
 
 };
 
 
-#endif // MODELVISPAGE_H
+#endif // MODELCAMPAGE_H

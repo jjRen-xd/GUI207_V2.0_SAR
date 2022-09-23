@@ -21,6 +21,7 @@ HEADERS += \
     core/dataEvalPage.h \
     core/datasetsWindow/chart.h \
     core/datasetsWindow/datasetDock.h \
+    core/modelCAMPage.h \
     core/modelChoicePage.h \
     core/modelEvalPage.h \
     core/modelTrainPage.h \
@@ -43,6 +44,7 @@ HEADERS += \
     lib/guiLogic/tools/searchFolder.h
 SOURCES += \
     core/dataEvalPage.cpp \
+    core/modelCAMPage.cpp \
     core/modelEvalPage.cpp \
     core/modelTrainPage.cpp \
     core/modelVisPage.cpp \

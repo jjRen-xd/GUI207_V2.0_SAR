@@ -1,4 +1,4 @@
-#include "modelVisPage.h"
+#include "modelCAMPage.h"
 
 #include "./lib/guiLogic/tinyXml/tinyxml.h"
 #include "./lib/guiLogic/tools/convertTools.h"
@@ -9,7 +9,7 @@
 using namespace std;
 
 
-ModelVisPage::ModelVisPage(Ui_MainWindow *main_ui,
+ModelCAMPage::ModelCAMPage(Ui_MainWindow *main_ui,
                              BashTerminal *bash_terminal,
                              DatasetInfo *globalDatasetInfo,
                              ModelInfo *globalModelInfo):
@@ -24,30 +24,29 @@ ModelVisPage::ModelVisPage(Ui_MainWindow *main_ui,
     this->condaEnvName = "mmlab";
 
     // 下拉框信号槽绑定
-    connect(ui->comboBox_mV_L1, SIGNAL(textActivated(QString)), this, SLOT(on_comboBox_L1(QString)));
-    connect(ui->comboBox_mV_L2, SIGNAL(textActivated(QString)), this, SLOT(on_comboBox_L2(QString)));
-    connect(ui->comboBox_mV_L3, SIGNAL(textActivated(QString)), this, SLOT(on_comboBox_L3(QString)));
-    connect(ui->comboBox_mV_L4, SIGNAL(textActivated(QString)), this, SLOT(on_comboBox_L4(QString)));
-    connect(ui->comboBox_mV_L5, SIGNAL(textActivated(QString)), this, SLOT(on_comboBox_L5(QString)));
+    connect(ui->comboBox_CAM_L1, SIGNAL(textActivated(QString)), this, SLOT(on_comboBox_L1(QString)));
+    connect(ui->comboBox_CAM_L2, SIGNAL(textActivated(QString)), this, SLOT(on_comboBox_L2(QString)));
+    connect(ui->comboBox_CAM_L3, SIGNAL(textActivated(QString)), this, SLOT(on_comboBox_L3(QString)));
+    connect(ui->comboBox_CAM_L4, SIGNAL(textActivated(QString)), this, SLOT(on_comboBox_L4(QString)));
+    connect(ui->comboBox_CAM_L5, SIGNAL(textActivated(QString)), this, SLOT(on_comboBox_L5(QString)));
 
     // 按钮信号槽绑定
-    connect(ui->pushButton_mV_clear, &QPushButton::clicked, this, &ModelVisPage::clearComboBox);
-    connect(ui->pushButton_mV_randomImg, &QPushButton::clicked, this, &ModelVisPage::randomImage);
-    connect(ui->pushButton_mV_importImg, &QPushButton::clicked, this, &ModelVisPage::importImage);
-    connect(ui->pushButton_mV_confirmVis, &QPushButton::clicked, this, &ModelVisPage::confirmVis);
-    connect(ui->pushButton_mV_nextPage, &QPushButton::clicked, this, &ModelVisPage::nextFeaImgsPage);
+    connect(ui->pushButton_CAM_clear, &QPushButton::clicked, this, &ModelCAMPage::clearComboBox);
+    connect(ui->pushButton_CAM_randomImg, &QPushButton::clicked, this, &ModelCAMPage::randomImage);
+    connect(ui->pushButton_CAM_importImg, &QPushButton::clicked, this, &ModelCAMPage::importImage);
+    connect(ui->pushButton_CAM_confirmVis, &QPushButton::clicked, this, &ModelCAMPage::confirmVis);
     // 多线程的信号槽绑定
     processVis = new QProcess();
-    connect(processVis, &QProcess::readyReadStandardOutput, this, &ModelVisPage::processVisFinished);
+    connect(processVis, &QProcess::readyReadStandardOutput, this, &ModelCAMPage::processVisFinished);
 
 }
 
-ModelVisPage::~ModelVisPage(){
+ModelCAMPage::~ModelCAMPage(){
 
 }
 
 
-void ModelVisPage::confirmVis(){
+void ModelCAMPage::confirmVis(){
     if(this->choicedSamplePATH.isEmpty()){
         QMessageBox::warning(NULL,"错误","未选择输入图像!");
         return;
@@ -73,7 +72,7 @@ void ModelVisPage::confirmVis(){
         " --checkpoint="     +this->modelCheckpointPath+ \
         " --visualize_layer="+this->targetVisLayer+ \
         " --image_path="     +this->choicedSamplePATH+ \
-        " --save_path="      +this->feaImgsSavePath;
+        " --save_path="      +this->camImgsSavePath;
     // 执行python脚本
     this->terminal->print(command);
     this->execuCmdProcess(command);
@@ -81,20 +80,20 @@ void ModelVisPage::confirmVis(){
 
 
 // 可视化线程
-void ModelVisPage::execuCmdProcess(QString cmd){
+void ModelCAMPage::execuCmdProcess(QString cmd){
     if(processVis->state()==QProcess::Running){
         processVis->close();
         processVis->kill();
     }
     processVis->setProcessChannelMode(QProcess::MergedChannels);
     processVis->start(this->terminal->bashApi);
-    ui->progressBar_mV_visFea->setMaximum(0);
-    ui->progressBar_mV_visFea->setValue(0);
+    ui->progressBar_CAM->setMaximum(0);
+    ui->progressBar_CAM->setValue(0);
     processVis->write(cmd.toLocal8Bit() + '\n');
 }
 
 
-void ModelVisPage::processVisFinished(){
+void ModelCAMPage::processVisFinished(){
     QByteArray cmdOut = processVis->readAllStandardOutput();
     if(!cmdOut.isEmpty()){
         QString logs=QString::fromLocal8Bit(cmdOut);
@@ -104,55 +103,24 @@ void ModelVisPage::processVisFinished(){
                 processVis->close();
                 processVis->kill();
             }
-            ui->progressBar_mV_visFea->setMaximum(100);
-            ui->progressBar_mV_visFea->setValue(100);
-            // 按页加载图像
-            this->currFeaPage = 0;
-            // 获取图片文件夹下的所有图片文件名
-            vector<string> imageFileNames;
-            dirTools->getFiles(imageFileNames, ".png", this->feaImgsSavePath.toStdString());
-            this->feaNum = imageFileNames.size();
-            this->allFeaPage = this->feaNum/16 + bool(this->feaNum%16);
-            ui->label_mV_pageAll->setText(QString::number(this->allFeaPage));
-            nextFeaImgsPage();
+            ui->progressBar_CAM->setMaximum(100);
+            ui->progressBar_CAM->setValue(100);
+
+            // TODO
         }
         if(logs.contains("Error")){
             terminal->print("可视化失败！");
             QMessageBox::warning(NULL,"错误","所选隐层不支持可视化!");
-            ui->progressBar_mV_visFea->setMaximum(100);
-            ui->progressBar_mV_visFea->setValue(0);
+            ui->progressBar_CAM->setMaximum(100);
+            ui->progressBar_CAM->setValue(0);
         }
     }
 }
 
-
-void ModelVisPage::nextFeaImgsPage(){
-    // 当前页码更新
-    this->currFeaPage = (this->currFeaPage%this->allFeaPage)+1;
-    ui->label_mV_pageCurr->setText(QString::number(this->currFeaPage));
-    // 当前页所要展示的特征图索引
-    int beginIdx = 16*(this->currFeaPage-1)+1;
-    int endIdx = 16*this->currFeaPage;
-    if(endIdx>this->feaNum){
-        endIdx = this->feaNum;
-    }
-    vector<int> showFeaIndex(endIdx-beginIdx+1);
-    std::iota(showFeaIndex.begin(), showFeaIndex.end(), beginIdx);
-
-    // 加载特征图和标签,并显示
-    for(size_t i = 0; i<showFeaIndex.size(); i++){
-        QGraphicsView *feaGraphic = ui->groupBox_mV_feaShow->findChild<QGraphicsView *>("graphicsView_mV_fea"+QString::number(i+1));
-        QLabel *fealabel = ui->groupBox_mV_feaShow->findChild<QLabel *>("label_mV_fea"+QString::number(i+1));
-        recvShowPicSignal(QPixmap(this->feaImgsSavePath+"/"+QString::number(showFeaIndex[i])+".png"), feaGraphic);
-        fealabel->setText("CH-"+QString::number(showFeaIndex[i]));
-    }
-}
-
-
-void ModelVisPage::refreshGlobalInfo(){
+void ModelCAMPage::refreshGlobalInfo(){
     // 基本信息更新
-    ui->label_mV_dataset->setText(QString::fromStdString(datasetInfo->selectedName));
-    ui->label_mV_model->setText( QString::fromStdString(modelInfo->selectedName));
+    ui->label_CAM_dataset->setText(QString::fromStdString(datasetInfo->selectedName));
+    ui->label_CAM_model->setText( QString::fromStdString(modelInfo->selectedName));
 
     this->choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType, datasetInfo->selectedName, "PATH");
 
@@ -165,24 +133,24 @@ void ModelVisPage::refreshGlobalInfo(){
         this->modelConfigPath       = modelBasePath + "_config.py";
         this->modelCheckpointPath   = modelBasePath + "_checkpoint.pth";
 
-        this->feaImgsSavePath       = modelBasePath + "_modelVisOutput";
+        this->camImgsSavePath       = modelBasePath + "_modelCAMOutput";
 
         clearComboBox();
     }
 }
 
 
-void ModelVisPage::clearComboBox(){
+void ModelCAMPage::clearComboBox(){
     if(!modelInfo->selectedName.empty()){
         // 初始化第一个下拉框
         QStringList L1Layers;
         loadModelStruct_L1(L1Layers);
-        ui->comboBox_mV_L1->clear();
-        ui->comboBox_mV_L1->addItems(L1Layers);
-        ui->comboBox_mV_L2->clear();
-        ui->comboBox_mV_L3->clear();
-        ui->comboBox_mV_L4->clear();
-        ui->comboBox_mV_L5->clear();
+        ui->comboBox_CAM_L1->clear();
+        ui->comboBox_CAM_L1->addItems(L1Layers);
+        ui->comboBox_CAM_L2->clear();
+        ui->comboBox_CAM_L3->clear();
+        ui->comboBox_CAM_L4->clear();
+        ui->comboBox_CAM_L5->clear();
 
         this->choicedLayer["L1"] = "NULL";
         this->choicedLayer["L2"] = "NULL";
@@ -195,7 +163,7 @@ void ModelVisPage::clearComboBox(){
 }
 
 
-void ModelVisPage::refreshVisInfo(){
+void ModelCAMPage::refreshVisInfo(){
     // 提取目标层信息的特定格式
     QString targetVisLayer = "";
     vector<string> tmpList = {"L1", "L2", "L3", "L4", "L5"};
@@ -227,12 +195,12 @@ void ModelVisPage::refreshVisInfo(){
         imgPath = imgPath + this->targetVisLayer + ".png"; 
     }
     if(this->dirTools->exist(imgPath.toStdString())){
-        recvShowPicSignal(QPixmap(imgPath), ui->graphicsView_mV_modelImg);
+        recvShowPicSignal(QPixmap(imgPath), ui->graphicsView_CAM_modelImg);
     }
 }
 
 
-int ModelVisPage::randomImage(){
+int ModelCAMPage::randomImage(){
     if(this->choicedDatasetPATH.empty()){
         QMessageBox::warning(NULL,"错误","未选择数据集!");
         return -1;
@@ -274,23 +242,23 @@ int ModelVisPage::randomImage(){
         cv::putText(imgSrc, labels_GT[i], points_GT[i][1], cv::FONT_HERSHEY_COMPLEX, 0.4, cv::Scalar(0, 204, 0), 1);
     }
     // 将图片显示到界面上
-    recvShowPicSignal(CVS::cvMatToQPixmap(imgSrc), ui->graphicsView_mV_choicedImg);
-    ui->label_mV_choicedImgName->setText(choicedSamplePATH.split("/").last());
+    recvShowPicSignal(CVS::cvMatToQPixmap(imgSrc), ui->graphicsView_CAM_choicedImg);
+    ui->label_CAM_choicedImgName->setText(choicedSamplePATH.split("/").last());
 }
 
 
-int ModelVisPage::importImage(){
+int ModelCAMPage::importImage(){
     QString filePath = QFileDialog::getOpenFileName(NULL, "导入图片", "./", "Image Files (*.png *.jpg *.bmp *.tiff *.raw)");
     if(filePath.isEmpty()){
         return -1;
     }
     this->choicedSamplePATH = filePath;
-    recvShowPicSignal(QPixmap(filePath), ui->graphicsView_mV_choicedImg);
-    ui->label_mV_choicedImgName->setText(choicedSamplePATH.split("/").last());
+    recvShowPicSignal(QPixmap(filePath), ui->graphicsView_CAM_choicedImg);
+    ui->label_CAM_choicedImgName->setText(choicedSamplePATH.split("/").last());
 }
 
 
-void ModelVisPage::on_comboBox_L1(QString choicedLayer){
+void ModelCAMPage::on_comboBox_L1(QString choicedLayer){
     this->choicedLayer["L1"] = choicedLayer.toStdString();
     this->choicedLayer["L2"] = "NULL";
     this->choicedLayer["L3"] = "NULL";
@@ -299,15 +267,15 @@ void ModelVisPage::on_comboBox_L1(QString choicedLayer){
 
     QStringList nextLayers;
     loadModelStruct_L2(nextLayers);
-    ui->comboBox_mV_L2->clear();
-    ui->comboBox_mV_L2->addItems(nextLayers);
-    ui->comboBox_mV_L3->clear();
-    ui->comboBox_mV_L4->clear();
-    ui->comboBox_mV_L5->clear();
+    ui->comboBox_CAM_L2->clear();
+    ui->comboBox_CAM_L2->addItems(nextLayers);
+    ui->comboBox_CAM_L3->clear();
+    ui->comboBox_CAM_L4->clear();
+    ui->comboBox_CAM_L5->clear();
     refreshVisInfo();
 }
 
-void ModelVisPage::on_comboBox_L2(QString choicedLayer){
+void ModelCAMPage::on_comboBox_L2(QString choicedLayer){
     this->choicedLayer["L2"] = choicedLayer.toStdString();
     this->choicedLayer["L3"] = "NULL";
     this->choicedLayer["L4"] = "NULL";
@@ -315,45 +283,45 @@ void ModelVisPage::on_comboBox_L2(QString choicedLayer){
 
     QStringList nextLayers;
     loadModelStruct_L3(nextLayers);
-    ui->comboBox_mV_L3->clear();
-    ui->comboBox_mV_L3->addItems(nextLayers);
-    ui->comboBox_mV_L4->clear();
-    ui->comboBox_mV_L5->clear();
+    ui->comboBox_CAM_L3->clear();
+    ui->comboBox_CAM_L3->addItems(nextLayers);
+    ui->comboBox_CAM_L4->clear();
+    ui->comboBox_CAM_L5->clear();
     refreshVisInfo();
 }
 
-void ModelVisPage::on_comboBox_L3(QString choicedLayer){
+void ModelCAMPage::on_comboBox_L3(QString choicedLayer){
     this->choicedLayer["L3"] = choicedLayer.toStdString();
     this->choicedLayer["L4"] = "NULL";
     this->choicedLayer["L5"] = "NULL";
 
     QStringList nextLayers;
     loadModelStruct_L4(nextLayers);
-    ui->comboBox_mV_L4->clear();
-    ui->comboBox_mV_L4->addItems(nextLayers);
-    ui->comboBox_mV_L5->clear();
+    ui->comboBox_CAM_L4->clear();
+    ui->comboBox_CAM_L4->addItems(nextLayers);
+    ui->comboBox_CAM_L5->clear();
     refreshVisInfo();
 }
 
-void ModelVisPage::on_comboBox_L4(QString choicedLayer){
+void ModelCAMPage::on_comboBox_L4(QString choicedLayer){
     this->choicedLayer["L4"] = choicedLayer.toStdString();
     this->choicedLayer["L5"] = "NULL";
 
     QStringList nextLayers;
     loadModelStruct_L5(nextLayers);
-    ui->comboBox_mV_L5->clear();
-    ui->comboBox_mV_L5->addItems(nextLayers);
+    ui->comboBox_CAM_L5->clear();
+    ui->comboBox_CAM_L5->addItems(nextLayers);
     refreshVisInfo();
 }
 
-void ModelVisPage::on_comboBox_L5(QString choicedLayer){
+void ModelCAMPage::on_comboBox_L5(QString choicedLayer){
     this->choicedLayer["L5"] = choicedLayer.toStdString();
     refreshVisInfo();
 }
 
 
 
-void ModelVisPage::loadModelStruct_L1(QStringList &currLayers){
+void ModelCAMPage::loadModelStruct_L1(QStringList &currLayers){
     TiXmlDocument datasetInfoDoc(this->modelStructXmlPath.c_str());    //xml文档对象
     bool loadOk=datasetInfoDoc.LoadFile();                  //加载文档
     if(!loadOk){
@@ -369,7 +337,7 @@ void ModelVisPage::loadModelStruct_L1(QStringList &currLayers){
     }
 }
 
-void ModelVisPage::loadModelStruct_L2(QStringList &currLayers){
+void ModelCAMPage::loadModelStruct_L2(QStringList &currLayers){
     TiXmlDocument datasetInfoDoc(this->modelStructXmlPath.c_str());    //xml文档对象
     bool loadOk=datasetInfoDoc.LoadFile();                  //加载文档
     if(!loadOk){
@@ -391,7 +359,7 @@ void ModelVisPage::loadModelStruct_L2(QStringList &currLayers){
     }
 }
 
-void ModelVisPage::loadModelStruct_L3(QStringList &currLayers){
+void ModelCAMPage::loadModelStruct_L3(QStringList &currLayers){
     TiXmlDocument datasetInfoDoc(this->modelStructXmlPath.c_str());    //xml文档对象
     bool loadOk=datasetInfoDoc.LoadFile();                  //加载文档
     if(!loadOk){
@@ -418,7 +386,7 @@ void ModelVisPage::loadModelStruct_L3(QStringList &currLayers){
     }
 }
 
-void ModelVisPage::loadModelStruct_L4(QStringList &currLayers){
+void ModelCAMPage::loadModelStruct_L4(QStringList &currLayers){
     TiXmlDocument datasetInfoDoc(this->modelStructXmlPath.c_str());    //xml文档对象
     bool loadOk=datasetInfoDoc.LoadFile();                  //加载文档
     if(!loadOk){
@@ -449,7 +417,7 @@ void ModelVisPage::loadModelStruct_L4(QStringList &currLayers){
     }
 }
 
-void ModelVisPage::loadModelStruct_L5(QStringList &currLayers){
+void ModelCAMPage::loadModelStruct_L5(QStringList &currLayers){
     TiXmlDocument datasetInfoDoc(this->modelStructXmlPath.c_str());    //xml文档对象
     bool loadOk=datasetInfoDoc.LoadFile();                  //加载文档
     if(!loadOk){
@@ -486,7 +454,7 @@ void ModelVisPage::loadModelStruct_L5(QStringList &currLayers){
 }
 
 
-void ModelVisPage::recvShowPicSignal(QPixmap image, QGraphicsView *graphicsView){
+void ModelCAMPage::recvShowPicSignal(QPixmap image, QGraphicsView *graphicsView){
     QGraphicsScene *qgraphicsScene = new QGraphicsScene; //要用QGraphicsView就必须要有QGraphicsScene搭配着用
     all_Images[graphicsView] = new ImageWidget(&image);  //实例化类ImageWidget的对象m_Image，该类继承自QGraphicsItem，是自定义类
     int nwith = graphicsView->width()*0.95;              //获取界面控件Graphics View的宽度

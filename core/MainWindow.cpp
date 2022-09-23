@@ -25,7 +25,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
     connect(ui->action_ModelTrain,&QAction::triggered, this, &MainWindow::switchPage);
     connect(ui->action_TransferTrain,&QAction::triggered, this, &MainWindow::switchPage);
     connect(ui->action_ReinforceTrain,&QAction::triggered, this, &MainWindow::switchPage);
-    connect(ui->action_modelVis, &QAction::triggered, this, &MainWindow::switchPage);
+    connect(ui->action_ModelVis, &QAction::triggered, this, &MainWindow::switchPage);
+    connect(ui->action_ModelCAM, &QAction::triggered, this, &MainWindow::switchPage);
 
     // 视图设置
     connect(ui->actionFullScreen, &QAction::triggered, this, &MainWindow::fullScreen);
@@ -53,6 +54,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
     this->transferTrainPage = new TransferTrainPage(this->ui, this->terminal,this->globalDatasetInfo, this->globalModelInfo, this->torchServe, this->modelDock);
     this->reinforceTrainPage = new ReinfoceTrainPage(this->ui, this->terminal,this->globalDatasetInfo, this->globalModelInfo, this->torchServe, this->modelDock);
     this->modelVisPage = new ModelVisPage(this->ui, this->terminal, this->globalDatasetInfo, this->globalModelInfo);
+    this->modelCAMPage = new ModelCAMPage(this->ui, this->terminal, this->globalDatasetInfo, this->globalModelInfo);
 }
 
 
@@ -85,9 +87,13 @@ void MainWindow::switchPage(){
     else if(action==ui->action_ReinforceTrain){
         ui->stackedWidget_MultiPage->setCurrentWidget(ui->page_reinforceTrain);
     }
-    else if(action==ui->action_modelVis){
+    else if(action==ui->action_ModelVis){
         ui->stackedWidget_MultiPage->setCurrentWidget(ui->page_modelVis);
         this->modelVisPage->refreshGlobalInfo();
+    }
+    else if(action==ui->action_ModelCAM){
+        ui->stackedWidget_MultiPage->setCurrentWidget(ui->page_modelCAM);
+        this->modelCAMPage->refreshGlobalInfo();
     }
 }
 

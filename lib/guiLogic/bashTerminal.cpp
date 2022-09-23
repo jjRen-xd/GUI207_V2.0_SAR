@@ -27,7 +27,7 @@ void BashTerminal::print(QString msg){
 
 
 void BashTerminal::execute(QString cmd){
-    /* 开放在终端运行命令接口 */
+    /* 开放在终端运行命令接口,非阻塞式 */
     // this->print("$执行命令: \n" + cmd + "\n");
     bashOutShow->append("Shell:~$ "+cmd);
     process_bash->write(cmd.toLocal8Bit() + '\n');
@@ -57,7 +57,7 @@ void BashTerminal::cleanBash(){
     /* 清空并重启终端 */
     bashOutShow->clear();
     process_bash->close();
-    process_bash->start("powershell");
+    process_bash->start(bashApi);
 }
 
 
