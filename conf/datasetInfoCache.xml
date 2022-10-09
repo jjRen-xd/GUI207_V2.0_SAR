@@ -1,79 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <globalDatasetInfo datasetTypeNum="3">
     <BBOX typeID="2">
-        <BBOX_001 nameID="2">
-            <PATH>未定义</PATH>
-            <claNum>5</claNum>
-            <datasetName>测试数据集</datasetName>
+        <SSDD_Ship_VAL_ALL_BBOX nameID="2">
+            <PATH>/home/207/GUI207_V2.0_SAR/db/datasets/SSDD/val</PATH>
+            <claName>ship</claName>
+            <claNum>1</claNum>
+            <datasetName>SSDD_Ship</datasetName>
             <datasetType>正框</datasetType>
-            <imgSize>256*256</imgSize>
+            <imgSize>512*512</imgSize>
             <note>测试下备注</note>
-            <targetNumEachCla>1000</targetNumEachCla>
-        </BBOX_001>
-        <BBOX_002 nameID="3">
-            <PATH>未定义</PATH>
-            <claNum>5</claNum>
-            <datasetName>测试数据集</datasetName>
-            <datasetType>正框</datasetType>
-            <imgSize>256*256</imgSize>
-            <note>测试下备注</note>
-            <targetNumEachCla>1000</targetNumEachCla>
-        </BBOX_002>
+            <targetNumEachCla>232</targetNumEachCla>
+        </SSDD_Ship_VAL_ALL_BBOX>
     </BBOX>
     <RBOX typeID="3">
-        <FUSAR_Ship_TEST_ALL_RBOX nameID="4">
-            <PATH>/media/z840/HDD_1/LINUX/GUI207_V2.0_SAR/db/datasets/RBOX/FUSAR_ship/test</PATH>
+        <FUSAR_Ship_VAL_ALL_RBOX nameID="3">
+            <PATH>/home/207/GUI207_V2.0_SAR/db/datasets/FUSAR_ship/val</PATH>
+            <claName>/home/207/GUI207_V2.0_SAR/db/datasets/FUSAR_ship/val</claName>
             <claNum>3</claNum>
             <datasetName>FUSAR_Ship</datasetName>
             <datasetType>CW旋转框</datasetType>
             <imgSize>512*512</imgSize>
             <note>测试下备注</note>
             <targetNumEachCla>554</targetNumEachCla>
-        </FUSAR_Ship_TEST_ALL_RBOX>
-        <FUSAR_Ship_TRAIN_ALL_RBOX nameID="5">
-            <PATH>/media/z840/HDD_1/LINUX/GUI207_V2.0_SAR/db/datasets/FUSAR_ship/train</PATH>
-            <claNum>3</claNum>
-            <datasetName>FUSAR_Ship</datasetName>
-            <datasetType>CW旋转框</datasetType>
-            <imgSize>512*512</imgSize>
-            <note>测试下备注</note>
-            <targetNumEachCla>1657</targetNumEachCla>
-        </FUSAR_Ship_TRAIN_ALL_RBOX>
-        <RBOX_001 nameID="6">
-            <PATH>未定义</PATH>
-            <claNum>5</claNum>
-            <datasetName>测试数据集</datasetName>
-            <datasetType>CW旋转框</datasetType>
-            <imgSize>256*256</imgSize>
-            <note>测试下备注</note>
-            <targetNumEachCla>1000</targetNumEachCla>
-        </RBOX_001>
-        <RBOX_002 nameID="7">
-            <PATH>未定义</PATH>
-            <claNum>5</claNum>
-            <datasetName>测试数据集</datasetName>
-            <datasetType>CW旋转框</datasetType>
-            <imgSize>256*256</imgSize>
-            <note>测试下备注</note>
-            <targetNumEachCla>1000</targetNumEachCla>
-        </RBOX_002>
-        <SSDD_test_all nameID="8">
-            <PATH>/media/z840/HDD_1/LINUX/GUI207_V2.0_SAR/db/datasets/ssdd/test/all</PATH>
-            <claNum>1</claNum>
-            <datasetName>SSDD测试数据集_all</datasetName>
-            <datasetType>CW旋转框</datasetType>
-            <imgSize>256*256</imgSize>
-            <note>测试下备注2</note>
-            <targetNumEachCla>1000</targetNumEachCla>
-        </SSDD_test_all>
-        <trainsplit nameID="9">
-            <PATH>/media/z840/HDD_1/LINUX/GUI207_V2.0_SAR/db/datasets/hrsid/trainsplit</PATH>
-            <claNum>未定义</claNum>
-            <datasetName>未定义</datasetName>
-            <datasetType>未定义</datasetType>
-            <imgSize>未定义</imgSize>
-            <note>未定义</note>
-            <targetNumEachCla>未定义</targetNumEachCla>
-        </trainsplit>
+        </FUSAR_Ship_VAL_ALL_RBOX>
     </RBOX>
 </globalDatasetInfo>
