@@ -66,7 +66,7 @@ void ReinfoceTrainPage::startTrain(){
         execuCmd(cmd);
     }
     qDebug() << cmd;
-//    execuCmd(cmd);
+    execuCmd(cmd);
 }
 
 void ReinfoceTrainPage::stopTrain(){

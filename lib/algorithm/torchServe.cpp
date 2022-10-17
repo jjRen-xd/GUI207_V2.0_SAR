@@ -10,33 +10,30 @@
 #include <regex>
 #include <vector>
 
-TorchServe::TorchServe(BashTerminal *bash_terminal, ModelInfo *globalModelInfo):
-    terminal(bash_terminal),
-    modelInfo(globalModelInfo)
+TorchServe::TorchServe(BashTerminal *bash_terminal, ModelInfo *globalModelInfo) : terminal(bash_terminal),
+                                                                                  modelInfo(globalModelInfo)
 {
-    // 初始化TorchServe服务器端口
-    serverPortList = {
-        {"TRA_DL",   {{"Inference", 9080}, {"Management", 9081}, {"Metrics", 9082}}},
-        {"FEA_RELE", {{"Inference", 9080}, {"Management", 9081}, {"Metrics", 9082}}},
-        {"FEW_SHOT", {{"Inference", 9080}, {"Management", 9081}, {"Metrics", 9082}}},
-        {"FEA_OPTI", {{"Inference", 9080}, {"Management", 9081}, {"Metrics", 9082}}},
-        {"RBOX_DET", {{"Inference", 8080}, {"Management", 8081}, {"Metrics", 8082}}}
-    };
-    // initTorchServe();
+  // 初始化TorchServe服务器端口
+  serverPortList = {
+      {"TRA_DL", {{"Inference", 9080}, {"Management", 9081}, {"Metrics", 9082}}},
+      {"FEA_RELE", {{"Inference", 9080}, {"Management", 9081}, {"Metrics", 9082}}},
+      {"FEW_SHOT", {{"Inference", 9080}, {"Management", 9081}, {"Metrics", 9082}}},
+      {"FEA_OPTI", {{"Inference", 9080}, {"Management", 9081}, {"Metrics", 9082}}},
+      {"RBOX_DET", {{"Inference", 7080}, {"Management", 7081}, {"Metrics", 7082}}}};
+  initTorchServe();
 }
 
-
-TorchServe::~TorchServe(){
-
+TorchServe::~TorchServe()
+{
 }
-
 
 // 管理接口
-int TorchServe::initTorchServe(){
-    this->terminal->print("初始化TorchServe");
-    // 初始化Docker
-    this->terminal->execute("docker stop $(docker ps -aq) && docker rm $(docker ps -aq)");
-    QString dockerRunCmd = "gnome-terminal -x bash -c \"\
+int TorchServe::initTorchServe()
+{
+  this->terminal->print("初始化TorchServe");
+  // 初始化Docker
+  this->terminal->execute("docker stop $(docker ps -aq) && docker rm $(docker ps -aq)");
+  QString dockerRunCmd = "gnome-terminal -x bash -c \"\
 docker run --rm \
 --cpus 16 \
 --gpus all \
@@ -45,116 +42,136 @@ docker run --rm \
 source=/media/z840/HDD_1/LINUX/GUI207_V2.0_SAR/db/models,\
 target=/home/model-server/model-store mmrotate-serve:latest; \
 exec bash -l\"";
-    this->terminal->execute(dockerRunCmd);
-    // 延时
-    DELAY::sleep_msec(15000);
-//     QThread::sleep(20);
+  this->terminal->execute(dockerRunCmd);
+  // 延时
+  // DELAY::sleep_msec(15000);
+  // //     QThread::sleep(20);
 
-    // 根据已经导入的模型，上传.mar模型至torchServe服务器
-    std::vector<std::string> modelTypes = modelInfo->getTypes();
-    for(auto &modelType: modelTypes){
-        std::vector<std::string> modelNames = modelInfo->getNamesInType(modelType);
-        for(auto &modelName:modelNames){
-            std::string modelPath = modelInfo->getAttri(modelType, modelName, "PATH");
-            // 异常处理
-            if(modelPath.empty() || modelPath == "未定义"){
-                terminal->print("模型" + QString::fromStdString(modelName) + "未定义路径, 跳过上传");
-                continue;
-            }
-            if(modelPath.find(".mar") == std::string::npos){
-                terminal->print("模型" + QString::fromStdString(modelName) + "不是.mar格式, 跳过上传");
-                continue;
-            }
-            // 上传模型
-            this->postModel(QString::fromStdString(modelName), QString::fromStdString(modelType), 2);
-        }
-    }
-    return 1;
+  // // 根据已经导入的模型，上传.mar模型至torchServe服务器
+  // std::vector<std::string> modelTypes = modelInfo->getTypes();
+  // for (auto &modelType : modelTypes)
+  // {
+  //   std::vector<std::string> modelNames = modelInfo->getNamesInType(modelType);
+  //   for (auto &modelName : modelNames)
+  //   {
+  //     std::string modelPath = modelInfo->getAttri(modelType, modelName, "PATH");
+  //     // 异常处理
+  //     if (modelPath.empty() || modelPath == "未定义")
+  //     {
+  //       terminal->print("模型" + QString::fromStdString(modelName) + "未定义路径, 跳过上传");
+  //       continue;
+  //     }
+  //     if (modelPath.find(".mar") == std::string::npos)
+  //     {
+  //       terminal->print("模型" + QString::fromStdString(modelName) + "不是.mar格式, 跳过上传");
+  //       continue;
+  //     }
+  //     // 上传模型
+  //     this->postModel(QString::fromStdString(modelName), QString::fromStdString(modelType), 1);
+  //   }
+  // }
+  return 1;
 }
 
-
-int TorchServe::postModel(QString modelName, QString modelType, int numWorkers){
-    QString torchServePOST = "curl -X POST \"http://localhost:"+
-                                QString::number(serverPortList[modelType]["Management"])+
-                                "/models?initial_workers="+
-                                QString::number(numWorkers)+"&url="+modelName+'\"';
-    this->terminal->execute(torchServePOST);
-    return 1;
+int TorchServe::postModel(QString modelName, QString modelType, int numWorkers)
+{
+  QString torchServePOST = "curl -X POST \"http://localhost:" +
+                           QString::number(serverPortList[modelType]["Management"]) +
+                           "/models"+"?initial_workers=" +
+                           QString::number(numWorkers) + "&url=" + modelName + '\"';
+  //QDebug() << modelName;
+  this->terminal->execute(torchServePOST);
+  return 1;
 }
 
-
-int TorchServe::deleteModel(QString modelName, QString modelType){
-    QString torchServeDELETE = "curl -X DELETE \"http://localhost:"+
-                                QString::number(serverPortList[modelType]["Management"])+
-                                "/models/"+modelName.split(".")[0]+'\"';
-    this->terminal->execute(torchServeDELETE);
-    return 1;
+int TorchServe::deleteModel(QString modelName, QString modelType)
+{
+  QString torchServeDELETE = "curl -X DELETE \"http://localhost:" +
+                             QString::number(serverPortList[modelType]["Management"]) +
+                             "/models/" + modelName.split(".")[0] + '\"';
+  this->terminal->execute(torchServeDELETE);
+  return 1;
 }
 
-
-QString TorchServe::getModelList(){
-
+QString TorchServe::getModelList()
+{
 }
-
 
 // 推理接口
-std::vector<std::map<QString,QString>> TorchServe::inferenceOne(QString modelName, QString modelType, QString dataPath){
-    QString torchServeInfer = "curl http://127.0.0.1:"+
-                                QString::number(serverPortList[modelType]["Inference"])+
-                                "/predictions/" + modelName + " -T" + dataPath;
-    QString respones;
-    auto parsedMap = std::vector<std::map<QString,QString>>();
-    
-    this->terminal->execute(torchServeInfer, &respones);
-    // this->terminal->print("curl命令已通过");
-    // std::cout<<respones.toStdString()<<std::endl;
-    parseInferenceResult(respones, parsedMap);
+std::vector<std::map<QString, QString>> TorchServe::inferenceOne(QString modelName, QString modelType, QString dataPath)
+{
+  QString torchServeInfer = "curl http://127.0.0.1:" +
+                            QString::number(serverPortList[modelType]["Inference"]) +
+                            "/predictions/" + modelName + " -T" + dataPath;
+  QString respones;
+  auto parsedMap = std::vector<std::map<QString, QString>>();
 
-    return parsedMap;
+  this->terminal->execute(torchServeInfer, &respones);
+  // this->terminal->print("curl命令已通过");
+  // std::cout<<respones.toStdString()<<std::endl;
+  parseInferenceResult(respones, parsedMap);
+
+  return parsedMap;
 }
 
-
 // TODO
-QString TorchServe::inferenceAll(QString modelName, QString datasetPath){
-
-
-}   
-
+QString TorchServe::inferenceAll(QString modelName, QString datasetPath)
+{
+}
 
 // 推理结果解析接口
-void TorchServe::parseInferenceResult(QString resultStr, std::vector<std::map<QString,QString>> &parsedMap){
+void TorchServe::parseInferenceResult(QString resultStr, std::vector<std::map<QString, QString>> &parsedMap)
+{
+  
+  // if (resultStr.contains("503", Qt::CaseSensitive) != 1 && resultStr.contains("[]", Qt::CaseSensitive) != 1)
+  // {
+
+  
+  if (resultStr.contains("\"503\"", Qt::CaseSensitive) == 1 || resultStr.contains("[]", Qt::CaseSensitive) == 1)
+  {
+    qDebug() << "predict error";
+    std::cout<<resultStr.toStdString()<<std::endl;
+  }
+  else{
     resultStr = resultStr.simplified();
     resultStr = resultStr.remove(' ');
+
     std::vector<QString> samplesStr = getRegex(resultStr.toStdString(), std::string("\\{(.+?)\\}"));
-    for(auto &sampleStr: samplesStr){   // 对于每个识别个体，包含class_name, bbox, score共三个key
-        std::map<QString,QString> sampleMap;
-        QStringList attriStr = sampleStr.split(",\"");  // 分离三个key
-        for(auto &attri: attriStr){
-            attri = attri.remove(QChar('\"'));
-            attri = attri.remove(QChar(' '));
-            attri = attri.remove(QChar('{'));
-            attri = attri.remove(QChar('}'));
-            QStringList attriKeyValue = attri.split(":");
-            if(attriKeyValue.size() == 2){
-                sampleMap[attriKeyValue[0]] = attriKeyValue[1];
-            }
+    for (auto &sampleStr : samplesStr)
+    { // 对于每个识别个体，包含class_name, bbox, score共三个key
+      std::map<QString, QString> sampleMap;
+      QStringList attriStr = sampleStr.split(",\""); // 分离三个key
+      for (auto &attri : attriStr)
+      {
+        attri = attri.remove(QChar('\"'));
+        attri = attri.remove(QChar(' '));
+        attri = attri.remove(QChar('{'));
+        attri = attri.remove(QChar('}'));
+        QStringList attriKeyValue = attri.split(":");
+        if (attriKeyValue.size() == 2)
+        {
+          sampleMap[attriKeyValue[0]] = attriKeyValue[1];
         }
-        parsedMap.push_back(sampleMap);
+      }
+      
+      parsedMap.push_back(sampleMap);
     }
-        // inferenceResult.push_back(sampleMap);
+  }
+  // inferenceResult.push_back(sampleMap);
 }
 
 // 正则表达式匹配接口
-std::vector<QString> TorchServe::getRegex(std::string s, std::string pattern){
-    auto res = std::vector<QString>();
-    std::regex r(pattern);
-    std::sregex_iterator pos(s.cbegin(), s.cend(), r), end;
-    for (; pos != end; ++pos)
-        res.push_back(QString::fromStdString(pos->str(0)));
-    return res;
+std::vector<QString> TorchServe::getRegex(std::string s, std::string pattern)
+{
+  auto res = std::vector<QString>();
+  std::regex r(pattern);
+  std::sregex_iterator pos(s.cbegin(), s.cend(), r), end;
+  for (; pos != end; ++pos)
+    res.push_back(QString::fromStdString(pos->str(0)));
+  return res;
 }
 
-/* 
+/*
 mmrotate
 [
   {
@@ -181,7 +198,6 @@ mmrotate
   }
 ]
 */
-
 
 /*
 mmdet

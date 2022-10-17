@@ -101,7 +101,9 @@ void ModelDock::importModel(string type){
     QString modelName = modelPath.split('/').last();
 
     // 讲模型导入TorchServe模型库
-    torchServe->postModel(modelName, QString::fromStdString(type), 2);
+    // torchServe->postModel(modelName, QString::fromStdString(type), 1);
+
+    
     // QString torchServePOST = "curl -X POST \"http://localhost:8081/models?initial_workers=2&url="+modelName+'\"';
     // terminal->execute(torchServePOST);
 
@@ -155,7 +157,9 @@ void ModelDock::importModelAfterTrain(QString type, QString modelName, QString m
         
     }
     // 讲模型导入TorchServe模型库
-    torchServe->postModel(modelName, type, 2);
+    // torchServe->postModel(modelName, type, 2);
+
+
     // QString torchServePOST = "curl -X POST \"http://localhost:8081/models?initial_workers=2&url="+modelName+'\"';
     // terminal->execute(torchServePOST);
 

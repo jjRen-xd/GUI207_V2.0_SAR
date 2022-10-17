@@ -1,193 +1,43 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<globalModelInfo datasetTypeNum="6">
-    <FEA_OPTI typeID="2">
-        <FEA_OPTI_001.pt nameID="2">
-            <PATH>未定义</PATH>
+<globalModelInfo datasetTypeNum="4">
+    < typeID="1">
+        < nameID="1">
+            <batch></batch>
+        </>
+    </>
+    <FEA_RELE typeID="2">
+        <best_hog_0.5.mar nameID="2">
+            <PATH>/home/207/GUI207_V2.0_SAR/db/models/BBOX/best_hog_0_5.mar</PATH>
             <algorithm>Faster R-CNN</algorithm>
-            <batch>64</batch>
+            <batch>4</batch>
             <class>1</class>
-            <framework>PyTorch</framework>
-            <mAP>56.09%</mAP>
-            <mAP_50>89.01%</mAP_50>
-            <name>SSDD旋转框检测001</name>
-            <note>测试下备注</note>
-            <other>其他参数</other>
-            <trainDataset>SSDD旋转框数据集</trainDataset>
-            <trainEpoch>100轮</trainEpoch>
-            <trainLR>0.001</trainLR>
-        </FEA_OPTI_001.pt>
-        <FEA_OPTI_002.pt nameID="3">
-            <PATH>未定义</PATH>
-            <algorithm>Faster R-CNN</algorithm>
-            <batch>64</batch>
-            <class>1</class>
-            <framework>PyTorch</framework>
-            <mAP>56.09%</mAP>
-            <mAP_50>89.01%</mAP_50>
-            <name>SSDD旋转框检测001</name>
-            <note>测试下备注</note>
-            <other>其他参数</other>
-            <trainDataset>SSDD旋转框数据集</trainDataset>
-            <trainEpoch>100轮</trainEpoch>
-            <trainLR>0.001</trainLR>
-        </FEA_OPTI_002.pt>
-    </FEA_OPTI>
-    <FEA_RELE typeID="3">
-        <FEA_RELE_001.pt nameID="4">
-            <PATH>未定义</PATH>
-            <algorithm>Faster R-CNN</algorithm>
-            <batch>64</batch>
-            <class>1</class>
-            <framework>PyTorch</framework>
-            <mAP>56.09%</mAP>
-            <mAP_50>89.01%</mAP_50>
-            <name>SSDD旋转框检测001</name>
-            <note>测试下备注</note>
-            <other>其他参数</other>
-            <trainDataset>SSDD旋转框数据集</trainDataset>
-            <trainEpoch>100轮</trainEpoch>
-            <trainLR>0.001</trainLR>
-        </FEA_RELE_001.pt>
-        <FEA_RELE_002.pt nameID="5">
-            <PATH>未定义</PATH>
-            <algorithm>Faster R-CNN</algorithm>
-            <batch>64</batch>
-            <class>1</class>
-            <framework>PyTorch</framework>
-            <mAP>56.09%</mAP>
-            <mAP_50>89.01%</mAP_50>
-            <name>SSDD旋转框检测001</name>
-            <note>测试下备注</note>
-            <other>其他参数</other>
-            <trainDataset>SSDD旋转框数据集</trainDataset>
-            <trainEpoch>100轮</trainEpoch>
-            <trainLR>0.001</trainLR>
-        </FEA_RELE_002.pt>
+            <framework>pytorch</framework>
+            <mAP>0.634</mAP>
+            <mAP_50>0.960</mAP_50>
+            <name>SSDD-unRotated框检测</name>
+            <note>-</note>
+            <other>-</other>
+            <trainDataset>SSDD</trainDataset>
+            <trainEpoch>24</trainEpoch>
+            <trainLR>0.01</trainLR>
+        </best_hog_0.5.mar>
+        <best_hog_0_5.mar nameID="3">
+            <PATH>/home/207/GUI207_V2.0_SAR/db/models/BBOX/best_hog_0_5.mar</PATH>
+            <batch></batch>
+        </best_hog_0_5.mar>
     </FEA_RELE>
-    <FEW_SHOT typeID="4">
-        <INCRE_001.pt nameID="6">
-            <PATH>未定义</PATH>
-            <algorithm>Faster R-CNN</algorithm>
-            <batch>64</batch>
-            <class>1</class>
-            <framework>PyTorch</framework>
-            <mAP>56.09%</mAP>
-            <mAP_50>89.01%</mAP_50>
-            <name>SSDD旋转框检测001</name>
-            <note>测试下备注</note>
-            <other>其他参数</other>
-            <trainDataset>SSDD旋转框数据集</trainDataset>
-            <trainEpoch>100轮</trainEpoch>
-            <trainLR>0.001</trainLR>
-        </INCRE_001.pt>
-        <INCRE_002.pt nameID="7">
-            <PATH>未定义</PATH>
-            <algorithm>Faster R-CNN</algorithm>
-            <batch>64</batch>
-            <class>1</class>
-            <framework>PyTorch</framework>
-            <mAP>56.09%</mAP>
-            <mAP_50>89.01%</mAP_50>
-            <name>SSDD旋转框检测001</name>
-            <note>测试下备注</note>
-            <other>其他参数</other>
-            <trainDataset>SSDD旋转框数据集</trainDataset>
-            <trainEpoch>100轮</trainEpoch>
-            <trainLR>0.001</trainLR>
-        </INCRE_002.pt>
-    </FEW_SHOT>
-    <RBOX_DET typeID="5">
-        <RBOX_DET_001.pt nameID="8">
-            <PATH>未定义</PATH>
-            <algorithm>Faster R-CNN</algorithm>
-            <batch>64</batch>
-            <class>1</class>
-            <framework>PyTorch</framework>
-            <mAP>56.09%</mAP>
-            <mAP_50>89.01%</mAP_50>
-            <name>SSDD旋转框检测001</name>
-            <note>测试下备注</note>
-            <other>其他参数</other>
-            <trainDataset>SSDD旋转框数据集</trainDataset>
-            <trainEpoch>100轮</trainEpoch>
-            <trainLR>0.001</trainLR>
-        </RBOX_DET_001.pt>
-        <RBOX_DET_002.pt nameID="9">
-            <PATH>未定义</PATH>
-            <algorithm>Faster R-CNN</algorithm>
-            <batch>64</batch>
-            <class>1</class>
-            <framework>PyTorch</framework>
-            <mAP>56.09%</mAP>
-            <mAP_50>89.01%</mAP_50>
-            <name>SSDD旋转框检测001</name>
-            <note>测试下备注</note>
-            <other>其他参数</other>
-            <trainDataset>SSDD旋转框数据集</trainDataset>
-            <trainEpoch>100轮</trainEpoch>
-            <trainLR>0.001</trainLR>
-        </RBOX_DET_002.pt>
-        <SSDD_RBOX.mar nameID="10">
-            <PATH>/media/z840/HDD_1/LINUX/GUI207_V2.0_SAR/db/models/RBOX/FasterRCNN_SSDD/SSDD_RBOX.mar</PATH>
-            <algorithm>Rotate Faster R-CNN</algorithm>
-            <batch>32</batch>
-            <class>1</class>
-            <framework>PyTorch</framework>
-            <mAP>87.67%</mAP>
-            <mAP_50>-</mAP_50>
-            <name>SSDD旋转框检测</name>
-            <note>初步实验</note>
-            <other>其他参数</other>
-            <trainDataset>SSDD旋转框数据集</trainDataset>
-            <trainEpoch>12轮</trainEpoch>
-            <trainLR>0.005</trainLR>
-        </SSDD_RBOX.mar>
-        <oriented_rcnn_FUSAR_SHIP.mar nameID="11">
-            <PATH>/media/z840/HDD_1/LINUX/GUI207_V2.0_SAR/db/models/oriented_rcnn_FUSAR_SHIP.mar</PATH>
-            <algorithm>oriented R-CNN</algorithm>
-            <batch>32</batch>
-            <class>3</class>
-            <framework>PyTorch</framework>
-            <mAP>61.10%</mAP>
-            <mAP_50>-</mAP_50>
-            <name>FUSAR_SHIP旋转检测模型</name>
-            <note>自标注实验</note>
-            <other>其他参数</other>
-            <trainDataset>FUSAR_SHIP旋转框数据集</trainDataset>
-            <trainEpoch>12轮</trainEpoch>
-            <trainLR>0.0025</trainLR>
-        </oriented_rcnn_FUSAR_SHIP.mar>
+    <RBOX_DET typeID="3">
+        <FUSAR_SHIP_oriented_rcnn.mar nameID="4">
+            <PATH>/home/207/GUI207_V2.0_SAR/db/models/RBOX/FUSAR_SHIP_oriented_rcnn.mar</PATH>
+        </FUSAR_SHIP_oriented_rcnn.mar>
+        <FUSAR_SHIP_oriented_rcnn_0.05.mar nameID="5">
+            <PATH>/home/207/GUI207_V2.0_SAR/db/models/RBOX/FUSAR_SHIP_oriented_rcnn_0.05.mar</PATH>
+        </FUSAR_SHIP_oriented_rcnn_0.05.mar>
     </RBOX_DET>
-    <TRA_DL typeID="6">
-        <TRA_DL_001.pt nameID="12">
-            <PATH>未定义</PATH>
-            <algorithm>Faster R-CNN</algorithm>
-            <batch>64</batch>
-            <class>1</class>
-            <framework>PyTorch</framework>
-            <mAP>56.09%</mAP>
-            <mAP_50>89.01%</mAP_50>
-            <name>SSDD旋转框检测001</name>
-            <note>测试下备注</note>
-            <other>其他参数</other>
-            <trainDataset>SSDD旋转框数据集</trainDataset>
-            <trainEpoch>100轮</trainEpoch>
-            <trainLR>0.001</trainLR>
-        </TRA_DL_001.pt>
-        <TRA_DL_002.pt nameID="13">
-            <PATH>未定义</PATH>
-            <algorithm>Faster R-CNN</algorithm>
-            <batch>64</batch>
-            <class>1</class>
-            <framework>PyTorch</framework>
-            <mAP>56.09%</mAP>
-            <mAP_50>89.01%</mAP_50>
-            <name>SSDD旋转框检测001</name>
-            <note>测试下备注</note>
-            <other>其他参数</other>
-            <trainDataset>SSDD旋转框数据集</trainDataset>
-            <trainEpoch>100轮</trainEpoch>
-            <trainLR>0.001</trainLR>
-        </TRA_DL_002.pt>
+    <TRA_DL typeID="4">
+        <mymodel.mar nameID="6">
+            <PATH>/home/207/GUI207_V2.0_SAR/db/models/BBOX/mymodel.mar</PATH>
+            <batch></batch>
+        </mymodel.mar>
     </TRA_DL>
 </globalModelInfo>

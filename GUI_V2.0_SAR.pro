@@ -89,7 +89,7 @@ RESOURCES += \
     conf/QRibbon/QRibbon.qrc \
     sources/MainWindow_sources.qrc
 
-include("./conf/libtorch.pri")
+include("./subGUI/subGUI.pri")
 
 
 RC_ICONS = "./sources/LOGO.ico"
