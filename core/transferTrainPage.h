@@ -23,7 +23,21 @@ public:
     ModelInfo *modelInfo;
     TorchServe *torchServe;
     ModelDock *modelDock;
-    
+
+    TransferTrainPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, DatasetInfo *globalDatasetInfo,
+                    ModelInfo *globalModelInfo, TorchServe *globalTorchServe, ModelDock *modelDock);
+    ~TransferTrainPage();
+    void execuCmd(int modeltypeId, QString cmd);   // 开放在终端运行命令接口
+    void showTrianResult(int modeltypeId);
+    void uiInitial(int modeltypeId);
+
+public slots:
+    void refreshGlobalInfo();
+    void startNormalTrain();
+    void startTransferTrain();
+    void monitorTrainProcess(int modeltypeId);
+
+private:    
     QString choicedOpticalData="";
     QString choicedSARData="";
     QString choicedPreModel="";
@@ -48,29 +62,12 @@ public:
     QString optivalDataType="BBOX";
     QString sarDataType="BBOX";
 
-
     // 为了兼容win与linux双平台
     #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
     QString bashApi = "powershell";            // "Windows" or "Linux"
     #else
     QString bashApi = "bash";            // "Windows" or "Linux"
     #endif
-
-    TransferTrainPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, DatasetInfo *globalDatasetInfo,
-                    ModelInfo *globalModelInfo, TorchServe *globalTorchServe, ModelDock *modelDock);
-    void execuCmd(int modeltypeId, QString cmd);   // 开放在终端运行命令接口
-    void showTrianResult(int modeltypeId);
-    void uiInitial(int modeltypeId);
-
-
-public slots:
-    void refreshOpticalDataset(); 
-    void refreshSARDataset(); 
-    void startNormalTrain();
-    void startTransferTrain();
-    void monitorTrainProcess(int modeltypeId);
-
-private:
 
 };
 

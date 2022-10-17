@@ -93,7 +93,14 @@ void ModelDock::treeItemClicked(const QModelIndex &index){
 
 
 void ModelDock::importModel(string type){
-    QString modelPath = QFileDialog::getOpenFileName(NULL, "打开网络模型文件", "../db/models/", "Mar files(*.mar)");
+    QString modelPath = "";
+    if(type=="FEA_OPTI"){
+        modelPath = QFileDialog::getOpenFileName(NULL, "打开网络模型文件", "../db/models/", "Mar files(*.pth)");
+    }
+    else{
+        modelPath = QFileDialog::getOpenFileName(NULL, "打开网络模型文件", "../db/models/", "Mar files(*.mar)");
+    }
+//    qDebug() << modelPath;
     if(modelPath == ""){
         QMessageBox::warning(NULL, "提示", "文件打开失败!");
         return;
@@ -101,19 +108,21 @@ void ModelDock::importModel(string type){
     QString modelName = modelPath.split('/').last();
 
     // 讲模型导入TorchServe模型库
-    torchServe->postModel(modelName, QString::fromStdString(type), 2);
+    if(type!="FEA_OPTI"){
+        torchServe->postModel(modelName, QString::fromStdString(type), 2);
+    }
     // QString torchServePOST = "curl -X POST \"http://localhost:8081/models?initial_workers=2&url="+modelName+'\"';
     // terminal->execute(torchServePOST);
-
     string savePath = modelPath.toStdString();
     QString rootPath = modelPath.remove(modelPath.length()-modelName.length()-1, modelPath.length());
+    qDebug() << rootPath;
     QString xmlPath;
-
     vector<string> allXmlNames;
     bool existXml = false;
     dirTools->getFiles(allXmlNames, ".xml",rootPath.toStdString());
     // 寻找与.mar文件相同命名的.xml文件
     for(auto &xmlName: allXmlNames){
+        std::cout << xmlName;
         if(QString::fromStdString(xmlName).split(".").first() == modelName.split(".").first()){
             existXml = true;
             xmlPath = rootPath + "/" + QString::fromStdString(xmlName);
@@ -137,27 +146,29 @@ void ModelDock::importModel(string type){
 }
 
 
-void ModelDock::importModelAfterTrain(QString type, QString modelName, QString modelSuffix){
-
-    QString modelPath = "../db/models/";
-
-    // TODO 解决模型重名问题
-    QString tempModelName = modelName;
-    while(1){
-        QFileInfo srcFileInfo = QFileInfo(modelPath+tempModelName+modelSuffix);
-        if(srcFileInfo.isFile()){
-            modelName = tempModelName;
-            tempModelName += "_copy";
-        }
-        else{
-            break;
-        }
+void ModelDock::importModelAfterTrain(QString type, QString modelPath, QString modelName, QString modelSuffix){
+//    解决模型重名问题
+//    QString tempModelName = modelName;
+//    while(1){
+//        QFileInfo srcFileInfo = QFileInfo(modelPath+tempModelName+modelSuffix);
+//        if(srcFileInfo.isFile()){
+//            modelName = tempModelName;
+//            tempModelName += "_copy";
+//        }
+//        else{
+//            break;
+//        }
         
+//    }
+    // 模型导入TorchServe模型库
+    if(modelSuffix==".mar"){
+        torchServe->postModel(modelName, type, 2);
+        modelPath = modelPath+"/"+modelName+".mar";
     }
-    // 讲模型导入TorchServe模型库
-    torchServe->postModel(modelName, type, 2);
-    // QString torchServePOST = "curl -X POST \"http://localhost:8081/models?initial_workers=2&url="+modelName+'\"';
-    // terminal->execute(torchServePOST);
+    else{
+        modelPath = modelPath+"/"+modelName+".pth";
+    }
+    modelName = modelPath.split('/').last();
 
     string savePath = modelPath.toStdString();
     QString rootPath = modelPath.remove(modelPath.length()-modelName.length()-1, modelPath.length());
@@ -184,7 +195,6 @@ void ModelDock::importModelAfterTrain(QString type, QString modelName, QString m
         terminal->print("添加模型成功，但该模型没有说明文件.xml！");
         QMessageBox::warning(NULL, "添加模型", "添加模型成功，但该模型没有说明文件.xml！");
     }
-
     this->modelInfo->modifyAttri(type.toStdString(), modelName.toStdString(), "PATH", savePath);
     this->reloadTreeView();
     this->modelInfo->writeToXML(modelInfo->defaultXmlPath);

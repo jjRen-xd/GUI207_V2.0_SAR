@@ -1,4 +1,5 @@
 #include "searchFolder.h"
+#include "qdebug.h"
 #include <string.h>
 #include <string>
 #include <fstream>
@@ -53,6 +54,7 @@ bool SearchFolder::getFiles(vector<string> &files, string filesType, string fold
         return false;
 
     while ((ptr=readdir(dir)) != NULL) {
+//        qDebug() << ptr;
         if (strcmp(ptr->d_name, ".") == 0 || strcmp(ptr->d_name, "..") == 0)    ///current dir OR parrent dir
             continue;
         else if (ptr->d_type == 8){    //file
@@ -98,12 +100,12 @@ bool SearchFolder::getDirs(vector<string> &dirs, string folderPath){
 
 
 bool SearchFolder::getGroundTruth(
-    vector<string>  &label_GT, 
-    vector<vector<cv::Point>> &points_GT, 
+    vector<string>  &label_GT,
+    vector<vector<cv::Point>> &points_GT,
     string labelPath)
 {
     ifstream infile(labelPath);
-    assert(infile.is_open());   // 文件打开失败   
+    assert(infile.is_open());   // 文件打开失败
     string line;
     while(getline(infile,line)){
         QStringList locInfo = QString::fromStdString(line).split(' ');
@@ -121,34 +123,34 @@ bool SearchFolder::getGroundTruth(
 
 
 bool SearchFolder::getGtXML(
-    std::vector<std::string>  &label_GT, 
-    std::vector<std::vector<cv::Point>> &points_GT, 
+    std::vector<std::string>  &label_GT,
+    std::vector<std::vector<cv::Point>> &points_GT,
     std::string labelPath)
 {
-	TiXmlDocument doc;
-	if(!doc.LoadFile(labelPath.c_str()))
-	{
-		cerr << doc.ErrorDesc() << endl;
-		return -1;
-	}
-	TiXmlElement* root = doc.FirstChildElement();
-	if(root == NULL)
-	{
-		cerr << "Failed to load file: No root element." << endl;
-		doc.Clear();
-		return -1;
-	}
-	// cout<< "1: " <<root->Value()<<endl;//根节点 annotation
-	for(TiXmlElement* elem = root->FirstChildElement(); elem != NULL; elem = elem->NextSiblingElement())
-	{
+    TiXmlDocument doc;
+    if(!doc.LoadFile(labelPath.c_str()))
+    {
+        cerr << doc.ErrorDesc() << endl;
+        return -1;
+    }
+    TiXmlElement* root = doc.FirstChildElement();
+    if(root == NULL)
+    {
+        cerr << "Failed to load file: No root element." << endl;
+        doc.Clear();
+        return -1;
+    }
+    // cout<< "1: " <<root->Value()<<endl;//根节点 annotation
+    for(TiXmlElement* elem = root->FirstChildElement(); elem != NULL; elem = elem->NextSiblingElement())
+    {
         if(elem->FirstChildElement() && elem->ValueTStr() == "object")//嵌套有子节点
-		{
-			for (TiXmlElement* childelem=elem->FirstChildElement();childelem!=NULL;childelem=childelem->NextSiblingElement())
-			{
-				if(childelem->ValueTStr() == "name" )//子节点中还有子节点
-				{
+        {
+            for (TiXmlElement* childelem=elem->FirstChildElement();childelem!=NULL;childelem=childelem->NextSiblingElement())
+            {
+                if(childelem->ValueTStr() == "name" )//子节点中还有子节点
+                {
                     label_GT.push_back(childelem->GetText());
-				}else if (childelem->ValueTStr() == "bndbox")
+                }else if (childelem->ValueTStr() == "bndbox")
                 {
                     std::vector<float> coordi;
                     for (TiXmlElement* local=childelem->FirstChildElement();local!=NULL;local=local->NextSiblingElement())
@@ -167,14 +169,14 @@ bool SearchFolder::getGtXML(
                     };
                     points_GT.push_back(currPoints);
                 }
-			}
-		}
-	}
-	doc.Clear();
+            }
+        }
+    }
+    doc.Clear();
 }
 
 
 bool SearchFolder::exist(const std::string& name) {
-  struct stat buffer;   
-  return (stat (name.c_str(), &buffer) == 0); 
+  struct stat buffer;
+  return (stat (name.c_str(), &buffer) == 0);
 }

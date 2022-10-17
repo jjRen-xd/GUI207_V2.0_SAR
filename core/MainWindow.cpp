@@ -86,6 +86,7 @@ void MainWindow::switchPage(){
     }
     else if(action==ui->action_ReinforceTrain){
         ui->stackedWidget_MultiPage->setCurrentWidget(ui->page_reinforceTrain);
+        this->reinforceTrainPage->refreshDataModelInfo();
     }
     else if(action==ui->action_ModelVis){
         ui->stackedWidget_MultiPage->setCurrentWidget(ui->page_modelVis);
