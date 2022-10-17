@@ -47,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
 
     // 场景选择页面
     this->senseSetPage = new SenseSetPage(this->ui, this->terminal, this->globalDatasetInfo);
-    this->modelChoicePage = new ModelChoicePage(this->ui, this->terminal, this->globalModelInfo);
+    this->modelChoicePage = new ModelChoicePage(this->ui, this->terminal, this->globalModelInfo,this->torchServe);
     this->modelEvalPage = new ModelEvalPage(this->ui, this->terminal,this->globalDatasetInfo, this->globalModelInfo, this->torchServe);
     this->dataEvalPage = new DataEvalPage(this->ui, this->terminal,this->globalDatasetInfo, this->globalModelInfo, this->torchServe,this->evalBack);
     this->modelTrainPage = new ModelTrainPage(this->ui, this->terminal,this->globalDatasetInfo, this->globalModelInfo, this->torchServe, this->modelDock);

@@ -33,7 +33,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>8</number>
       </property>
       <widget class="QWidget" name="page_senseSet">
        <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -99,8 +99,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>640</width>
-             <height>448</height>
+             <width>734</width>
+             <height>671</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -942,8 +942,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>399</width>
-             <height>625</height>
+             <width>734</width>
+             <height>671</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -5189,7 +5189,7 @@
              <x>0</x>
              <y>0</y>
              <width>741</width>
-             <height>313</height>
+             <height>670</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -6617,7 +6617,7 @@
              <x>0</x>
              <y>0</y>
              <width>739</width>
-             <height>204</height>
+             <height>670</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_65">
@@ -7013,8 +7013,8 @@
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>692</width>
-                    <height>447</height>
+                    <width>703</width>
+                    <height>520</height>
                    </rect>
                   </property>
                   <property name="sizePolicy">

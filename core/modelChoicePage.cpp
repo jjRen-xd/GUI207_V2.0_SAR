@@ -3,10 +3,11 @@
 
 using namespace std;
 
-ModelChoicePage::ModelChoicePage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, ModelInfo *globalModelInfo):
+ModelChoicePage::ModelChoicePage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, ModelInfo *globalModelInfo,TorchServe *globalTorchServe):
     ui(main_ui),
     terminal(bash_terminal),
-    modelInfo(globalModelInfo)
+    modelInfo(globalModelInfo),
+    torchServe(globalTorchServe)
 {
     // 模型类别选择框事件相应
     BtnGroup_typeChoice->addButton(ui->radioButton__TRA_DL__choice, 0);
@@ -69,7 +70,7 @@ void ModelChoicePage::confirmModel(bool notDialog = false){
     QString selectedName = ui->comboBox_modelNameChoice->currentText();
     modelInfo->selectedName = selectedName.toStdString(); // save name
     terminal->print("Selected Type: " + selectedType + ", Selected Name: " + selectedName);
-
+    
     if(!selectedType.isEmpty() && !selectedName.isEmpty()){
         // 更新属性显示标签
         updateAttriLabel();
@@ -81,6 +82,17 @@ void ModelChoicePage::confirmModel(bool notDialog = false){
 
         if(!notDialog)
             QMessageBox::information(NULL, "模型切换提醒", "已成功切换模型为->"+selectedType+"->"+selectedName+"！");
+        if (lastSelectName.isEmpty() || lastSelectType.isEmpty())
+        {
+            lastSelectName = selectedName;
+            lastSelectType = selectedType;
+            torchServe->postModel(selectedName, selectedType, 1);
+        }else{
+            torchServe->deleteModel(lastSelectName,lastSelectType);
+            torchServe->postModel(selectedName, selectedType, 1);
+            lastSelectName = selectedName;
+            lastSelectType = selectedType;
+        }
     }
     else{
         if(!notDialog)

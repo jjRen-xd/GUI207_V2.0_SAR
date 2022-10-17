@@ -44,32 +44,32 @@ target=/home/model-server/model-store mmrotate-serve:latest; \
 exec bash -l\"";
   this->terminal->execute(dockerRunCmd);
   // 延时
-  DELAY::sleep_msec(15000);
-  //     QThread::sleep(20);
+  // DELAY::sleep_msec(15000);
+  // //     QThread::sleep(20);
 
-  // 根据已经导入的模型，上传.mar模型至torchServe服务器
-  std::vector<std::string> modelTypes = modelInfo->getTypes();
-  for (auto &modelType : modelTypes)
-  {
-    std::vector<std::string> modelNames = modelInfo->getNamesInType(modelType);
-    for (auto &modelName : modelNames)
-    {
-      std::string modelPath = modelInfo->getAttri(modelType, modelName, "PATH");
-      // 异常处理
-      if (modelPath.empty() || modelPath == "未定义")
-      {
-        terminal->print("模型" + QString::fromStdString(modelName) + "未定义路径, 跳过上传");
-        continue;
-      }
-      if (modelPath.find(".mar") == std::string::npos)
-      {
-        terminal->print("模型" + QString::fromStdString(modelName) + "不是.mar格式, 跳过上传");
-        continue;
-      }
-      // 上传模型
-      this->postModel(QString::fromStdString(modelName), QString::fromStdString(modelType), 1);
-    }
-  }
+  // // 根据已经导入的模型，上传.mar模型至torchServe服务器
+  // std::vector<std::string> modelTypes = modelInfo->getTypes();
+  // for (auto &modelType : modelTypes)
+  // {
+  //   std::vector<std::string> modelNames = modelInfo->getNamesInType(modelType);
+  //   for (auto &modelName : modelNames)
+  //   {
+  //     std::string modelPath = modelInfo->getAttri(modelType, modelName, "PATH");
+  //     // 异常处理
+  //     if (modelPath.empty() || modelPath == "未定义")
+  //     {
+  //       terminal->print("模型" + QString::fromStdString(modelName) + "未定义路径, 跳过上传");
+  //       continue;
+  //     }
+  //     if (modelPath.find(".mar") == std::string::npos)
+  //     {
+  //       terminal->print("模型" + QString::fromStdString(modelName) + "不是.mar格式, 跳过上传");
+  //       continue;
+  //     }
+  //     // 上传模型
+  //     this->postModel(QString::fromStdString(modelName), QString::fromStdString(modelType), 1);
+  //   }
+  // }
   return 1;
 }
 
@@ -79,6 +79,7 @@ int TorchServe::postModel(QString modelName, QString modelType, int numWorkers)
                            QString::number(serverPortList[modelType]["Management"]) +
                            "/models"+"?initial_workers=" +
                            QString::number(numWorkers) + "&url=" + modelName + '\"';
+  //QDebug() << modelName;
   this->terminal->execute(torchServePOST);
   return 1;
 }
@@ -121,10 +122,20 @@ QString TorchServe::inferenceAll(QString modelName, QString datasetPath)
 // 推理结果解析接口
 void TorchServe::parseInferenceResult(QString resultStr, std::vector<std::map<QString, QString>> &parsedMap)
 {
-  resultStr = resultStr.simplified();
-  resultStr = resultStr.remove(' ');
-  if (resultStr.contains("503", Qt::CaseSensitive) == 0 && resultStr.contains("[]", Qt::CaseSensitive) == 0)
+  
+  // if (resultStr.contains("503", Qt::CaseSensitive) != 1 && resultStr.contains("[]", Qt::CaseSensitive) != 1)
+  // {
+
+  
+  if (resultStr.contains("\"503\"", Qt::CaseSensitive) == 1 || resultStr.contains("[]", Qt::CaseSensitive) == 1)
   {
+    qDebug() << "predict error";
+    std::cout<<resultStr.toStdString()<<std::endl;
+  }
+  else{
+    resultStr = resultStr.simplified();
+    resultStr = resultStr.remove(' ');
+
     std::vector<QString> samplesStr = getRegex(resultStr.toStdString(), std::string("\\{(.+?)\\}"));
     for (auto &sampleStr : samplesStr)
     { // 对于每个识别个体，包含class_name, bbox, score共三个key
@@ -142,6 +153,7 @@ void TorchServe::parseInferenceResult(QString resultStr, std::vector<std::map<QS
           sampleMap[attriKeyValue[0]] = attriKeyValue[1];
         }
       }
+      
       parsedMap.push_back(sampleMap);
     }
   }
