@@ -42,7 +42,7 @@ TransferTrainPage::TransferTrainPage(Ui_MainWindow *main_ui, BashTerminal *bash_
         if(i<2){
             times.push_back("");
             saveModelNames.push_back("");
-            saveModelNameEdits[i]->setValidator(new QRegularExpressionValidator(QRegularExpression("[a-zA-Z0-9_]+$")));
+            saveModelNameEdits[i]->setValidator(new QRegularExpressionValidator(QRegularExpression("^[a-zA-Z][a-zA-Z0-9_]{0,}[a-zA-Z0-9]$")));
             processTrain[i]->setProcessChannelMode(QProcess::MergedChannels);
         }
         batchsizes.push_back("");
@@ -100,6 +100,10 @@ void TransferTrainPage::refreshGlobalInfo(){
 
 void TransferTrainPage::startNormalTrain(){
     uiInitial(0);
+    if(!datasetInfo->checkMap(sarDataType.toStdString(),ui->sarDataBox->currentText().toStdString(),"PATH")){
+        QMessageBox::warning(NULL,"错误","请选择可用目标域数据集!");
+        return;
+    }
     choicedSARData = QString::fromStdString(datasetInfo->getAttri(sarDataType.toStdString(),
                                                ui->sarDataBox->currentText().toStdString(),"PATH"));
     volume = ui->fewshotVolumeEdit->text();
@@ -128,8 +132,17 @@ void TransferTrainPage::startNormalTrain(){
 
 void TransferTrainPage::startTransferTrain(){
     uiInitial(1);
+    if(!datasetInfo->checkMap(optivalDataType.toStdString(),ui->opticalDataBox->currentText().toStdString(),"PATH")){
+        QMessageBox::warning(NULL,"错误","请选择可用源域数据集!");
+        return;
+    }
     choicedOpticalData = QString::fromStdString(datasetInfo->getAttri(optivalDataType.toStdString(),
                                                ui->opticalDataBox->currentText().toStdString(),"PATH"));
+
+    if(!datasetInfo->checkMap(sarDataType.toStdString(),ui->sarDataBox->currentText().toStdString(),"PATH")){
+        QMessageBox::warning(NULL,"错误","请选择可用目标域数据集!");
+        return;
+    }
     choicedSARData = QString::fromStdString(datasetInfo->getAttri(sarDataType.toStdString(),
                                                ui->sarDataBox->currentText().toStdString(),"PATH"));
     volume = ui->fewshotVolumeEdit->text();

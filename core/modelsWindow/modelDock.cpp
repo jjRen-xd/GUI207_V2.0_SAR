@@ -84,7 +84,10 @@ void ModelDock::treeItemClicked(const QModelIndex &index){
     terminal->print(QString::fromStdString(clickedName));
     terminal->print(QString::fromStdString(clickedType));
 
-    // 更新预览属性参数
+    // 更新预览属性参数return infoMap[Type][Name];
+    if(!modelInfo->checkMap(previewType, previewName)){
+        return;
+    }
     map<string,string> attriContents = modelInfo->getAllAttri(previewType, previewName);
     for(auto &currAttriLabel: attriLabelGroup){
         currAttriLabel.second->setText(QString::fromStdString(attriContents[currAttriLabel.first]));
@@ -115,7 +118,7 @@ void ModelDock::importModel(string type){
     // terminal->execute(torchServePOST);
     string savePath = modelPath.toStdString();
     QString rootPath = modelPath.remove(modelPath.length()-modelName.length()-1, modelPath.length());
-    qDebug() << rootPath;
+//    qDebug() << rootPath;
     QString xmlPath;
     vector<string> allXmlNames;
     bool existXml = false;
@@ -139,7 +142,6 @@ void ModelDock::importModel(string type){
         terminal->print("添加模型成功，但该模型没有说明文件.xml！");
         QMessageBox::warning(NULL, "添加模型", "添加模型成功，但该模型没有说明文件.xml！");
     }
-
     this->modelInfo->modifyAttri(type, modelName.toStdString(), "PATH", savePath);
     this->reloadTreeView();
     this->modelInfo->writeToXML(modelInfo->defaultXmlPath);
@@ -147,19 +149,6 @@ void ModelDock::importModel(string type){
 
 
 void ModelDock::importModelAfterTrain(QString type, QString modelPath, QString modelName, QString modelSuffix){
-//    解决模型重名问题
-//    QString tempModelName = modelName;
-//    while(1){
-//        QFileInfo srcFileInfo = QFileInfo(modelPath+tempModelName+modelSuffix);
-//        if(srcFileInfo.isFile()){
-//            modelName = tempModelName;
-//            tempModelName += "_copy";
-//        }
-//        else{
-//            break;
-//        }
-        
-//    }
     // 模型导入TorchServe模型库
     if(modelSuffix==".mar"){
         torchServe->postModel(modelName, type, 2);
@@ -214,6 +203,9 @@ void ModelDock::deleteModel(){
         this->modelInfo->deleteItem(previewType,previewName);
         this->reloadTreeView();
         this->modelInfo->writeToXML(modelInfo->defaultXmlPath);
+        for (auto it = this->attriLabelGroup.begin(); it != this->attriLabelGroup.end(); it++) {
+            it->second->setText("");
+        }
         terminal->print(QString::fromStdString("模型删除成功:"+previewName));
         QMessageBox::information(NULL, "删除模型", "模型删除成功！");
     }

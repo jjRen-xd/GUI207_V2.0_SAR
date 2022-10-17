@@ -41,19 +41,30 @@ ModelEvalPage::~ModelEvalPage(){
 
 void ModelEvalPage::refreshGlobalInfo(){
     // 基本信息更新
-    this->choicedModelName = QString::fromStdString(modelInfo->selectedName);
-    this->choicedModelType = QString::fromStdString(modelInfo->selectedType);
-
-    ui->label_mE_dataset->setText(QString::fromStdString(datasetInfo->selectedName));
-    ui->label_mE_model->setText(choicedModelName);
-    ui->label_mE_batch->setText(QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "batch")));
-    this->choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
-
+    if(modelInfo->checkMap(modelInfo->selectedName, modelInfo->selectedName, "batch")){
+        this->choicedModelName = QString::fromStdString(modelInfo->selectedName);
+        this->choicedModelType = QString::fromStdString(modelInfo->selectedType);
+        ui->label_mE_model->setText(choicedModelName);
+        ui->label_mE_batch->setText(QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "batch")));
+    }
+    else{
+        this->choicedModelName = "";
+        this->choicedModelType = "";
+        ui->label_mE_model->setText("空");
+        ui->label_mE_batch->setText("");
+    }
+    if(datasetInfo->checkMap(datasetInfo->selectedName, datasetInfo->selectedName,"PATH")){
+        ui->label_mE_dataset->setText(QString::fromStdString(datasetInfo->selectedName));
+        this->choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
+    }
+    else{
+        ui->label_mE_dataset->setText("空");
+        this->choicedDatasetPATH = "";
+    }
 }
 
 
 int ModelEvalPage::randSample(){
-
     // 清空GroundTruth
     labels_GT.clear();
     points_GT.clear();

@@ -57,7 +57,7 @@ DatasetDock::~DatasetDock(){
 
 
 void DatasetDock::importDataset(string type){
-    QString rootPath = QFileDialog::getExistingDirectory(NULL,"请选择数据集目录","./",QFileDialog::ShowDirsOnly);
+    QString rootPath = QFileDialog::getExistingDirectory(NULL,"请选择数据集目录","../db/datasets/",QFileDialog::ShowDirsOnly);
     if(rootPath == ""){
         QMessageBox::warning(NULL,"提示","数据集打开失败!");
         return;
@@ -92,6 +92,13 @@ void DatasetDock::deleteDataset(){
         this->datasetInfo->deleteItem(previewType,previewName);
         this->reloadTreeView();
         this->datasetInfo->writeToXML(datasetInfo->defaultXmlPath);
+        for (auto it = this->attriLabelGroup.begin(); it != this->attriLabelGroup.end(); it++) {
+            it->second->setText("");
+        }
+        for(size_t i = 0; i<imageViewGroup.size(); i++){
+            imageViewGroup[i]->clear();
+            imageInfoGroup[i]->setText("");
+        }
         terminal->print(QString::fromStdString("数据集删除成功:"+previewName));
         QMessageBox::information(NULL, "删除数据集", "数据集删除成功！");
     }
@@ -129,12 +136,18 @@ void DatasetDock::treeItemClicked(const QModelIndex &index){
     // qDebug() << "clickedName:" << QString::fromStdString(clickedName);
     // qDebug() << "clickedType:" << QString::fromStdString(clickedType);
     // 显示数据集预览属性信息
+    if(!datasetInfo->checkMap(previewType, previewName)){
+        return;
+    }
     map<string,string> attriContents = datasetInfo->getAllAttri(previewType, previewName);
     for(auto &currAttriLabel: attriLabelGroup){
         currAttriLabel.second->setText(QString::fromStdString(attriContents[currAttriLabel.first]));
     }
 
     // 获取所有子文件夹，并判断是否是图片、标注文件夹
+    if(!datasetInfo->checkMap(previewType, previewName, "PATH")){
+        return;
+    }
     string rootPath = datasetInfo->getAttri(previewType, previewName, "PATH");
     vector<string> allSubDirs;
     dirTools->getDirs(allSubDirs, rootPath);

@@ -44,12 +44,12 @@ ModelTrainPage::~ModelTrainPage(){
 }
 
 void ModelTrainPage::refreshGlobalInfo(){
-    if(QString::fromStdString(datasetInfo->selectedName)!=""){
+    if(datasetInfo->checkMap(datasetInfo->selectedType,datasetInfo->selectedName,"PATH")){
         ui->train_data_path->setText(QString::fromStdString(datasetInfo->selectedName));
         this->choicedDatasetPATH = QString::fromStdString(datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH"));
     }
     else{
-        ui->train_data_path->setText("未选择");
+        ui->train_data_path->setText("空");
         this->choicedDatasetPATH = "";
     }
 }

@@ -2,9 +2,12 @@
 
 ReinfoceTrainPage::ReinfoceTrainPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal,
  DatasetInfo *globalDatasetInfo, ModelInfo *globalModelInfo, TorchServe *globalTorchServe, ModelDock *modelDock):
-    ui(main_ui),terminal(bash_terminal),
-    datasetInfo(globalDatasetInfo),modelInfo(globalModelInfo),
-    torchServe(globalTorchServe),modelDock(modelDock){
+    ui(main_ui),
+    terminal(bash_terminal),
+    datasetInfo(globalDatasetInfo),
+    modelInfo(globalModelInfo),
+    torchServe(globalTorchServe),
+    modelDock(modelDock){
 
     processTrain = new QProcess();
     processTrain->setProcessChannelMode(QProcess::MergedChannels);
@@ -23,7 +26,7 @@ ReinfoceTrainPage::ReinfoceTrainPage(Ui_MainWindow *main_ui, BashTerminal *bash_
     ui->reinforceLrEdit->setValidator(new QRegularExpressionValidator(QRegularExpression("^0\\.[0-9]{1,5}[1-9]$")));
     ui->dqnBatchEdit->setValidator(new QRegularExpressionValidator(QRegularExpression("^[1-9][0-9]{1,3}[1-9]$")));
     ui->dqnEpochEdit->setValidator(new QRegularExpressionValidator(QRegularExpression("^[1-9][0-9]{1,4}[1-9]$")));
-    ui->reinforceSaveModelNameEdit->setValidator(new QRegularExpressionValidator(QRegularExpression("[a-zA-Z0-9_]+$")));
+    ui->reinforceSaveModelNameEdit->setValidator(new QRegularExpressionValidator(QRegularExpression("^[a-zA-Z][a-zA-Z0-9_]{0,}[a-zA-Z0-9]$")));
 
     refreshDataModelInfo();
 
@@ -60,10 +63,6 @@ void ReinfoceTrainPage::refreshDataModelInfo(){
 }
 
 void ReinfoceTrainPage::startTrain(){
-    choicedDatasetPATH = QString::fromStdString(datasetInfo->getAttri(reinforceDataType.toStdString(),
-                                               ui->reinforceDataBox->currentText().toStdString(),"PATH"));
-    choicedModelPATH = QString::fromStdString(modelInfo->getAttri(modelType.toStdString(),
-                                               ui->reinforceTrainedModelBox->currentText().toStdString(),"PATH"));
     batchSize = ui->reinforceBatchsizeEdit->text();
     epoch = ui->reinforceEpochEdit->text();
     lr = ui->reinforceLrEdit->text();
@@ -75,6 +74,12 @@ void ReinfoceTrainPage::startTrain(){
         cmd = "source activate && source deactivate && conda activate 207_base && ";
     }
     if(!ui->useTrainedRfModelCheckBox->isChecked()){
+        if(!datasetInfo->checkMap(reinforceDataType.toStdString(),ui->reinforceDataBox->currentText().toStdString(),"PATH")){
+            QMessageBox::warning(NULL,"错误","请选择可用数据集!");
+            return;
+        }
+        choicedDatasetPATH = QString::fromStdString(datasetInfo->getAttri(reinforceDataType.toStdString(),
+                                                   ui->reinforceDataBox->currentText().toStdString(),"PATH"));
         if(batchSize=="" || epoch=="" || dqnBatchSize=="" || dqnEpoch=="" || lr=="" || saveModelName==""){
             QMessageBox::warning(NULL,"错误","请检查各项文本框中训练参数是否正确配置!");
             return;
@@ -87,11 +92,12 @@ void ReinfoceTrainPage::startTrain(){
         " --num_of_state "+QString::number(featureWeightEdits.size());
     }
     else{
-        if(choicedModelPATH==""){
-            QMessageBox::warning(NULL,"错误","当前模型文件无法获取源地址!");
+        if(!datasetInfo->checkMap(modelType.toStdString(),ui->reinforceTrainedModelBox->currentText().toStdString(),"PATH")){
+            QMessageBox::warning(NULL,"错误","请选择可用模型!");
             return;
         }
-//        choicedModelPATH = "../db/traindirs/pretrained/dqn.pth";
+        choicedModelPATH = QString::fromStdString(modelInfo->getAttri(modelType.toStdString(),
+                                                   ui->reinforceTrainedModelBox->currentText().toStdString(),"PATH"));
         cmd += "python ../api/bash/mmdetection/GUI/DQNtrain.py"
         " --endmessage EvaluateEnded --load_from "+choicedModelPATH+" --num_of_state "+QString::number(featureWeightEdits.size());
     }

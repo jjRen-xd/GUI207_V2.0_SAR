@@ -1,3 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<globalModelInfo datasetTypeNum="0">
+<globalModelInfo datasetTypeNum="1">
+    <FEA_OPTI typeID="1">
+        <dqn.pth nameID="1">
+            <PATH>/home/GUI207_V2.0_SAR/db/models/BBOX/pretrained/dqn.pth</PATH>
+            <algorithm>Reinforce Learning</algorithm>
+            <batch>16</batch>
+            <class>1</class>
+            <framework>pytorch</framework>
+            <mAP>-</mAP>
+            <mAP_50>-</mAP_50>
+            <name>强化学习特征评估</name>
+            <note>-</note>
+            <other>-</other>
+            <trainDataset>SSDD</trainDataset>
+            <trainEpoch>48</trainEpoch>
+            <trainLR>-</trainLR>
+        </dqn.pth>
+    </FEA_OPTI>
 </globalModelInfo>

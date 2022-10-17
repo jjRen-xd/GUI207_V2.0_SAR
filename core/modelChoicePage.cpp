@@ -70,7 +70,7 @@ void ModelChoicePage::confirmModel(bool notDialog = false){
     modelInfo->selectedName = selectedName.toStdString(); // save name
     terminal->print("Selected Type: " + selectedType + ", Selected Name: " + selectedName);
 
-    if(!selectedType.isEmpty() && !selectedName.isEmpty()){
+    if(!selectedType.isEmpty() && !selectedName.isEmpty() && modelInfo->checkMap(modelInfo->selectedType,modelInfo->selectedName,"PATH")){
         // 更新属性显示标签
         updateAttriLabel();
         // 网络图像展示
@@ -90,6 +90,9 @@ void ModelChoicePage::confirmModel(bool notDialog = false){
 
 
 void ModelChoicePage::updateAttriLabel(){
+    if(!modelInfo->checkMap(modelInfo->selectedType, modelInfo->selectedName)){
+        return;
+    }
     map<string,string> attriContents = modelInfo->getAllAttri(
         modelInfo->selectedType,
         modelInfo->selectedName

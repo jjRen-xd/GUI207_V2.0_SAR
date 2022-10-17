@@ -54,7 +54,6 @@ bool SearchFolder::getFiles(vector<string> &files, string filesType, string fold
         return false;
 
     while ((ptr=readdir(dir)) != NULL) {
-//        qDebug() << ptr;
         if (strcmp(ptr->d_name, ".") == 0 || strcmp(ptr->d_name, "..") == 0)    ///current dir OR parrent dir
             continue;
         else if (ptr->d_type == 8){    //file

@@ -119,12 +119,16 @@ void ModelCAMPage::processVisFinished(){
 
 void ModelCAMPage::refreshGlobalInfo(){
     // 基本信息更新
-    ui->label_CAM_dataset->setText(QString::fromStdString(datasetInfo->selectedName));
-    ui->label_CAM_model->setText( QString::fromStdString(modelInfo->selectedName));
-
-    this->choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType, datasetInfo->selectedName, "PATH");
-
-    if(!modelInfo->selectedName.empty()){
+    if(datasetInfo->checkMap(datasetInfo->selectedType, datasetInfo->selectedName, "PATH")){
+        this->choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType, datasetInfo->selectedName, "PATH");
+        ui->label_CAM_dataset->setText(QString::fromStdString(datasetInfo->selectedName));
+    }
+    else{
+        this->choicedDatasetPATH = "";
+        ui->label_CAM_dataset->setText("空");
+    }
+    if(!modelInfo->selectedName.empty() && modelInfo->checkMap(modelInfo->selectedType, modelInfo->selectedName, "PATH")){
+        ui->label_CAM_model->setText( QString::fromStdString(modelInfo->selectedName));
         // python可解释接口所需要的路径更新
         QString choicedModelPath = QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "PATH"));
         QString modelBasePath = choicedModelPath.split(".mar").first();
@@ -136,6 +140,9 @@ void ModelCAMPage::refreshGlobalInfo(){
         this->camImgsSavePath       = modelBasePath + "_modelCAMOutput";
 
         clearComboBox();
+    }
+    else{
+        ui->label_CAM_model->setText( QString::fromStdString("空"));
     }
 }
 
