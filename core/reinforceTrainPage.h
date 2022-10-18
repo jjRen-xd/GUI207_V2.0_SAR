@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QMessageBox>
 #include <QDateTime>
-#include "qdir.h"
+#include <QDir>
 #include "ui_MainWindow.h"
 #include "./lib/guiLogic/bashTerminal.h"
 #include "./lib/guiLogic/modelInfo.h"
@@ -23,6 +23,20 @@ public:
     TorchServe *torchServe;
     ModelDock *modelDock;
 
+    ReinfoceTrainPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, DatasetInfo *globalDatasetInfo,
+                    ModelInfo *globalModelInfo, TorchServe *globalTorchServe, ModelDock *modelDock);
+    ~ReinfoceTrainPage();
+    void execuCmd(QString cmd);   // 开放在终端运行命令接口
+    void refreshDataModelInfo();
+    void importModelToSys(QString modelName);
+    void showResult(QString resultline);
+
+public slots:
+    void startTrain();
+    void stopTrain();
+    void readLogOutput();      // 读取终端输出并显示
+
+private:
     QProcess *processTrain;    // 终端命令行输出
     std::vector<QLineEdit *> featureWeightEdits;
     QString featureIds = "";
@@ -30,6 +44,8 @@ public:
     QString batchSize = "";
     QString epoch = "";
     QString lr = "";
+    QString dqnBatchSize = "";
+    QString dqnEpoch = "";
     QString saveModelName = "";
     QString fusionType="";
     QString modelType="FEA_OPTI";
@@ -43,22 +59,6 @@ public:
     #else
     QString bashApi = "bash";            // "Windows" or "Linux"
     #endif
-
-    ReinfoceTrainPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, DatasetInfo *globalDatasetInfo,
-                    ModelInfo *globalModelInfo, TorchServe *globalTorchServe, ModelDock *modelDock);
-    void execuCmd(QString cmd);   // 开放在终端运行命令接口
-    void refreshDataInfo();
-    void importModelToSys(QString modelName);
-    void showResult(QString resultline);
-
-public slots:
-    void startTrain();
-    void stopTrain();
-    void readLogOutput();      // 读取终端输出并显示
-
-signals:
-
-private:
 
 };
 

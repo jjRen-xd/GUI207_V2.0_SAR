@@ -151,13 +151,17 @@ void ModelVisPage::nextFeaImgsPage(){
 
 void ModelVisPage::refreshGlobalInfo(){
     // 基本信息更新
-    ui->label_mV_dataset->setText(QString::fromStdString(datasetInfo->selectedName));
-    ui->label_mV_model->setText( QString::fromStdString(modelInfo->selectedName));
-
-    this->choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType, datasetInfo->selectedName, "PATH");
-
-    if(!modelInfo->selectedName.empty()){
+    if(datasetInfo->checkMap(datasetInfo->selectedType, datasetInfo->selectedName, "PATH")){
+        ui->label_mV_dataset->setText(QString::fromStdString(datasetInfo->selectedName));
+        this->choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType, datasetInfo->selectedName, "PATH");
+    }
+    else{
+        this->choicedDatasetPATH = "";
+        ui->label_mV_dataset->setText("空");
+    }
+    if(!modelInfo->selectedName.empty() && modelInfo->checkMap(modelInfo->selectedType, modelInfo->selectedName, "PATH")){
         // python可解释接口所需要的路径更新
+        ui->label_mV_model->setText(QString::fromStdString(modelInfo->selectedName));
         QString choicedModelPath = QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "PATH"));
         QString modelBasePath = choicedModelPath.split(".mar").first();
         this->modelStructXmlPath    = modelBasePath.toStdString() + "_struct.xml";
@@ -168,6 +172,9 @@ void ModelVisPage::refreshGlobalInfo(){
         this->feaImgsSavePath       = modelBasePath + "_modelVisOutput";
 
         clearComboBox();
+    }
+    else{
+        ui->label_mV_model->setText(QString::fromStdString("空"));
     }
 }
 

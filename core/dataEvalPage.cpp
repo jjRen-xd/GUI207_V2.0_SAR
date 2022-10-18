@@ -112,12 +112,27 @@ void DataEvalPage::updateUiResult()
 void DataEvalPage::refreshGlobalInfo()
 {
     // 基本信息更新
-    this->choicedModelName = QString::fromStdString(modelInfo->selectedName);
-    this->choicedModelType = QString::fromStdString(modelInfo->selectedType);
-    ui->label_mE_dataset_2->setText(QString::fromStdString(datasetInfo->selectedName));
-    ui->label_mE_model_2->setText(choicedModelName);
-    ui->label_mE_batch_2->setText(QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "batch")));
-    this->choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType, datasetInfo->selectedName, "PATH");
+    if(modelInfo->checkMap(modelInfo->selectedType, modelInfo->selectedName, "batch")){
+        this->choicedModelName = QString::fromStdString(modelInfo->selectedName);
+        this->choicedModelType = QString::fromStdString(modelInfo->selectedType);
+        ui->label_mE_batch_2->setText(QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "batch")));
+        ui->label_mE_model_2->setText(choicedModelName);
+    }
+    else{
+        this->choicedModelName = "";
+        this->choicedModelType = "";
+        ui->label_mE_batch_2->setText("");
+        ui->label_mE_model_2->setText("空");
+    }
+    if(datasetInfo->checkMap(datasetInfo->selectedType, datasetInfo->selectedName, "PATH")){
+        ui->label_mE_dataset_2->setText(QString::fromStdString(datasetInfo->selectedName));
+        this->choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
+    }
+    else{
+        this->choicedDatasetPATH = "";
+        ui->label_mE_dataset_2->setText("空");
+    }
+
 }
 
 float DataEvalPage::rotateIOUcv(cv::RotatedRect rect1, cv::RotatedRect rect2)

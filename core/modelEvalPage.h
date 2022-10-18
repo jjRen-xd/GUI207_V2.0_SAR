@@ -56,10 +56,10 @@ private:
     SearchFolder *dirTools = new SearchFolder();
 
     // 选择的数据集、模型、样本信息
-    std::string choicedDatasetPATH;
-    QString choicedModelName;
-    QString choicedModelType;
-    QString choicedSamplePATH;
+    std::string choicedDatasetPATH = "";
+    QString choicedModelName = "";
+    QString choicedModelType = "";
+    QString choicedSamplePATH = "";
 
     // 预览图的真实及预测标签信息
     cv::Mat imgSrc;

@@ -7,6 +7,8 @@ ModelTrainPage::ModelTrainPage(Ui_MainWindow *main_ui, BashTerminal *bash_termin
     torchServe(globalTorchServe),modelDock(modelDock){
 
     processTrain = new QProcess();
+    processTrain->setProcessChannelMode(QProcess::MergedChannels);
+
     featureBoxs.push_back(ui->f0CheckBox);
     featureBoxs.push_back(ui->f1CheckBox);
     featureBoxs.push_back(ui->f2CheckBox);
@@ -22,7 +24,7 @@ ModelTrainPage::ModelTrainPage(Ui_MainWindow *main_ui, BashTerminal *bash_termin
     ui->batchsizeEdit->setValidator(new QRegularExpressionValidator(QRegularExpression("^[1-9][0-9]{1,3}[1-9]$")));
     ui->epochEdit->setValidator(new QRegularExpressionValidator(QRegularExpression("^[1-9][0-9]{1,4}[1-9]$")));
     ui->lrEdit->setValidator(new QRegularExpressionValidator(QRegularExpression("^0\\.[0-9]{1,5}[1-9]$")));
-    ui->saveModelNameEdit->setValidator(new QRegularExpressionValidator(QRegularExpression("[a-zA-Z0-9_]+$")));
+    ui->saveModelNameEdit->setValidator(new QRegularExpressionValidator(QRegularExpression("^[a-zA-Z][a-zA-Z0-9_]{0,}[a-zA-Z0-9]$")));
 
     refreshGlobalInfo();
 
@@ -30,15 +32,24 @@ ModelTrainPage::ModelTrainPage(Ui_MainWindow *main_ui, BashTerminal *bash_termin
     connect(ui->startTrainButton, &QPushButton::clicked, this, &ModelTrainPage::startTrain);
     connect(ui->stopTrainButton,  &QPushButton::clicked, this, &ModelTrainPage::stopTrain);
     connect(ui->feaConfusionCheckBox,  &QCheckBox::stateChanged, this, &ModelTrainPage::handFeaAvailable);
+
+}
+
+ModelTrainPage::~ModelTrainPage(){
+    if(processTrain->state()==QProcess::Running){
+        processTrain->terminate();
+        processTrain->close();
+        processTrain->kill();
+    }
 }
 
 void ModelTrainPage::refreshGlobalInfo(){
-    if(QString::fromStdString(datasetInfo->selectedName)!=""){
+    if(datasetInfo->checkMap(datasetInfo->selectedType,datasetInfo->selectedName,"PATH")){
         ui->train_data_path->setText(QString::fromStdString(datasetInfo->selectedName));
         this->choicedDatasetPATH = QString::fromStdString(datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH"));
     }
     else{
-        ui->train_data_path->setText("未选择");
+        ui->train_data_path->setText("空");
         this->choicedDatasetPATH = "";
     }
 }
@@ -68,8 +79,10 @@ void ModelTrainPage::startTrain(){
         return;
     }
     uiInitial();
-    ui->startTrainButton->setEnabled(false);
     QString cmd="";
+    if(processTrain->state()!=QProcess::Running){
+        cmd = "source activate && source deactivate && conda activate 207_base && ";
+    }
     if(ui->feaConfusionCheckBox->isChecked()){
         this->featureIds="";
         fusionType="two_head_attention";
@@ -89,8 +102,7 @@ void ModelTrainPage::startTrain(){
         modelType="FEA_RELE";
         QDateTime dateTime(QDateTime::currentDateTime());
         time = dateTime.toString("yyyy-MM-dd-hh-mm-ss");
-        cmd = "source activate && source deactivate && conda activate 207_base &&"
-        " python ../api/bash/mmdetection/GUI/train_model.py --base_cfg_type FeatureConfusion --time "+time+ \
+        cmd += "python ../api/bash/mmdetection/GUI/train_model.py --base_cfg_type FeatureConfusion --time "+time+ \
         " --data_root "+choicedDatasetPATH+" --use_feature --confusion_type "+fusionType+ \
         " --feature_ids "+featureIds+" --max_epoch "+epoch+" --batch_size "+batchSize+ \
         " --lr "+lr+" --save_model_name "+saveModelName;
@@ -99,39 +111,35 @@ void ModelTrainPage::startTrain(){
         modelType="TRA_DL";
         QDateTime dateTime(QDateTime::currentDateTime());
         time = dateTime.toString("yyyy-MM-dd-hh-mm-ss");
-        cmd = "source activate && source deactivate && conda activate 207_base &&"
-        " python ../api/bash/mmdetection/GUI/train_model.py --base_cfg_type Baseline --time "+time+ \
+        cmd += "python ../api/bash/mmdetection/GUI/train_model.py --base_cfg_type Baseline --time "+time+ \
         " --data_root "+choicedDatasetPATH+" --max_epoch "+epoch+" --batch_size "+batchSize+ \
         " --lr "+lr+" --save_model_name "+saveModelName;
     }
-//    qDebug() << cmd;
+    qDebug() << cmd;
     execuCmd(cmd);
 }
 
 void ModelTrainPage::execuCmd(QString cmd){
-  // TODO add code here
-    if(processTrain->state()==QProcess::Running){
-        processTrain->close();
-        processTrain->kill();
+    if(processTrain->state()!=QProcess::Running){
+        processTrain->start(bashApi);
     }
-    processTrain->setProcessChannelMode(QProcess::MergedChannels);
-    processTrain->start(bashApi);
     showLog=true;
     ui->trainLogBrowser->setText("===================Train Starting===================");
     ui->trainProgressBar->setMaximum(0);
     ui->trainProgressBar->setValue(0);
+    ui->startTrainButton->setEnabled(false);
+    ui->stopTrainButton->setEnabled(false);
     processTrain->write(cmd.toLocal8Bit() + '\n');
 }
 
 void ModelTrainPage::stopTrain(){
-    QString cmd="\\x04";
-    processTrain->write(cmd.toLocal8Bit() + '\n');
-    showLog=false;
-    ui->startTrainButton->setEnabled(true);
+    ui->trainLogBrowser->append("===================Train Stoping===================");
     ui->trainProgressBar->setMaximum(100);
     ui->trainProgressBar->setValue(0);
-    ui->trainLogBrowser->append("===================Train Stoping===================");
-    if(processTrain->state()==QProcess::Running){
+    ui->startTrainButton->setEnabled(true);
+    if(processTrain->state()==QProcess::Running && showLog){
+        showLog=false;
+        processTrain->terminate();
         processTrain->close();
         processTrain->kill();
     }
@@ -150,25 +158,26 @@ void ModelTrainPage::readLogOutput(){
                 ui->trainLogBrowser->append("===================Train Ended===================");
                 showLog=false;
                 ui->startTrainButton->setEnabled(true);
-            //    导入训练好的模型至系统
-                modelDock->importModelAfterTrain(modelType, saveModelName, ".mar");
+                ui->trainProgressBar->setMaximum(100);
+                ui->trainProgressBar->setValue(100);
                 showTrianResult();
-                if(processTrain->state()==QProcess::Running){
-                    processTrain->close();
-                    processTrain->kill();
-                }
             }
             else if(lines[i].contains("Failed",Qt::CaseSensitive)){
+                ui->trainLogBrowser->append("===================Train Failed===================");
+                showLog=false;
                 ui->startTrainButton->setEnabled(true);
+                ui->trainProgressBar->setMaximum(100);
+                ui->trainProgressBar->setValue(0);
                 QDateTime dateTime(QDateTime::currentDateTime());
                 ui->trainLogBrowser->append(dateTime.toString("yyyy-MM-dd-hh-mm-ss")+" - 网络模型训练出错：");
                 for(i++;i<len;i++){
                     ui->trainLogBrowser->append(lines[i]);
                 }
-                stopTrain();
             }
             else if(showLog){
+                ui->stopTrainButton->setEnabled(true);
                 ui->trainLogBrowser->append(lines[i]);
+
             }
         }
     }
@@ -184,14 +193,11 @@ void ModelTrainPage::uiInitial(){
 }
 
 void ModelTrainPage::showTrianResult(){
-    ui->trainProgressBar->setMaximum(100);
-    ui->trainProgressBar->setValue(100);
-    //TODO
-    QDir dir("../db/traindirs");
-    QStringList dirList = dir.entryList(QDir::Dirs);
+    QDir dirs("../db/models/BBOX");
+    QStringList dirList = dirs.entryList(QDir::Dirs);
     foreach (auto dir , dirList){
         if(dir.contains(time)){
-            QString wordir    = "../db/traindirs/"+dir;
+            QString wordir    = "../db/models/BBOX/"+dir;
             QString ap_file   = wordir+"/AP.jpg";
             QString acc_file  = wordir+"/Accuracy.jpg";
             QString loss_file = wordir+"/Loss.jpg";
@@ -204,6 +210,8 @@ void ModelTrainPage::showTrianResult(){
             ui->ap_val_label->setPixmap(QPixmap::fromImage(*img_ap));
             QImage *img_cm = new QImage(matrix_file);
             ui->ap_matrix_label->setPixmap(QPixmap::fromImage(*img_cm));
+            //    导入训练好的模型至系统
+            modelDock->importModelAfterTrain(modelType, wordir, saveModelName, ".mar");
             return;
         }
     }

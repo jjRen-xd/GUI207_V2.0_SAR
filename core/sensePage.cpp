@@ -114,6 +114,9 @@ void SenseSetPage::confirmDataset(bool notDialog = false){
 
 
 void SenseSetPage::updateAttriLabel(){
+    if(!datasetInfo->checkMap(datasetInfo->selectedType,datasetInfo->selectedName)){
+        return;
+    }
     map<string,string> attriContents = datasetInfo->getAllAttri(
         datasetInfo->selectedType,
         datasetInfo->selectedName
@@ -126,6 +129,9 @@ void SenseSetPage::updateAttriLabel(){
 
 
 void SenseSetPage::drawClassImage(){
+    if(!datasetInfo->checkMap(datasetInfo->selectedType,datasetInfo->selectedName,"PATH")){
+        return;
+    }
     string rootPath = datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
     string subClassDirName = "classImages";
     // 清空图片显示label
@@ -190,6 +196,9 @@ void SenseSetPage::drawClassImage(){
 
 
 void SenseSetPage::nextBatchImage(){
+    if(!datasetInfo->checkMap(datasetInfo->selectedType,datasetInfo->selectedName,"PATH")){
+        return;
+    }
     string rootPath = datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
     // 获取所有子文件夹，并判断是否是图片、标注文件夹
     vector<string> allSubDirs;

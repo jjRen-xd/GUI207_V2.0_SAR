@@ -32,13 +32,15 @@ class ModelInfo{
         void modifyAttri(std::string Type, std::string Name, std::string Attri, std::string AttriValue);   //修改指定数据集的指定属性
 
 
-        std::string selectedType;
-        std::string selectedName;
+        std::string selectedType="";
+        std::string selectedName="";
         std::vector<std::string> selectedClassNames;
 
         std::map<std::string, std::string> var2TypeName;
         std::map<std::string, std::string> typeName2Var;
 
+        bool checkMap(std::string type, std::string name="NULL", std::string attri="NULL");
+        void showInfo();
     private:
         // 模型核心数据Map
         std::map<std::string, std::map<std::string, std::map<std::string,std::string>>> infoMap;

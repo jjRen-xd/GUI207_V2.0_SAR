@@ -44,8 +44,10 @@ size_t ModelInfo::typeNum(){
 
 vector<string> ModelInfo::getNamesInType(string type){
     vector<string> names;
-    for(auto &item: this->infoMap[type]){
-        names.push_back(item.first);
+    if(this->infoMap.count(type) != 0){
+        for(auto &item: this->infoMap[type]){
+            names.push_back(item.first);
+        }
     }
     return names;
 }
@@ -61,7 +63,9 @@ string ModelInfo::getAttri(string type, string name, string attri){
 }
 
 void ModelInfo::modifyAttri(string Type, string Name, string Attri, string AttriValue){
-    this->infoMap[Type][Name][Attri] = AttriValue;
+    if(checkMap(Type, Name, Attri)){
+        this->infoMap[Type][Name][Attri] = AttriValue;
+    }
 }
 
 
@@ -213,7 +217,36 @@ int ModelInfo::addItemFromXML(string xmlPath){
 
 
 void ModelInfo::deleteItem(string type, string name){
-    this->infoMap[type].erase(name);
+    if(checkMap(type, name)){
+        this->infoMap[type].erase(name);
+        if(this->infoMap[type].size()==0){
+            this->infoMap.erase(type);
+        }
+    }
+}
+
+bool ModelInfo::checkMap(string type, string name, string attri){
+    if(this->infoMap.count(type) == 0){
+        return false;
+        if(name!="NULL"){
+            if(this->infoMap[type].count(name) == 0){
+                return false;
+            }
+            if(attri!="NULL"){
+                if(this->infoMap[type][name].count(attri) == 0){
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+void ModelInfo::showInfo(){
+    int i=1;
+    for (auto it0 = this->infoMap.begin(); it0 != this->infoMap.end(); it0++) {
+        cout << i++ << ":" << it0 -> first << endl;
+    }
 }
 
 //infoMap example

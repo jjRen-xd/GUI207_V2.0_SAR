@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QMessageBox>
 #include <QDateTime>
-#include "qdir.h"
+#include <QDir>
 #include "ui_MainWindow.h"
 #include "./lib/guiLogic/bashTerminal.h"
 #include "./lib/guiLogic/modelInfo.h"
@@ -23,6 +23,21 @@ public:
     TorchServe *torchServe;
     ModelDock *modelDock;
 
+    ModelTrainPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, DatasetInfo *globalDatasetInfo,
+                    ModelInfo *globalModelInfo, TorchServe *globalTorchServe, ModelDock *modelDock);
+    ~ModelTrainPage();
+    void execuCmd(QString cmd);   // 开放在终端运行命令接口
+    void uiInitial();
+    void refreshGlobalInfo();
+    
+public slots:
+    void startTrain();
+    void stopTrain();
+    void readLogOutput();      // 读取终端输出并显示
+    void showTrianResult();
+    void handFeaAvailable();
+
+private:
     QProcess *processTrain;    // 终端命令行输出
     std::vector<QCheckBox *> featureBoxs;
     QString featureIds = "";
@@ -34,6 +49,7 @@ public:
     QString fusionType="";
     QString modelType="TRA_DL";
     bool showLog=true;
+    QString choicedDatasetPATH="";
 
     // 为了兼容win与linux双平台
     #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
@@ -41,26 +57,6 @@ public:
     #else
     QString bashApi = "bash";            // "Windows" or "Linux"
     #endif
-
-    ModelTrainPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, DatasetInfo *globalDatasetInfo,
-                    ModelInfo *globalModelInfo, TorchServe *globalTorchServe, ModelDock *modelDock);
-    void execuCmd(QString cmd);   // 开放在终端运行命令接口
-    void uiInitial();
-    void refreshGlobalInfo();
-    
-public slots:
-    void startTrain();
-    void stopTrain();
-
-    void readLogOutput();      // 读取终端输出并显示
-    void showTrianResult();
-
-    void handFeaAvailable();
-
-signals:
-
-private:
-    QString choicedDatasetPATH;
 
 };
 

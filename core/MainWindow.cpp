@@ -41,6 +41,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
 
     // 后台计算
     this->evalBack = new EvaluationIndex(this->globalDatasetInfo,this->globalModelInfo,this->torchServe);
+
     // 数据集悬浮窗设置
     this->datasetDock = new DatasetDock(this->ui, this->terminal, this->globalDatasetInfo);
     this->modelDock = new ModelDock(this->ui, this->terminal, this->globalModelInfo, this->torchServe);
@@ -65,10 +66,13 @@ MainWindow::~MainWindow(){
 
 void MainWindow::switchPage(){
     QAction *action = qobject_cast<QAction*>(sender());
-    if(action==ui->action_SceneSetting)
+    if(action==ui->action_SceneSetting){
         ui->stackedWidget_MultiPage->setCurrentWidget(ui->page_senseSet);
-    else if(action==ui->action_ModelChoice)
+        this->senseSetPage->changeType();
+    }
+    else if(action==ui->action_ModelChoice){
         ui->stackedWidget_MultiPage->setCurrentWidget(ui->page_modelChoice);
+    }
     else if(action==ui->action_Evaluate){
         ui->stackedWidget_MultiPage->setCurrentWidget(ui->page_modelEval);
         this->modelEvalPage->refreshGlobalInfo();
@@ -86,6 +90,7 @@ void MainWindow::switchPage(){
     }
     else if(action==ui->action_ReinforceTrain){
         ui->stackedWidget_MultiPage->setCurrentWidget(ui->page_reinforceTrain);
+        this->reinforceTrainPage->refreshDataModelInfo();
     }
     else if(action==ui->action_ModelVis){
         ui->stackedWidget_MultiPage->setCurrentWidget(ui->page_modelVis);
