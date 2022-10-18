@@ -6,6 +6,8 @@
 build/*
 build/build_here
 
+conf/*.xml
+
 db/datasets/*
 !/db/datasets/dataset_here
 db/models/*

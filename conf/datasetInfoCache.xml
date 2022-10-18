@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <globalDatasetInfo datasetTypeNum="1">
-    <BBOX typeID="1" />
+    <BBOX typeID="1">
+        <SSDD_TRAIN_ALL_BBOX nameID="1">
+            <PATH>/home/GUI207_V2.0_SAR/db/datasets/SSDD/train</PATH>
+            <claName>/home/GUI207_V2.0_SAR/db/datasets/SSDD/train</claName>
+            <claNum>1</claNum>
+            <datasetName>SSDD</datasetName>
+            <datasetType>正框</datasetType>
+            <imgSize>512*512</imgSize>
+            <note>测试下备注</note>
+            <targetNumEachCla>1657</targetNumEachCla>
+        </SSDD_TRAIN_ALL_BBOX>
+    </BBOX>
 </globalDatasetInfo>

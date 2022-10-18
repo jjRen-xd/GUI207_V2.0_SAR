@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<globalModelInfo datasetTypeNum="1">
+<globalModelInfo datasetTypeNum="2">
     <FEA_OPTI typeID="1">
         <dqn.pth nameID="1">
             <PATH>/home/GUI207_V2.0_SAR/db/models/BBOX/pretrained/dqn.pth</PATH>
@@ -17,4 +17,21 @@
             <trainLR>-</trainLR>
         </dqn.pth>
     </FEA_OPTI>
+    <TRA_DL typeID="2">
+        <SSDD_BASELINE.mar nameID="2">
+            <PATH>../db/models/BBOX/2022-10-18-10-16-24-Baseline-SSDD-unRotated-36epochs/SSDD_BASELINE.mar</PATH>
+            <algorithm>Faster R-CNN</algorithm>
+            <batch>4</batch>
+            <class>1</class>
+            <framework>pytorch</framework>
+            <mAP>0.564</mAP>
+            <mAP_50>0.93</mAP_50>
+            <name>SSDD-unRotated框检测</name>
+            <note>-</note>
+            <other>-</other>
+            <trainDataset>SSDD</trainDataset>
+            <trainEpoch>36</trainEpoch>
+            <trainLR>0.01</trainLR>
+        </SSDD_BASELINE.mar>
+    </TRA_DL>
 </globalModelInfo>
