@@ -29,6 +29,7 @@ ModelCAMPage::ModelCAMPage(Ui_MainWindow *main_ui,
     connect(ui->comboBox_CAM_L3, SIGNAL(textActivated(QString)), this, SLOT(on_comboBox_L3(QString)));
     connect(ui->comboBox_CAM_L4, SIGNAL(textActivated(QString)), this, SLOT(on_comboBox_L4(QString)));
     connect(ui->comboBox_CAM_L5, SIGNAL(textActivated(QString)), this, SLOT(on_comboBox_L5(QString)));
+    connect(ui->comboBox_CAM_method, SIGNAL(textActivated(QString)), this, SLOT(showCamFig(QString)));
 
     // 按钮信号槽绑定
     connect(ui->pushButton_CAM_clear, &QPushButton::clicked, this, &ModelCAMPage::clearComboBox);
@@ -39,6 +40,13 @@ ModelCAMPage::ModelCAMPage(Ui_MainWindow *main_ui,
     processVis = new QProcess();
     connect(processVis, &QProcess::readyReadStandardOutput, this, &ModelCAMPage::processVisFinished);
 
+    // 所支持的可视化方法初始化
+    QStringList allCamMethods = {
+        "gradcam", "gradcam++", "xgradcam", "eigengradcam", "layercam",
+        "ablationcam", "eigencam", "featmapam",
+    };
+    ui->comboBox_CAM_method->addItems(allCamMethods);
+
 }
 
 ModelCAMPage::~ModelCAMPage(){
@@ -47,6 +55,7 @@ ModelCAMPage::~ModelCAMPage(){
 
 
 void ModelCAMPage::confirmVis(){
+    this->choicedCamMethod = ui->comboBox_CAM_method->currentText();
     if(this->choicedSamplePATH.isEmpty()){
         QMessageBox::warning(NULL,"错误","未选择输入图像!");
         return;
@@ -63,16 +72,21 @@ void ModelCAMPage::confirmVis(){
         QMessageBox::warning(NULL,"错误","未选择可视化位置!");
         return;
     }
+    if(choicedCamMethod.isEmpty()){
+        QMessageBox::warning(NULL,"错误","未指定可视化CAM方法!");
+        return;
+    }
     // QString output;
     // 激活conda python环境
     QString activateEnv = "source "+this->condaPath+" "+this->condaEnvName+"&&";
     QString command = activateEnv + \
-        "python "+"../api/modelVis/vis_fea.py"+ \ 
-        " --config="         +this->modelConfigPath+ \
-        " --checkpoint="     +this->modelCheckpointPath+ \
-        " --visualize_layer="+this->targetVisLayer+ \
-        " --image_path="     +this->choicedSamplePATH+ \
-        " --save_path="      +this->camImgsSavePath;
+        "python "+"../api/modelVis/vis_cam.py"+ \ 
+        " --img="           +this->choicedSamplePATH+ \
+        " --config="        +this->modelConfigPath+ \
+        " --checkpoint="    +this->modelCheckpointPath+ \
+        " --target-layers=" +this->targetVisLayer+ \ 
+        " --out-dir="       +this->camImgsSavePath+ \
+        " --method="        +this->choicedCamMethod;
     // 执行python脚本
     this->terminal->print(command);
     this->execuCmdProcess(command);
@@ -106,11 +120,14 @@ void ModelCAMPage::processVisFinished(){
             ui->progressBar_CAM->setMaximum(100);
             ui->progressBar_CAM->setValue(100);
 
-            // TODO
+            // 加载图像
+            ui->label_CAM_camImgLabel->setText(this->choicedCamMethod);
+            recvShowPicSignal(QPixmap(this->camImgsSavePath+"/CAM_output.png"), ui->graphicsView_CAM_camImg);
+
         }
         if(logs.contains("Error")){
             terminal->print("可视化失败！");
-            QMessageBox::warning(NULL,"错误","所选隐层不支持可视化!");
+            QMessageBox::warning(NULL,"错误","所选隐层不支持决策可视化!");
             ui->progressBar_CAM->setMaximum(100);
             ui->progressBar_CAM->setValue(0);
         }
@@ -184,7 +201,7 @@ void ModelCAMPage::refreshVisInfo(){
         }
     }
     this->targetVisLayer = targetVisLayer.replace("._", ".");
-    ui->label_mV_visLayer->setText(this->targetVisLayer);
+    ui->label_CAM_visLayer->setText(this->targetVisLayer);
 
     // 加载相应的预览图像
     QString imgPath = this->modelStructImgPath + "/";
@@ -319,6 +336,10 @@ void ModelCAMPage::on_comboBox_L5(QString choicedLayer){
     refreshVisInfo();
 }
 
+
+void ModelCAMPage::showCamFig(QString method){
+    // TODO
+}
 
 
 void ModelCAMPage::loadModelStruct_L1(QStringList &currLayers){

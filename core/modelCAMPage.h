@@ -59,6 +59,8 @@ public slots:
     void on_comboBox_L4(QString choicedLayer);
     void on_comboBox_L5(QString choicedLayer);
 
+    void showCamFig(QString method);
+
 
 private:
     Ui_MainWindow *ui;
@@ -74,6 +76,7 @@ private:
     QString choicedModelName;
     QString choicedModelType;
     QString choicedSamplePATH;
+    QString choicedCamMethod;
 
     // 选择模型结构的xml文件、预览图像路径 // FIXME 后期需要结合系统
     std::string modelStructXmlPath;
