@@ -136,6 +136,7 @@ void ModelDock::importModel(string type){
         string modelType = modelInfo->addItemFromXML(xmlPath.toStdString());
         if(modelType != type){
             QMessageBox::warning(NULL, "添加模型", "添加模型失败，模型信息与所选类型不符！");
+            this->modelInfo->loadFromXML(modelInfo->defaultXmlPath);
             return;
         }
         terminal->print("添加模型成功:"+xmlPath);
