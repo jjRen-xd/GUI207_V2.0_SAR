@@ -20,8 +20,8 @@ ModelVisPage::ModelVisPage(Ui_MainWindow *main_ui,
 {   
     // 刷新模型、数据集信息
     refreshGlobalInfo();
-    this->condaPath = "/home/z840/anaconda3/bin/activate";
-    this->condaEnvName = "mmlab";
+    this->condaPath = "/root/anaconda3/bin/activate";
+    this->condaEnvName = "207_base";
 
     // 下拉框信号槽绑定
     connect(ui->comboBox_mV_L1, SIGNAL(textActivated(QString)), this, SLOT(on_comboBox_L1(QString)));
@@ -257,22 +257,32 @@ int ModelVisPage::randomImage(){
     }
     // 获取图片文件夹下的所有图片文件名
     vector<string> imageFileNames;
-    dirTools->getFiles(imageFileNames, ".png", choicedDatasetPATH+"/images");
-    
+    if (0 == datasetInfo->selectedType.compare("BBOX")){
+        dirTools->getFiles(imageFileNames, ".jpg", choicedDatasetPATH + "/images");
+    }
+    else{
+        dirTools->getFiles(imageFileNames, ".png", choicedDatasetPATH + "/images");
+    }
+
     // 随机选取一张图片作为预览图片
     srand((unsigned)time(NULL));
     string choicedImageFile = imageFileNames[(rand())%imageFileNames.size()];
     string choicedImagePath = choicedDatasetPATH+"/images/"+choicedImageFile;
     this->choicedSamplePATH = QString::fromStdString(choicedImagePath);
-
     // 读取图片
     cv::Mat imgSrc = cv::imread(choicedImagePath.c_str(), cv::IMREAD_COLOR);
-
     // 读取GroundTruth，包含四个坐标和类别信息
     std::vector<std::vector<cv::Point>> points_GT;
     std::vector<std::string> labels_GT;
-    string labelPath = choicedDatasetPATH+"/labelTxt/"+choicedImageFile.substr(0,choicedImageFile.size()-4)+".txt";
-    dirTools->getGroundTruth(labels_GT, points_GT, labelPath);
+
+    if (datasetInfo->selectedType == "BBOX"){
+        string labelPath = choicedDatasetPATH + "/labelTxt/" + choicedImageFile.substr(0, choicedImageFile.size() - 4) + ".xml";
+        dirTools->getGtXML(labels_GT, points_GT, labelPath);
+    }
+    else{
+        string labelPath = choicedDatasetPATH + "/labelTxt/" + choicedImageFile.substr(0, choicedImageFile.size() - 4) + ".txt";
+        dirTools->getGroundTruth(labels_GT, points_GT, labelPath);
+    }
 
     // 在图片上画出GroundTruth的矩形框
     cv::drawContours(imgSrc, points_GT, -1, cv::Scalar(16, 124, 16), 2);
@@ -283,6 +293,7 @@ int ModelVisPage::randomImage(){
     // 将图片显示到界面上
     recvShowPicSignal(CVS::cvMatToQPixmap(imgSrc), ui->graphicsView_mV_choicedImg);
     ui->label_mV_choicedImgName->setText(choicedSamplePATH.split("/").last());
+    return 1;
 }
 
 
@@ -294,6 +305,7 @@ int ModelVisPage::importImage(){
     this->choicedSamplePATH = filePath;
     recvShowPicSignal(QPixmap(filePath), ui->graphicsView_mV_choicedImg);
     ui->label_mV_choicedImgName->setText(choicedSamplePATH.split("/").last());
+    return 1;
 }
 
 

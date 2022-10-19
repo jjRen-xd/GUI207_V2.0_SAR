@@ -17,11 +17,11 @@ ModelCAMPage::ModelCAMPage(Ui_MainWindow *main_ui,
     terminal(bash_terminal),
     datasetInfo(globalDatasetInfo),
     modelInfo(globalModelInfo)
-{   
+{
     // 刷新模型、数据集信息
     refreshGlobalInfo();
-    this->condaPath = "/home/z840/anaconda3/bin/activate";
-    this->condaEnvName = "mmlab";
+    this->condaPath = "/root/anaconda3/bin/activate";
+    this->condaEnvName = "207_base";
 
     // 下拉框信号槽绑定
     connect(ui->comboBox_CAM_L1, SIGNAL(textActivated(QString)), this, SLOT(on_comboBox_L1(QString)));
@@ -80,11 +80,11 @@ void ModelCAMPage::confirmVis(){
     // 激活conda python环境
     QString activateEnv = "source "+this->condaPath+" "+this->condaEnvName+"&&";
     QString command = activateEnv + \
-        "python "+"../api/modelVis/vis_cam.py"+ \ 
+        "python "+"../api/modelVis/vis_cam.py"+ \
         " --img="           +this->choicedSamplePATH+ \
         " --config="        +this->modelConfigPath+ \
         " --checkpoint="    +this->modelCheckpointPath+ \
-        " --target-layers=" +this->targetVisLayer+ \ 
+        " --target-layers=" +this->targetVisLayer+ \
         " --out-dir="       +this->camImgsSavePath+ \
         " --method="        +this->choicedCamMethod;
     // 执行python脚本
@@ -216,7 +216,7 @@ void ModelCAMPage::refreshVisInfo(){
         imgPath += "framework.png";
     }
     else{
-        imgPath = imgPath + this->targetVisLayer + ".png"; 
+        imgPath = imgPath + this->targetVisLayer + ".png";
     }
     if(this->dirTools->exist(imgPath.toStdString())){
         recvShowPicSignal(QPixmap(imgPath), ui->graphicsView_CAM_modelImg);
@@ -242,8 +242,12 @@ int ModelCAMPage::randomImage(){
     }
     // 获取图片文件夹下的所有图片文件名
     vector<string> imageFileNames;
-    dirTools->getFiles(imageFileNames, ".png", choicedDatasetPATH+"/images");
-    
+    if (0 == datasetInfo->selectedType.compare("BBOX")){
+        dirTools->getFiles(imageFileNames, ".jpg", choicedDatasetPATH + "/images");
+    }
+    else{
+        dirTools->getFiles(imageFileNames, ".png", choicedDatasetPATH + "/images");
+    }
     // 随机选取一张图片作为预览图片
     srand((unsigned)time(NULL));
     string choicedImageFile = imageFileNames[(rand())%imageFileNames.size()];
@@ -256,9 +260,15 @@ int ModelCAMPage::randomImage(){
     // 读取GroundTruth，包含四个坐标和类别信息
     std::vector<std::vector<cv::Point>> points_GT;
     std::vector<std::string> labels_GT;
-    string labelPath = choicedDatasetPATH+"/labelTxt/"+choicedImageFile.substr(0,choicedImageFile.size()-4)+".txt";
-    dirTools->getGroundTruth(labels_GT, points_GT, labelPath);
 
+    if (datasetInfo->selectedType == "BBOX"){
+        string labelPath = choicedDatasetPATH + "/labelTxt/" + choicedImageFile.substr(0, choicedImageFile.size() - 4) + ".xml";
+        dirTools->getGtXML(labels_GT, points_GT, labelPath);
+    }
+    else{
+        string labelPath = choicedDatasetPATH + "/labelTxt/" + choicedImageFile.substr(0, choicedImageFile.size() - 4) + ".txt";
+        dirTools->getGroundTruth(labels_GT, points_GT, labelPath);
+    }
     // 在图片上画出GroundTruth的矩形框
     cv::drawContours(imgSrc, points_GT, -1, cv::Scalar(16, 124, 16), 2);
     // 绘制类别标签到图片上
@@ -268,6 +278,7 @@ int ModelCAMPage::randomImage(){
     // 将图片显示到界面上
     recvShowPicSignal(CVS::cvMatToQPixmap(imgSrc), ui->graphicsView_CAM_choicedImg);
     ui->label_CAM_choicedImgName->setText(choicedSamplePATH.split("/").last());
+    return 1;
 }
 
 
@@ -279,6 +290,7 @@ int ModelCAMPage::importImage(){
     this->choicedSamplePATH = filePath;
     recvShowPicSignal(QPixmap(filePath), ui->graphicsView_CAM_choicedImg);
     ui->label_CAM_choicedImgName->setText(choicedSamplePATH.split("/").last());
+    return 1;
 }
 
 

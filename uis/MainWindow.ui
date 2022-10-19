@@ -33,7 +33,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>8</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="page_senseSet">
        <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1859,7 +1859,7 @@
              </size>
             </property>
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:20pt; font-weight:700;&quot;&gt;Ⅴ. 模型测试与评估&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:20pt; font-weight:700;&quot;&gt;Ⅴ. 性能评估(单样本)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -2305,7 +2305,7 @@
              </size>
             </property>
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:20pt; font-weight:700;&quot;&gt;Ⅵ. 数据集测试&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:20pt; font-weight:700;&quot;&gt;Ⅵ. 性能评估(多样本)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
@@ -2480,25 +2480,6 @@
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_68">
                  <item>
-                  <widget class="QPushButton" name="pushButton_mE_importData">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>120</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string>导入数据集</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
                   <widget class="QPushButton" name="pushButton_mE_testAll">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -2555,7 +2536,7 @@
                        <item>
                         <widget class="QLabel" name="label_prec">
                          <property name="text">
-                          <string>Precision:</string>
+                          <string>精确率:</string>
                          </property>
                          <property name="alignment">
                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -2576,7 +2557,7 @@
                        <item>
                         <widget class="QLabel" name="label_rec">
                          <property name="text">
-                          <string>Recall:</string>
+                          <string>召回率:</string>
                          </property>
                          <property name="alignment">
                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -2597,7 +2578,7 @@
                        <item>
                         <widget class="QLabel" name="label_cfar">
                          <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Cfar:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;虚警率:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
@@ -2698,7 +2679,7 @@
                           <enum>Qt::LeftToRight</enum>
                          </property>
                          <property name="text">
-                          <string>score:</string>
+                          <string>隶属度:</string>
                          </property>
                          <property name="alignment">
                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -5046,9 +5027,6 @@
                 </property>
                </widget>
               </item>
-              <item>
-               <widget class="QGraphicsView" name="graphicsView"/>
-              </item>
              </layout>
             </item>
             <item>
@@ -5241,8 +5219,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>741</width>
-             <height>670</height>
+             <width>640</width>
+             <height>344</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -6787,7 +6765,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>739</width>
+             <width>759</width>
              <height>670</height>
             </rect>
            </property>
@@ -7422,8 +7400,8 @@
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>703</width>
-                    <height>520</height>
+                    <width>723</width>
+                    <height>483</height>
                    </rect>
                   </property>
                   <property name="sizePolicy">
@@ -9567,7 +9545,6 @@
     <addaction name="action_DataEval"/>
     <addaction name="separator"/>
     <addaction name="action_ReinforceTrain"/>
-    <addaction name="action_ModelCAMOpti"/>
     <addaction name="separator"/>
     <addaction name="action_ModelVis"/>
     <addaction name="action_ModelCAM"/>
@@ -9668,7 +9645,7 @@
      <normaloff>:/icon/evaluate.png</normaloff>:/icon/evaluate.png</iconset>
    </property>
    <property name="text">
-    <string>效能评估</string>
+    <string>性能评估(单样本)</string>
    </property>
    <property name="toolTip">
     <string>保存</string>
@@ -9923,7 +9900,7 @@
      <normaloff>:/icon/dataset_evaluation.png</normaloff>:/icon/dataset_evaluation.png</iconset>
    </property>
    <property name="text">
-    <string>数据集测试</string>
+    <string>性能评估(多样本)</string>
    </property>
    <property name="toolTip">
     <string>数据集测试</string>
