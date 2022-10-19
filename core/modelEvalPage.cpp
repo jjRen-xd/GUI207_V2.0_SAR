@@ -121,6 +121,7 @@ int ModelEvalPage::randSample()
     points_Pred.clear();
     labels_Pred.clear();
     scores_Pred.clear();
+    return 1;
 }
 
 int ModelEvalPage::importImage()
@@ -146,6 +147,7 @@ int ModelEvalPage::importImage()
     points_Pred.clear();
     labels_Pred.clear();
     scores_Pred.clear();
+    return 1;
 }
 
 int ModelEvalPage::importLabel()
@@ -163,6 +165,7 @@ int ModelEvalPage::importLabel()
     // 在图片上画出GroundTruth的矩形框
     cv::Mat imgShow = imgSrc.clone();
     this->showImg_GT(imgShow);
+    return 1;
 }
 
 int ModelEvalPage::testOneSample()
@@ -223,11 +226,14 @@ int ModelEvalPage::testOneSample()
             // 绘制预测结果到图片上
             cv::Mat imgShow = imgSrc.clone();
             this->showImg_Pred(imgShow);
+            return 1;
         }
         else{
             QMessageBox::warning(NULL, "错误", "识别不到结果！");
+            return -1;
         }
     }
+    return -1;
 }
 
 void ModelEvalPage::calcuRectangle(cv::Point centerXY, cv::Size wh, float angle, std::vector<cv::Point> &fourPoints)

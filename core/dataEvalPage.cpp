@@ -67,6 +67,7 @@ void DataEvalPage::outThread(std::vector<result_> result, std::vector<std::strin
     if (result.size() == 0)
     {
         QMessageBox::warning(NULL, "错误", "结果为空！");
+        ui->pushButton_mE_testAll->setEnabled(true);
     }
     else
     {

@@ -183,6 +183,10 @@ void ModelVisPage::clearComboBox(){
     if(!modelInfo->selectedName.empty()){
         // 初始化第一个下拉框
         QStringList L1Layers;
+        if (!dirTools->exist(this->modelStructXmlPath)){
+            return;
+        }    
+
         loadModelStruct_L1(L1Layers);
         ui->comboBox_mV_L1->clear();
         ui->comboBox_mV_L1->addItems(L1Layers);

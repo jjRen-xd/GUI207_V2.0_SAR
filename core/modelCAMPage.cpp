@@ -168,6 +168,9 @@ void ModelCAMPage::clearComboBox(){
     if(!modelInfo->selectedName.empty()){
         // 初始化第一个下拉框
         QStringList L1Layers;
+        if (!dirTools->exist(this->modelStructXmlPath)){
+            return;
+        }        
         loadModelStruct_L1(L1Layers);
         ui->comboBox_CAM_L1->clear();
         ui->comboBox_CAM_L1->addItems(L1Layers);
