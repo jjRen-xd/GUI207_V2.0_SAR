@@ -130,11 +130,12 @@ int ModelInfo::writeToXML(string xmlPath){
 }
 
 //解析xml文件
-int ModelInfo::loadFromXML(string xmlPath){
+void ModelInfo::loadFromXML(string xmlPath){
+    string modelType;
     TiXmlDocument datasetInfoDoc(xmlPath.c_str());   //xml文档对象
     bool loadOk=datasetInfoDoc.LoadFile();                  //加载文档
     if(!loadOk){
-        cout<<"Could not load the modelInfo file.Error:"<<datasetInfoDoc.ErrorDesc()<<endl;
+        cout<<"Could not load the modelInfo file. Error:"<<datasetInfoDoc.ErrorDesc()<<endl;
         exit(1);
     }
 
@@ -170,11 +171,11 @@ int ModelInfo::loadFromXML(string xmlPath){
         }
         this->infoMap[currTypeEle->Value()] = datasetNameMap;
     }
-    return 1;
 }
 
 
-int ModelInfo::addItemFromXML(string xmlPath){
+std::string ModelInfo::addItemFromXML(string xmlPath){
+    string modelType;
     TiXmlDocument datasetInfoDoc(xmlPath.c_str());   //xml文档对象
     bool loadOk=datasetInfoDoc.LoadFile();                  //加载文档
     if(!loadOk){
@@ -211,8 +212,9 @@ int ModelInfo::addItemFromXML(string xmlPath){
             }
             this->infoMap[currTypeEle->Value()][currNameEle->Value()] = datasetAttrMap;
         }
+        modelType = currTypeEle->Value();
     }
-    return 1;
+    return modelType;
 }
 
 

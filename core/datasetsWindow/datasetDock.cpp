@@ -84,6 +84,7 @@ void DatasetDock::importDataset(string type){
     this->datasetInfo->writeToXML(datasetInfo->defaultXmlPath);
 }
 
+
 void DatasetDock::deleteDataset(){
     QMessageBox confirmMsg;
     confirmMsg.setText(QString::fromStdString("确认要删除数据集："+previewType+"->"+previewName));

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<globalDatasetInfo datasetTypeNum="3">
-    <BBOX typeID="2">
-        <SSDD_Ship_TEST_ALL_BBOX nameID="2">
+<globalDatasetInfo datasetTypeNum="2">
+    <BBOX typeID="1">
+        <SSDD_Ship_TEST_ALL_BBOX nameID="1">
             <PATH>/home/207/GUI207_V2.0_SAR/db/datasets/SSDD/test</PATH>
             <claName>/home/207/GUI207_V2.0_SAR/db/datasets/SSDD/test</claName>
             <claNum>1</claNum>
@@ -11,7 +11,7 @@
             <note>测试下备注</note>
             <targetNumEachCla>232</targetNumEachCla>
         </SSDD_Ship_TEST_ALL_BBOX>
-        <SSDD_Ship_VAL_ALL_BBOX nameID="3">
+        <SSDD_Ship_VAL_ALL_BBOX nameID="2">
             <PATH>/home/207/GUI207_V2.0_SAR/db/datasets/SSDD/val</PATH>
             <claName>ship</claName>
             <claNum>1</claNum>
@@ -22,8 +22,8 @@
             <targetNumEachCla>232</targetNumEachCla>
         </SSDD_Ship_VAL_ALL_BBOX>
     </BBOX>
-    <RBOX typeID="3">
-        <FUSAR_Ship_TEST_ALL_RBOX nameID="4">
+    <RBOX typeID="2">
+        <FUSAR_Ship_TEST_ALL_RBOX nameID="3">
             <PATH>/home/207/GUI207_V2.0_SAR/db/datasets/FUSAR_ship/test</PATH>
             <claName>/home/207/GUI207_V2.0_SAR/db/datasets/FUSAR_ship/test</claName>
             <claNum>3</claNum>
@@ -33,7 +33,7 @@
             <note>测试下备注</note>
             <targetNumEachCla>554</targetNumEachCla>
         </FUSAR_Ship_TEST_ALL_RBOX>
-        <FUSAR_Ship_VAL_ALL_RBOX nameID="5">
+        <FUSAR_Ship_VAL_ALL_RBOX nameID="4">
             <PATH>/home/207/GUI207_V2.0_SAR/db/datasets/FUSAR_ship/val</PATH>
             <claName>/home/207/GUI207_V2.0_SAR/db/datasets/FUSAR_ship/val</claName>
             <claNum>3</claNum>
@@ -43,5 +43,19 @@
             <note>测试下备注</note>
             <targetNumEachCla>554</targetNumEachCla>
         </FUSAR_Ship_VAL_ALL_RBOX>
+        <SSDD_test_all nameID="5">
+            <PATH>/media/z840/HDD_1/LINUX/GUI207_V2.0_SAR/db/datasets/RBOX/ssdd/test/all</PATH>
+            <claName>/media/z840/HDD_1/LINUX/GUI207_V2.0_SAR/db/datasets/RBOX/ssdd/test/all</claName>
+            <claNum>5</claNum>
+            <datasetName>测试数据集</datasetName>
+            <datasetType>CW旋转框</datasetType>
+            <imgSize>256*256</imgSize>
+            <note>测试下备注</note>
+            <targetNumEachCla>1000</targetNumEachCla>
+        </SSDD_test_all>
+        <inshore nameID="6">
+            <PATH>/media/z840/HDD_1/LINUX/GUI207_V2.0_SAR/db/datasets/RBOX/ssdd/test/inshore</PATH>
+            <claName>/media/z840/HDD_1/LINUX/GUI207_V2.0_SAR/db/datasets/RBOX/ssdd/test/inshore</claName>
+        </inshore>
     </RBOX>
 </globalDatasetInfo>

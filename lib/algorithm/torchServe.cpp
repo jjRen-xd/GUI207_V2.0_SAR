@@ -19,7 +19,7 @@ TorchServe::TorchServe(BashTerminal *bash_terminal, ModelInfo *globalModelInfo) 
       {"FEA_RELE", {{"Inference", 9080}, {"Management", 9081}, {"Metrics", 9082}}},
       {"FEW_SHOT", {{"Inference", 9080}, {"Management", 9081}, {"Metrics", 9082}}},
       {"FEA_OPTI", {{"Inference", 9080}, {"Management", 9081}, {"Metrics", 9082}}},
-      {"RBOX_DET", {{"Inference", 7080}, {"Management", 7081}, {"Metrics", 7082}}}};
+      {"RBOX_DET", {{"Inference", 8080}, {"Management", 8081}, {"Metrics", 8082}}}};
   initTorchServe();
 }
 
@@ -135,20 +135,22 @@ void TorchServe::parseInferenceResult(QString resultStr, std::vector<std::map<QS
   else{
     resultStr = resultStr.simplified();
     resultStr = resultStr.remove(' ');
-    std::vector<QString> samplesStr = {};
-    samplesStr = getRegex(resultStr.toStdString(), std::string("\\{(.+?)\\}"));
-    for(auto &sampleStr: samplesStr){   // 对于每个识别个体，包含class_name, bbox, score共三个key
-        std::map<QString,QString> sampleMap;
-        QStringList attriStr = sampleStr.split(",\"");  // 分离三个key
-        for(auto &attri: attriStr){
-            attri = attri.remove(QChar('\"'));
-            attri = attri.remove(QChar(' '));
-            attri = attri.remove(QChar('{'));
-            attri = attri.remove(QChar('}'));
-            QStringList attriKeyValue = attri.split(":");
-            if(attriKeyValue.size() == 2){
-                sampleMap[attriKeyValue[0]] = attriKeyValue[1];
-            }
+
+    std::vector<QString> samplesStr = getRegex(resultStr.toStdString(), std::string("\\{(.+?)\\}"));
+    for (auto &sampleStr : samplesStr)
+    { // 对于每个识别个体，包含class_name, bbox, score共三个key
+      std::map<QString, QString> sampleMap;
+      QStringList attriStr = sampleStr.split(",\""); // 分离三个key
+      for (auto &attri : attriStr)
+      {
+        attri = attri.remove(QChar('\"'));
+        attri = attri.remove(QChar(' '));
+        attri = attri.remove(QChar('{'));
+        attri = attri.remove(QChar('}'));
+        QStringList attriKeyValue = attri.split(":");
+        if (attriKeyValue.size() == 2)
+        {
+          sampleMap[attriKeyValue[0]] = attriKeyValue[1];
         }
       }
       

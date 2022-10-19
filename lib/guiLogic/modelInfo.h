@@ -15,8 +15,8 @@ class ModelInfo{
 
         std::string defaultXmlPath;                      // 默认.xml路径
         int writeToXML(std::string xmlPath);             // 将载入的模型信息保存至.xml文件
-        int loadFromXML(std::string xmlPath);            // 从.xml文件中读取所载入模型的信息
-        int addItemFromXML(std::string xmlPath);         // 从.xml文件中导入新模型
+        void loadFromXML(std::string xmlPath);            // 从.xml文件中读取所载入模型的信息
+        std::string addItemFromXML(std::string xmlPath);         // 从.xml文件中导入新模型, 返回值为导入的模型类型
 
         void deleteItem(std::string type, std::string name);  // 删除模型
 

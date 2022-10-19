@@ -1,43 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<globalModelInfo datasetTypeNum="4">
-    < typeID="1">
-        < nameID="1">
-            <batch></batch>
-        </>
-    </>
-    <FEA_RELE typeID="2">
-        <best_hog_0.5.mar nameID="2">
-            <PATH>/home/207/GUI207_V2.0_SAR/db/models/BBOX/best_hog_0_5.mar</PATH>
-            <algorithm>Faster R-CNN</algorithm>
-            <batch>4</batch>
+<globalModelInfo datasetTypeNum="1">
+    <RBOX_DET typeID="1">
+        <SSDD_RBOX.mar nameID="1">
+            <PATH>/media/z840/HDD_1/LINUX/GUI207_V2.0_SAR/db/models/SSDD_RBOX.mar</PATH>
+            <algorithm>Rotate Faster R-CNN</algorithm>
+            <batch>32</batch>
             <class>1</class>
-            <framework>pytorch</framework>
-            <mAP>0.634</mAP>
-            <mAP_50>0.960</mAP_50>
-            <name>SSDD-unRotated框检测</name>
-            <note>-</note>
-            <other>-</other>
-            <trainDataset>SSDD</trainDataset>
-            <trainEpoch>24</trainEpoch>
-            <trainLR>0.01</trainLR>
-        </best_hog_0.5.mar>
-        <best_hog_0_5.mar nameID="3">
-            <PATH>/home/207/GUI207_V2.0_SAR/db/models/BBOX/best_hog_0_5.mar</PATH>
-            <batch></batch>
-        </best_hog_0_5.mar>
-    </FEA_RELE>
-    <RBOX_DET typeID="3">
-        <FUSAR_SHIP_oriented_rcnn.mar nameID="4">
-            <PATH>/home/207/GUI207_V2.0_SAR/db/models/RBOX/FUSAR_SHIP_oriented_rcnn.mar</PATH>
-        </FUSAR_SHIP_oriented_rcnn.mar>
-        <FUSAR_SHIP_oriented_rcnn_0.05.mar nameID="5">
-            <PATH>/home/207/GUI207_V2.0_SAR/db/models/RBOX/FUSAR_SHIP_oriented_rcnn_0.05.mar</PATH>
-        </FUSAR_SHIP_oriented_rcnn_0.05.mar>
+            <framework>PyTorch</framework>
+            <mAP>87.67%</mAP>
+            <mAP_50>-</mAP_50>
+            <name>SSDD旋转框检测</name>
+            <note>初步实验</note>
+            <other>其他参数</other>
+            <trainDataset>SSDD旋转框数据集</trainDataset>
+            <trainEpoch>12轮</trainEpoch>
+            <trainLR>0.005</trainLR>
+        </SSDD_RBOX.mar>
     </RBOX_DET>
-    <TRA_DL typeID="4">
-        <mymodel.mar nameID="6">
-            <PATH>/home/207/GUI207_V2.0_SAR/db/models/BBOX/mymodel.mar</PATH>
-            <batch></batch>
-        </mymodel.mar>
-    </TRA_DL>
 </globalModelInfo>
