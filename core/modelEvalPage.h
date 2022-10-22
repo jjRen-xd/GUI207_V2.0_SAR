@@ -47,6 +47,7 @@ public slots:
     void checkboxResponse();
 
 
+
 private:
     Ui_MainWindow *ui;
     BashTerminal *terminal;

@@ -30,11 +30,14 @@ ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui,
     // 复选框信号链接
     connect(ui->checkBox_mE_showGT, &QCheckBox::stateChanged, this, &ModelEvalPage::checkboxResponse);
     connect(ui->checkBox_mE_showPred, &QCheckBox::stateChanged, this, &ModelEvalPage::checkboxResponse);
+
+
 }
 
 ModelEvalPage::~ModelEvalPage()
 {
 }
+
 
 void ModelEvalPage::refreshGlobalInfo()
 {
@@ -183,6 +186,10 @@ int ModelEvalPage::testOneSample()
 
     if (!choicedModelName.isEmpty() && !choicedSamplePATH.isEmpty())
     {
+        if (torchServe->postTag == 0){
+            QMessageBox::warning(NULL, "错误", "模型没有上传完成！");
+            return -1;
+        }
         // 使用TorchServe进行预测
         std::vector<std::map<QString, QString>> predMapStr = torchServe->inferenceOne(
             choicedModelName.split(".mar")[0],

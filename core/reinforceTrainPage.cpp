@@ -63,11 +63,11 @@ void ReinfoceTrainPage::refreshDataModelInfo(){
 }
 
 void ReinfoceTrainPage::startTrain(){
-//    batchSize = ui->reinforceBatchsizeEdit->text();
-//    epoch = ui->reinforceEpochEdit->text();
-//    lr = ui->reinforceLrEdit->text();
-//    dqnBatchSize = ui->dqnBatchEdit->text();
-//    dqnEpoch = ui->dqnEpochEdit->text();
+    batchSize = ui->reinforceBatchsizeEdit->text();
+    epoch = ui->reinforceEpochEdit->text();
+    lr = ui->reinforceLrEdit->text();
+    dqnBatchSize = ui->dqnBatchEdit->text();
+    dqnEpoch = ui->dqnEpochEdit->text();
     saveModelName = ui->reinforceSaveModelNameEdit->text();
     QString cmd="";
     if(processTrain->state()!=QProcess::Running){

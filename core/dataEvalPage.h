@@ -44,7 +44,7 @@ public:
     std::string choicedDatasetPATH;
     QString choicedModelName;
     QString choicedModelType;
-    QString choicedSamplePATH;
+    
 
 public slots:
     void refreshGlobalInfo();
@@ -66,14 +66,11 @@ private:
     // SearchFolder *dirTools = new SearchFolder();
     EvaluationIndex *eval;
 
+    // std::string choicedDatasetPATH = "";
 
 
-
-    //数据集所有类别
 
     //指标计算用到参数,全局变量
-    // std::vector<result_> result;
-    // std::map<std::string,std::map<std::string, float>> conMatrix;
     std::map<std::string,float> resultMean;
     void histogram(std::vector<result_> result,std::map<std::string,float> resultMean,std::vector<std::string> classType);
     void disDegreeChart(QString &classGT, std::vector<float> &degrees, std::map<int, std::string> &classNames);

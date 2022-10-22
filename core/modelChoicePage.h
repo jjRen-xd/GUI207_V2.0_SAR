@@ -27,19 +27,25 @@ public:
     QString lastSelectType = "";
     QString lastSelectName = "";
 
+
 public slots:
     void changeType();
     void confirmModel(bool notDialog);
     void saveModelAttri();
     void updateAttriLabel();
 
-
+    void execuCmdProcess(QString cmd);
 
 private:
     Ui_MainWindow *ui;
     BashTerminal *terminal;
     TorchServe *torchServe;
     ModelInfo *modelInfo;
+
+    // 可视化进程
+    QProcess *processConfirm;
+
+    void processConfirmFinished();   // 可视化脚本执行结束事件 
 };
 
 #endif // MODELCHOICEPAGE_H

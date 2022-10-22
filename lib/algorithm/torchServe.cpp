@@ -20,6 +20,7 @@ TorchServe::TorchServe(BashTerminal *bash_terminal, ModelInfo *globalModelInfo) 
       {"FEW_SHOT", {{"Inference", 9080}, {"Management", 9081}, {"Metrics", 9082}}},
       {"FEA_OPTI", {{"Inference", 9080}, {"Management", 9081}, {"Metrics", 9082}}},
       {"RBOX_DET", {{"Inference", 8080}, {"Management", 8081}, {"Metrics", 8082}}}};
+  postTag = 0;
   initTorchServe();
 }
 

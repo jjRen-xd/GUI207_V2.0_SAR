@@ -51,19 +51,35 @@ DataEvalPage::~DataEvalPage()
 
 void DataEvalPage::ttThread()
 {
-    if (this->choicedModelType == "FEA_OPTI"){
-        QMessageBox::warning(NULL, "错误", "该模型不能测试！");
-    }else if (this->choicedModelType == "RBOX_DET" && this->datasetInfo->selectedType != "RBOX"){
-        QMessageBox::warning(NULL, "错误", "数据集和模型不匹配！");
-    }else{
-        ui->pushButton_mE_testAll->setEnabled(false);
-        ui->dataEvalProcessBar->setMaximum(0);
-        ui->dataEvalProcessBar->setValue(0);
-        if (nullptr != thread)
-        {
-            thread->start();
+    QString selectedDataName = QString::fromStdString(this->datasetInfo->selectedName);
+    if (this->choicedModelType == "" || this->datasetInfo->selectedName == "")
+    {
+        QMessageBox::warning(NULL, "错误", "请选择模型和数据集！");
+    }else if (selectedDataName.contains("Diorship") )
+    {
+        QMessageBox::warning(NULL, "错误", "请选择灰度图！");
+    }else if (torchServe->postTag == 0)
+    {
+        QMessageBox::warning(NULL, "错误", "模型没有上传完成！");
+    }
+    else
+    {
+        if (this->choicedModelType == "FEA_OPTI"){
+            QMessageBox::warning(NULL, "错误", "该模型不能测试！");
+        }else if (this->choicedModelType == "RBOX_DET" && this->datasetInfo->selectedType != "RBOX"){
+            QMessageBox::warning(NULL, "错误", "数据集和模型不匹配！");
+        }else{
+            ui->pushButton_mE_testAll->setEnabled(false);
+            ui->dataEvalProcessBar->setMaximum(0);
+            ui->dataEvalProcessBar->setValue(0);
+            if (nullptr != thread)
+            {
+                thread->start();
+            }
         }
     }
+    
+
 
 }
 
@@ -143,6 +159,7 @@ void DataEvalPage::refreshGlobalInfo()
         this->choicedDatasetPATH = "";
         ui->label_mE_dataset_2->setText("空");
     }
+
 
 }
 

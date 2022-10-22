@@ -36,6 +36,8 @@ ModelChoicePage::ModelChoicePage(Ui_MainWindow *main_ui, BashTerminal *bash_term
     attriLabelGroup["batch"] = ui->lineEdit_modelChoice_batch;
     attriLabelGroup["other"] = ui->lineEdit_modelChoice_other;
 
+    processConfirm = new QProcess();
+    connect(processConfirm, &QProcess::readyReadStandardOutput, this, &ModelChoicePage::processConfirmFinished);
 }
 
 ModelChoicePage::~ModelChoicePage(){
@@ -59,6 +61,37 @@ void ModelChoicePage::changeType(){
 
 }
 
+void ModelChoicePage::execuCmdProcess(QString cmd){
+    if(processConfirm->state()==QProcess::Running){
+        processConfirm->close();
+        processConfirm->kill();
+    }
+    processConfirm->setProcessChannelMode(QProcess::MergedChannels);
+    processConfirm->start(this->terminal->bashApi);
+    processConfirm->write(cmd.toLocal8Bit() + '\n');
+}
+
+void ModelChoicePage::processConfirmFinished(){
+    QByteArray cmdOut = processConfirm->readAllStandardOutput();
+    if(!cmdOut.isEmpty()){
+        QString logs=QString::fromLocal8Bit(cmdOut);
+        if(logs.contains("already") || logs.contains("registered with")){
+            terminal->print("模型上传成功！");
+            terminal->print(logs);
+            torchServe->postTag = 1;
+            QMessageBox::warning(NULL,"恭喜","模型上传成功");
+            if(processConfirm->state()==QProcess::Running){
+                processConfirm->close();
+                processConfirm->kill();
+            }
+        }else if(logs.contains("not found")){
+            terminal->print("模型上传失败！");
+            QMessageBox::warning(NULL,"错误","模型上传失败");
+        }else{
+            terminal->print("模型上传中……");
+        }
+    }
+}
 
 void ModelChoicePage::confirmModel(bool notDialog = false){
     // 获取选择的类型内容
@@ -111,30 +144,50 @@ void ModelChoicePage::confirmModel(bool notDialog = false){
         }
         // new code 2 added by zyx
 
+
         if(!notDialog)
             QMessageBox::information(NULL, "模型切换提醒", "已成功切换模型为->"+selectedType+"->"+selectedName+"！");
+        QString command = "curl -X POST \"http://localhost:" +
+                QString::number(this->torchServe->serverPortList[selectedType]["Management"]) +
+                "/models"+"?initial_workers=" +
+                QString::number(1) + "&url=" + selectedName + '\"';
+        torchServe->postTag = 0;
         if (lastSelectName.isEmpty() || lastSelectType.isEmpty())
         {
             lastSelectName = selectedName;
             lastSelectType = selectedType;
-            torchServe->postModel(selectedName, selectedType, 1);
+
+            terminal->print(command);
+            this->execuCmdProcess(command);
+            // torchServe->postModel(selectedName, selectedType, 1);
         }else{
-            if(lastSelectType=="RBOX_DET"){
-                QString link="../db/models/RBOX/"+lastSelectName;
-                if(access(link.toStdString().c_str(), F_OK) != -1){
-                    remove(link.toStdString().c_str());
+            if (lastSelectName == selectedName)
+            {
+                // torchServe->postModel(selectedName, selectedType, 1);
+                terminal->print(command);
+                this->execuCmdProcess(command);
+            }else{
+                if(lastSelectType=="RBOX_DET"){
+                    QString link="../db/models/RBOX/"+lastSelectName;
+                    if(access(link.toStdString().c_str(), F_OK) != -1){
+                        remove(link.toStdString().c_str());
+                    }
                 }
-            }
-            else{
-                QString link="../db/models/BBOX/"+lastSelectName;
-                if(access(link.toStdString().c_str(), F_OK) != -1){
-                    remove(link.toStdString().c_str());
+                else{
+                    QString link="../db/models/BBOX/"+lastSelectName;
+                    if(access(link.toStdString().c_str(), F_OK) != -1){
+                        remove(link.toStdString().c_str());
+                    }
                 }
+                torchServe->deleteModel(lastSelectName,lastSelectType);
+                // torchServe->postModel(selectedName, selectedType, 1);
+                terminal->print(command);
+                this->execuCmdProcess(command);
+                lastSelectName = selectedName;
+                lastSelectType = selectedType;
             }
-            torchServe->deleteModel(lastSelectName,lastSelectType);
-            torchServe->postModel(selectedName, selectedType, 1);
-            lastSelectName = selectedName;
-            lastSelectType = selectedType;
+            
+
         }
     }
     else{
