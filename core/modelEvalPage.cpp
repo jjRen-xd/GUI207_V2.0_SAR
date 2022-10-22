@@ -173,6 +173,14 @@ int ModelEvalPage::testOneSample()
     cout << "choicedModelName:" << choicedModelName.split(".mar")[0].toStdString() << endl;
     cout << "modelType:" << choicedModelType.toStdString() << endl;
     cout << "choicedSamplePATH:" << choicedSamplePATH.toStdString() << endl;
+    if (choicedModelType == "FEA_OPTI"){
+        QMessageBox::warning(NULL, "错误", "该模型不能测试！");
+        return -1;
+    }else if (choicedModelType == "RBOX_DET" && datasetInfo->selectedType != "RBOX"){
+        QMessageBox::warning(NULL, "错误", "数据集和模型不匹配！");
+        return -1;
+    }
+
     if (!choicedModelName.isEmpty() && !choicedSamplePATH.isEmpty())
     {
         // 使用TorchServe进行预测

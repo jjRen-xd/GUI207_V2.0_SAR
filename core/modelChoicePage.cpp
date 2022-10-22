@@ -1,5 +1,4 @@
 #include "modelChoicePage.h"
-#include <QMessageBox>
 
 using namespace std;
 
@@ -40,7 +39,6 @@ ModelChoicePage::ModelChoicePage(Ui_MainWindow *main_ui, BashTerminal *bash_term
 }
 
 ModelChoicePage::~ModelChoicePage(){
-
 }
 
 
@@ -76,9 +74,42 @@ void ModelChoicePage::confirmModel(bool notDialog = false){
         updateAttriLabel();
         // 网络图像展示
         QString rootPath = QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH"));
+
+        // new code 1 added by zyx
+        // if(!rootPath.contains("models") || (!rootPath.contains("BBOX")&&!rootPath.contains("RBOX"))){
+        if(!rootPath.contains("db/models/BBOX") && !rootPath.contains("db/models/RBOX")){
+            QMessageBox::warning(NULL, "模型选择错误", "为确保平台正常运行,请选择规定路径下的模型文件");
+            return;
+        }
+        // new code 1 added by zyx
+
         QString imgPath = rootPath.split(".mar").first()+".png";
         terminal->print(imgPath);
         ui->label_modelImg->setPixmap(QPixmap(imgPath).scaled(QSize(600,600), Qt::KeepAspectRatio));
+
+        // new code 2 added by zyx
+        QStringList rootPathSplit = rootPath.split("/");
+        int splitSize = rootPathSplit.size();
+        QString parentPath = rootPathSplit[splitSize-2];
+        if(parentPath!="BBOX" && parentPath!="RBOX"){
+            if(rootPath.contains("BBOX")){
+                QString link="../db/models/BBOX/"+selectedName;
+                if(access(link.toStdString().c_str(), F_OK) != -1){
+                    remove(link.toStdString().c_str());
+                }
+                QString mkLinkCmd = "ln "+rootPath+" "+link;
+                this->terminal->execute(mkLinkCmd);
+            }
+            else if(rootPath.contains("RBOX")){
+                QString link="../db/models/RBOX/"+selectedName;
+                if(access(link.toStdString().c_str(), F_OK) != -1){
+                    remove(link.toStdString().c_str());
+                }
+                QString mkLinkCmd = "ln "+rootPath+" "+link;
+                this->terminal->execute(mkLinkCmd);
+            }
+        }
+        // new code 2 added by zyx
 
         if(!notDialog)
             QMessageBox::information(NULL, "模型切换提醒", "已成功切换模型为->"+selectedType+"->"+selectedName+"！");
@@ -88,6 +119,18 @@ void ModelChoicePage::confirmModel(bool notDialog = false){
             lastSelectType = selectedType;
             torchServe->postModel(selectedName, selectedType, 1);
         }else{
+            if(lastSelectType=="RBOX_DET"){
+                QString link="../db/models/RBOX/"+lastSelectName;
+                if(access(link.toStdString().c_str(), F_OK) != -1){
+                    remove(link.toStdString().c_str());
+                }
+            }
+            else{
+                QString link="../db/models/BBOX/"+lastSelectName;
+                if(access(link.toStdString().c_str(), F_OK) != -1){
+                    remove(link.toStdString().c_str());
+                }
+            }
             torchServe->deleteModel(lastSelectName,lastSelectType);
             torchServe->postModel(selectedName, selectedType, 1);
             lastSelectName = selectedName;
@@ -99,7 +142,6 @@ void ModelChoicePage::confirmModel(bool notDialog = false){
             QMessageBox::warning(NULL, "模型切换提醒", "模型切换失败，请指定模型");
     }
 }
-
 
 void ModelChoicePage::updateAttriLabel(){
     if(!modelInfo->checkMap(modelInfo->selectedType, modelInfo->selectedName)){

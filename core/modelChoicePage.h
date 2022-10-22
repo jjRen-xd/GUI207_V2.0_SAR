@@ -7,7 +7,10 @@
 #include <QObject>
 #include <iostream>
 #include <QButtonGroup>
+#include <unistd.h>
+#include <QMessageBox>
 #include <QString>
+#include "qdir.h"
 #include "ui_MainWindow.h"
 #include "./lib/guiLogic/bashTerminal.h"
 #include "./lib/guiLogic/modelInfo.h"

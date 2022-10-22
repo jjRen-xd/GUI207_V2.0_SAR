@@ -2,6 +2,7 @@
 #define MODELDOCK_H
 
 #include <QObject>
+#include <unistd.h>
 #include "ui_MainWindow.h"
 
 #include "./lib/guiLogic/bashTerminal.h"

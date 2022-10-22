@@ -63,11 +63,11 @@ void ReinfoceTrainPage::refreshDataModelInfo(){
 }
 
 void ReinfoceTrainPage::startTrain(){
-    batchSize = ui->reinforceBatchsizeEdit->text();
-    epoch = ui->reinforceEpochEdit->text();
-    lr = ui->reinforceLrEdit->text();
-    dqnBatchSize = ui->dqnBatchEdit->text();
-    dqnEpoch = ui->dqnEpochEdit->text();
+//    batchSize = ui->reinforceBatchsizeEdit->text();
+//    epoch = ui->reinforceEpochEdit->text();
+//    lr = ui->reinforceLrEdit->text();
+//    dqnBatchSize = ui->dqnBatchEdit->text();
+//    dqnEpoch = ui->dqnEpochEdit->text();
     saveModelName = ui->reinforceSaveModelNameEdit->text();
     QString cmd="";
     if(processTrain->state()!=QProcess::Running){
@@ -86,27 +86,26 @@ void ReinfoceTrainPage::startTrain(){
         }
         QDateTime dateTime(QDateTime::currentDateTime());
         time = dateTime.toString("yyyy-MM-dd-hh-mm-ss");
-        cmd += "python ../api/bash/mmdetection/GUI/DQNtrain.py --base_cfg_type ReinforceLearning --time "+time+ \
+        cmd += "python ../db/bash/mmdetection/GUI/DQNtrain.py --base_cfg_type ReinforceLearning --time "+time+ \
         " --data_root "+choicedDatasetPATH+" --max_epoch "+epoch+" --batch_size "+batchSize+" --lr "+lr+ \
         " --dqn_epoch "+dqnEpoch+" --dqn_batch "+dqnBatchSize+" --save_model_name "+saveModelName+ \
         " --num_of_state "+QString::number(featureWeightEdits.size());
     }
     else{
-        if(!datasetInfo->checkMap(modelType.toStdString(),ui->reinforceTrainedModelBox->currentText().toStdString(),"PATH")){
+        if(!modelInfo->checkMap(modelType.toStdString(),ui->reinforceTrainedModelBox->currentText().toStdString(),"PATH")){
             QMessageBox::warning(NULL,"错误","请选择可用模型!");
             return;
         }
         choicedModelPATH = QString::fromStdString(modelInfo->getAttri(modelType.toStdString(),
                                                    ui->reinforceTrainedModelBox->currentText().toStdString(),"PATH"));
-        cmd += "python ../api/bash/mmdetection/GUI/DQNtrain.py"
+        cmd += "python ../db/bash/mmdetection/GUI/DQNtrain.py"
         " --endmessage EvaluateEnded --load_from "+choicedModelPATH+" --num_of_state "+QString::number(featureWeightEdits.size());
     }
-    qDebug() << cmd;
+    this->terminal->print(cmd);
     execuCmd(cmd);
 }
 
 void ReinfoceTrainPage::stopTrain(){
-    ui->trainLogBrowser->append("===================Train Stoping===================");
     ui->startRfTrainButton->setEnabled(true);
     ui->reinforceTrainBar->setMaximum(100);
     ui->reinforceTrainBar->setValue(0);
@@ -122,9 +121,9 @@ void ReinfoceTrainPage::execuCmd(QString cmd){
         processTrain->start(bashApi);
     }
     ui->startRfTrainButton->setEnabled(false);
-    ui->stopRfTrainButton->setEnabled(false);
-    ui->reinforceTrainBar->setMaximum(0);
-    ui->reinforceTrainBar->setValue(0);
+//    ui->stopRfTrainButton->setEnabled(false);
+//    ui->reinforceTrainBar->setMaximum(0);
+//    ui->reinforceTrainBar->setValue(0);
     for(int i=0;i<featureWeightEdits.size();i++){
         featureWeightEdits[i]->setText("");
     }
@@ -139,7 +138,13 @@ void ReinfoceTrainPage::readLogOutput(){
         QStringList lines = logs.split("\n");
         int len=lines.length();
         for(int i=0;i<len;i++){
-            if(lines[i].contains("Train Ended",Qt::CaseSensitive) || lines[i].contains("EvaluateEnded",Qt::CaseSensitive)){
+            if(lines[i].contains("207StartTrain",Qt::CaseSensitive)){
+//                ui->startRfTrainButton->setEnabled(false);
+                ui->stopRfTrainButton->setEnabled(false);
+                ui->reinforceTrainBar->setMaximum(0);
+                ui->reinforceTrainBar->setValue(0);
+            }
+            else if(lines[i].contains("Train Ended",Qt::CaseSensitive) || lines[i].contains("EvaluateEnded",Qt::CaseSensitive)){
                 ui->startRfTrainButton->setEnabled(true);
                 ui->stopRfTrainButton->setEnabled(true);
                 ui->reinforceTrainBar->setMaximum(100);

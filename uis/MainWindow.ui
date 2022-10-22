@@ -33,7 +33,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="page_senseSet">
        <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -984,16 +984,34 @@
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_74">
                  <item>
-                  <widget class="QRadioButton" name="radioButton__FEA_OPTI__choice">
+                  <widget class="QRadioButton" name="radioButton__RBOX_DET__choice">
                    <property name="text">
-                    <string>特征优化模型</string>
+                    <string>旋转目标检测模型</string>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QRadioButton" name="radioButton__RBOX_DET__choice">
+                  <widget class="QRadioButton" name="radioButton__FEA_OPTI__choice">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>0</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true"/>
+                   </property>
                    <property name="text">
-                    <string>旋转目标检测模型</string>
+                    <string>特征优化模型</string>
                    </property>
                   </widget>
                  </item>
@@ -2480,6 +2498,13 @@
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_68">
                  <item>
+                  <widget class="QProgressBar" name="dataEvalProcessBar">
+                   <property name="value">
+                    <number>0</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
                   <widget class="QPushButton" name="pushButton_mE_testAll">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -2814,8 +2839,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>732</width>
-             <height>681</height>
+             <width>724</width>
+             <height>515</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_37">
@@ -4341,7 +4366,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>721</width>
+             <width>551</width>
              <height>1102</height>
             </rect>
            </property>
@@ -4859,7 +4884,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>721</width>
+             <width>551</width>
              <height>686</height>
             </rect>
            </property>

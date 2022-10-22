@@ -32,7 +32,6 @@ ModelTrainPage::ModelTrainPage(Ui_MainWindow *main_ui, BashTerminal *bash_termin
     connect(ui->startTrainButton, &QPushButton::clicked, this, &ModelTrainPage::startTrain);
     connect(ui->stopTrainButton,  &QPushButton::clicked, this, &ModelTrainPage::stopTrain);
     connect(ui->feaConfusionCheckBox,  &QCheckBox::stateChanged, this, &ModelTrainPage::handFeaAvailable);
-
 }
 
 ModelTrainPage::~ModelTrainPage(){
@@ -44,7 +43,7 @@ ModelTrainPage::~ModelTrainPage(){
 }
 
 void ModelTrainPage::refreshGlobalInfo(){
-    if(datasetInfo->checkMap(datasetInfo->selectedType,datasetInfo->selectedName,"PATH")){
+    if(datasetInfo->selectedType == "BBOX" && datasetInfo->checkMap(datasetInfo->selectedType,datasetInfo->selectedName,"PATH")){
         ui->train_data_path->setText(QString::fromStdString(datasetInfo->selectedName));
         this->choicedDatasetPATH = QString::fromStdString(datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH"));
     }
@@ -67,7 +66,7 @@ void ModelTrainPage::handFeaAvailable(){
 
 void ModelTrainPage::startTrain(){
     if(choicedDatasetPATH==""){
-        QMessageBox::warning(NULL,"错误","未选择训练数据集!");
+        QMessageBox::warning(NULL,"错误","未选择BBOX训练数据集!");
         return;
     }
     batchSize = ui->batchsizeEdit->text();
@@ -102,7 +101,7 @@ void ModelTrainPage::startTrain(){
         modelType="FEA_RELE";
         QDateTime dateTime(QDateTime::currentDateTime());
         time = dateTime.toString("yyyy-MM-dd-hh-mm-ss");
-        cmd += "python ../api/bash/mmdetection/GUI/train_model.py --base_cfg_type FeatureConfusion --time "+time+ \
+        cmd += "python ../db/bash/mmdetection/GUI/train_model.py --base_cfg_type FeatureConfusion --time "+time+ \
         " --data_root "+choicedDatasetPATH+" --use_feature --confusion_type "+fusionType+ \
         " --feature_ids "+featureIds+" --max_epoch "+epoch+" --batch_size "+batchSize+ \
         " --lr "+lr+" --save_model_name "+saveModelName;
@@ -111,11 +110,11 @@ void ModelTrainPage::startTrain(){
         modelType="TRA_DL";
         QDateTime dateTime(QDateTime::currentDateTime());
         time = dateTime.toString("yyyy-MM-dd-hh-mm-ss");
-        cmd += "python ../api/bash/mmdetection/GUI/train_model.py --base_cfg_type Baseline --time "+time+ \
+        cmd += "python ../db/bash/mmdetection/GUI/train_model.py --base_cfg_type Baseline --time "+time+ \
         " --data_root "+choicedDatasetPATH+" --max_epoch "+epoch+" --batch_size "+batchSize+ \
         " --lr "+lr+" --save_model_name "+saveModelName;
     }
-    qDebug() << cmd;
+    this->terminal->print(cmd);
     execuCmd(cmd);
 }
 

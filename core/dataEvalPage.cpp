@@ -51,11 +51,20 @@ DataEvalPage::~DataEvalPage()
 
 void DataEvalPage::ttThread()
 {
-    ui->pushButton_mE_testAll->setEnabled(false);
-    if (nullptr != thread)
-    {
-        thread->start();
+    if (this->choicedModelType == "FEA_OPTI"){
+        QMessageBox::warning(NULL, "错误", "该模型不能测试！");
+    }else if (this->choicedModelType == "RBOX_DET" && this->datasetInfo->selectedType != "RBOX"){
+        QMessageBox::warning(NULL, "错误", "数据集和模型不匹配！");
+    }else{
+        ui->pushButton_mE_testAll->setEnabled(false);
+        ui->dataEvalProcessBar->setMaximum(0);
+        ui->dataEvalProcessBar->setValue(0);
+        if (nullptr != thread)
+        {
+            thread->start();
+        }
     }
+
 }
 
 //线程结束触发槽函数，用于打印线程输出的结果
@@ -64,12 +73,13 @@ void DataEvalPage::outThread(std::vector<result_> result, std::vector<std::strin
     resultMean.clear();
     std::vector<std::string> matrixType(classType);
     matrixType.push_back("background");
+    ui->dataEvalProcessBar->setMaximum(100);
+    ui->dataEvalProcessBar->setValue(100);
     if (result.size() == 0)
     {
         QMessageBox::warning(NULL, "错误", "结果为空！");
         ui->pushButton_mE_testAll->setEnabled(true);
-    }
-    else
+    }else
     {
         for (size_t i = 0; i < classType.size(); i++)
         {

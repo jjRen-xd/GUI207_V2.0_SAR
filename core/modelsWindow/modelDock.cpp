@@ -111,9 +111,9 @@ void ModelDock::importModel(string type){
     QString modelName = modelPath.split('/').last();
 
     // 讲模型导入TorchServe模型库
-    if(type!="FEA_OPTI"){
-        torchServe->postModel(modelName, QString::fromStdString(type), 2);
-    }
+//    if(type!="FEA_OPTI"){
+//        torchServe->postModel(modelName, QString::fromStdString(type), 2);
+//    }
     // QString torchServePOST = "curl -X POST \"http://localhost:8081/models?initial_workers=2&url="+modelName+'\"';
     // terminal->execute(torchServePOST);
     string savePath = modelPath.toStdString();
@@ -155,7 +155,6 @@ void ModelDock::importModel(string type){
 void ModelDock::importModelAfterTrain(QString type, QString modelPath, QString modelName, QString modelSuffix){
     // 模型导入TorchServe模型库
     if(modelSuffix==".mar"){
-        torchServe->postModel(modelName, type, 2);
         modelPath = modelPath+"/"+modelName+".mar";
     }
     else{
@@ -198,6 +197,20 @@ void ModelDock::deleteModel(){
     confirmMsg.setText(QString::fromStdString("确认要删除模型："+previewType+"->"+previewName));
     confirmMsg.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
     if(confirmMsg.exec() == QMessageBox::Yes){
+        // new code added by zyx
+        if(this->previewType=="RBOX_DET"){
+            std::string link="../db/models/RBOX/"+previewName;
+            if(access(link.c_str(), F_OK) != -1){
+                remove(link.c_str());
+            }
+        }
+        else{
+            std::string link="../db/models/BBOX/"+previewName;
+            if(access(link.c_str(), F_OK) != -1){
+                remove(link.c_str());
+            }
+        }
+        // new code added by zyx
         // 从TorchServe模型库删除模型
         torchServe->deleteModel(QString::fromStdString(previewName), QString::fromStdString(previewType));
         // QString torchServeDELETE = "curl -X DELETE http://localhost:8081/models/" +

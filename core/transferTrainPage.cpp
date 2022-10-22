@@ -122,11 +122,11 @@ void TransferTrainPage::startNormalTrain(){
     }
     QDateTime dateTime(QDateTime::currentDateTime());
     times[0] = dateTime.toString("yyyy-MM-dd-hh-mm-ss");
-    cmd += "python ../api/bash/mmdetection/GUI/train_model.py --base_cfg_type FewShot --time "+times[0]+ \
+    cmd += "python ../db/bash/mmdetection/GUI/train_model.py --base_cfg_type FewShot --time "+times[0]+ \
     " --data_root "+choicedSARData+" --max_epoch "+epochs[0]+" --batch_size "+batchsizes[0]+ \
     " --lr "+lrs[0]+" --volume "+volume+" --save_model_name "+saveModelNames[0];
 
-    qDebug() << cmd;
+    this->terminal->print(cmd);
     execuCmd(0, cmd);
 }
 
@@ -167,7 +167,7 @@ void TransferTrainPage::startTransferTrain(){
 //        ui->startTransferTrainButton->setEnabled(false);
 //        QDateTime dateTime(QDateTime::currentDateTime());
 //        times[1] = dateTime.toString("yyyy-MM-dd-hh-mm-ss");
-//        cmd += "python ../api/bash/mmdetection/GUI/train_model.py --base_cfg_type FewShot --time "+times[1]+ \
+//        cmd += "python ../db/bash/mmdetection/GUI/train_model.py --base_cfg_type FewShot --time "+times[1]+ \
 //        " --data_root "+choicedSARData+" --max_epoch "+epochs[2]+" --batch_size "+batchsizes[2]+ \
 //        " --lr "+lrs[2]+" --volume "+volume+" --load_from "+choicedPreModel+" --save_model_name "+saveModelNames[1];
 //    }
@@ -180,15 +180,15 @@ void TransferTrainPage::startTransferTrain(){
     ui->startTransferTrainButton->setEnabled(false);
     QDateTime dateTime(QDateTime::currentDateTime());
     times[1] = dateTime.toString("yyyy-MM-dd-hh-mm-ss");
-    cmd += "python ../api/bash/mmdetection/GUI/train_model.py --base_cfg_type FewShot --time "+times[1]+ \
+    cmd += "python ../db/bash/mmdetection/GUI/train_model.py --base_cfg_type FewShot --time "+times[1]+ \
     " --data_root "+choicedOpticalData+" --max_epoch "+epochs[1]+" --batch_size "+batchsizes[1]+ \
     " --lr "+lrs[1]+" --volume "+volume+" --save_model_name "+saveModelNames[1]+" --endmessage next_step && "+ \
-    " python ../api/bash/mmdetection/GUI/train_model.py --base_cfg_type FewShot --time "+times[1]+ \
+    " python ../db/bash/mmdetection/GUI/train_model.py --base_cfg_type FewShot --time "+times[1]+ \
     " --data_root "+choicedSARData+" --max_epoch "+epochs[2]+" --batch_size "+batchsizes[2]+ \
     " --lr "+lrs[2]+" --volume "+volume+" --load_from last_step_"+epochs[1]+" --save_model_name "+saveModelNames[1];
 //    }
 
-//    qDebug() << cmd;
+    this->terminal->print(cmd);
     execuCmd(1, cmd);
 }
 

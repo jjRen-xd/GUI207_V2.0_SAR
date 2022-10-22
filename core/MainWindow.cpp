@@ -56,10 +56,28 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
     this->reinforceTrainPage = new ReinfoceTrainPage(this->ui, this->terminal,this->globalDatasetInfo, this->globalModelInfo, this->torchServe, this->modelDock);
     this->modelVisPage = new ModelVisPage(this->ui, this->terminal, this->globalDatasetInfo, this->globalModelInfo);
     this->modelCAMPage = new ModelCAMPage(this->ui, this->terminal, this->globalDatasetInfo, this->globalModelInfo);
+
+    // mmdetection nedd use "python setup.py develop" to initial the struct of its folder because zyx added a folder names GUI
+    QString initCmd = "source activate && source deactivate && conda activate 207_base && cd ../db/bash/mmdetection && python setup.py develop && cd ../../../build && conda activate base";
+    this->terminal->execute(initCmd);
 }
 
 
 MainWindow::~MainWindow(){
+    QString bboxPath="../db/models/BBOX";
+    QString rboxPath="../db/models/RBOX";
+    QDir bboxModel(bboxPath);
+    QDir rboxModel(rboxPath);
+    QFileInfoList fileList1 = bboxModel.entryInfoList(QStringList()<<"*.mar");
+    QFileInfoList fileList2 = rboxModel.entryInfoList(QStringList()<<"*.mar");
+    for(auto fileinfo:fileList1){
+        torchServe->deleteModel(fileinfo.completeBaseName().toStdString().c_str(),"BBOX");
+        remove(fileinfo.absoluteFilePath().toStdString().c_str());
+    }
+    for(auto fileinfo:fileList2){
+        torchServe->deleteModel(fileinfo.completeBaseName().toStdString().c_str(),"RBOX");
+        remove(fileinfo.absoluteFilePath().toStdString().c_str());
+    }
     delete ui;
 }
 
