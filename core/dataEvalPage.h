@@ -44,7 +44,6 @@ public:
     std::string choicedDatasetPATH;
     QString choicedModelName;
     QString choicedModelType;
-    
 
 public slots:
     void refreshGlobalInfo();
@@ -68,6 +67,8 @@ private:
 
     // std::string choicedDatasetPATH = "";
 
+    double predTime;
+    clock_t start_time,end_time;
 
 
     //指标计算用到参数,全局变量

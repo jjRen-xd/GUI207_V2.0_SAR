@@ -6,11 +6,15 @@
 build/*
 build/build_here
 
-conf/*.xml
+conf/
+subGUI/*
+
+bash/*
 
 db/datasets/*
 !/db/datasets/dataset_here
 db/models/*
+db/*
 
 !/db/models/BBOX/BBOX_ModelDir_Here
 !/db/models/BBOX/pretrained/pretrained_model_here
@@ -24,3 +28,5 @@ lib/algorithm/modelVisOutput/
 GUI_V1.0.pro.user
 .qt_for_python/*
 GUI_V2.0.pro.user
+GUI_V2.0_SAR.pro.user
+GUI_V2.0_SAR.pro.user.6cd0d44

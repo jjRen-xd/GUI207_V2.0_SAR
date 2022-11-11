@@ -24,7 +24,7 @@ class SearchFolder{
 
 
         // 从XML中读取ground truth
-        bool getGtXML(std::vector<std::string>  &label_GT, std::vector<std::vector<cv::Point>> &points_GT, std::string labelPath);
+        bool getGtXML(std::vector<std::string>  &label_GT, std::vector<std::vector<cv::Point>> &points_GT,std::vector<std::vector<std::double_t>> &bboxGT, std::string labelPath);
     private:
 
 };

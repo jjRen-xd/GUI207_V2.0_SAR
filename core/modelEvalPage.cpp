@@ -70,10 +70,9 @@ int ModelEvalPage::randSample()
     // 清空GroundTruth
     labels_GT.clear();
     points_GT.clear();
+    bboxGT.clear();
 
     // 获取所有子文件夹，并判断是否是图片、标注文件夹
-    points_GT.clear();
-    labels_GT.clear();
     vector<string> allSubDirs;
     dirTools->getDirs(allSubDirs, choicedDatasetPATH);
     vector<string> targetKeys = {"images", "labelTxt"};
@@ -109,7 +108,7 @@ int ModelEvalPage::randSample()
     if (datasetInfo->selectedType == "BBOX")
     {
         string labelPath = choicedDatasetPATH + "/labelTxt/" + choicedImageFile.substr(0, choicedImageFile.size() - 4) + ".xml";
-        dirTools->getGtXML(labels_GT, points_GT, labelPath);
+        dirTools->getGtXML(labels_GT, points_GT, bboxGT, labelPath);
     }
     else
     {
@@ -190,6 +189,11 @@ int ModelEvalPage::testOneSample()
             QMessageBox::warning(NULL, "错误", "模型没有上传完成！");
             return -1;
         }
+
+        double predTime;
+        clock_t start_time,end_time;
+        start_time = clock();
+
         // 使用TorchServe进行预测
         std::vector<std::map<QString, QString>> predMapStr = torchServe->inferenceOne(
             choicedModelName.split(".mar")[0],
@@ -238,12 +242,20 @@ int ModelEvalPage::testOneSample()
                 }
             }
 
+            end_time = clock();
+            predTime = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+            std::cout << "Predict Time: " << predTime << std::endl;
+            ui->label_predTime->setText(QString("%1").arg(predTime));
             // 绘制预测结果到图片上
             cv::Mat imgShow = imgSrc.clone();
             this->showImg_Pred(imgShow);
             return 1;
         }
         else{
+            end_time = clock();
+            predTime = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+            std::cout << "Predict Time: " << predTime << std::endl;
+            ui->label_predTime->setText(QString("%1").arg(predTime));
             QMessageBox::warning(NULL, "错误", "识别不到结果！");
             return -1;
         }

@@ -8,7 +8,7 @@ EvaluationIndex::EvaluationIndex(DatasetInfo *globalDatasetInfo, ModelInfo *glob
     modelInfo(globalModelInfo),
     torchServe(globalTorchServe)
 {
-
+    MaskApi *maskiou;
 
 
 }
@@ -17,6 +17,7 @@ EvaluationIndex::~EvaluationIndex(){
     
 }
 
+// 斜框iou计算
 float EvaluationIndex::rotateIOUcv(cv::RotatedRect rect1,cv::RotatedRect rect2){
     float areaRect1 = rect1.size.width * rect1.size.height;
     float areaRect2 = rect2.size.width * rect2.size.height;
@@ -32,15 +33,39 @@ float EvaluationIndex::rotateIOUcv(cv::RotatedRect rect1,cv::RotatedRect rect2){
         float inner = (float) (area / (areaRect1 + areaRect2 - area + 0.0001));
         return inner;
     }
-
 }
 
-void EvaluationIndex::tpfp(std::vector<pre_info> preInfo,
+void EvaluationIndex::tpfp(bool bboxTag,
+    std::vector<pre_info> preInfo,
     std::vector<gt_info> gtInfo,
     std::vector<float> &tp,
     std::vector<float> &fp,
     float iouThresh){
     int num =0;
+
+    // 测试微软官方iou计算库
+    BB db,gb;
+    double iou = 0;
+    // double dt[4] = {135.56723022460938,94.97298431396484,28.2076416015625,77.8844223022461};
+    // double gt[4] = {136,100,26,70};
+
+    std::vector<std::double_t> dt = {135.56723022460938,94.97298431396484,28.2076416015625,77.8844223022461};
+    std::vector<std::double_t> gt = {136,100,26,70};
+
+
+    // db = &dt;
+    // gb = &gt;
+
+    // 预测框个数
+    siz m = 1;   
+    // 真实框个数
+    siz n = 1;   
+    byte2 iscrowd = 0;
+    maskiou->bbIou(db,gb,m,n,&iscrowd,&iou);
+    cout << "iou:" << iou << endl;
+
+
+
     // 计算预测框和该图所有真实框的IOU，取最大值
     for (size_t i = 0; i < preInfo.size(); i++)
     {
@@ -49,9 +74,34 @@ void EvaluationIndex::tpfp(std::vector<pre_info> preInfo,
         for (size_t j = 0; j < gtInfo.size(); j++)
         {
             if( preInfo[i].imgName == gtInfo[j].imgName){
-                for(size_t k = 0; k < gtInfo[j].gtRect.size();k++){
-                    IOU.push_back(rotateIOUcv(preInfo[i].preRect,gtInfo[j].gtRect[k]));
+                // 如果是正框，走微软iou计算
+                if (bboxTag){
+                    for(size_t k = 0; k < gtInfo[j].gtBbox.size();k++){
+                        BB db,gb;
+                        double iou = 0;
+                        // 构建和预测框真实框一样大小的数组
+                        double dt[preInfo[i].preBbox.size()];
+                        double gt[gtInfo[j].gtBbox[k].size()];
+                        // 把vector的真实框和预测框转化为数组
+                        memcpy(dt,&preInfo[i].preBbox[0],preInfo[i].preBbox.size() * sizeof(preInfo[i].preBbox[0]));
+                        memcpy(gt,&gtInfo[j].gtBbox[k][0],gtInfo[j].gtBbox[k].size() * sizeof(gtInfo[j].gtBbox[k][0]));
+                        db = dt;
+                        gb = gt;
+                        // 预测框个数
+                        siz m = 1;
+                        // 真实框个数
+                        siz n = 1;
+                        byte2 iscrowd = 0;
+                        maskiou->bbIou(db,gb,m,n,&iscrowd,&iou);
+                        IOU.push_back(iou);
+                    }
                 }
+                else{
+                    for(size_t k = 0; k < gtInfo[j].gtRect.size();k++){
+                        IOU.push_back(rotateIOUcv(preInfo[i].preRect,gtInfo[j].gtRect[k])); 
+                    }
+                }
+
                 for (size_t m = 0; m < IOU.size(); m++)
                 {
                     if(iouMax<IOU[m]){
@@ -64,6 +114,10 @@ void EvaluationIndex::tpfp(std::vector<pre_info> preInfo,
                 // 计算tp 和fp个数
                 if(iouMax > iouThresh){
                     if(gtInfo[j].det[iouMaxIdx] == 0){
+                        if(gtInfo[j].imgName == "001039"){
+                            // cout << gtInfo[j].imgName << endl;
+                            cout << iouMax << endl;
+                        }
                         tp[i] = 1.0;
                         gtInfo[j].det[iouMaxIdx] = 1;
                     }

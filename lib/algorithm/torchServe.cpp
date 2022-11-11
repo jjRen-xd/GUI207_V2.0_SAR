@@ -33,17 +33,29 @@ int TorchServe::initTorchServe()
 {
   this->terminal->print("初始化TorchServe");
   // 初始化Docker
-  this->terminal->execute("docker stop $(docker ps -aq) && docker rm $(docker ps -aq)");
+  // this->terminal->execute("docker stop $(docker ps -aq) && docker rm $(docker ps -aq)");
   QString dockerRunCmd = "gnome-terminal -x bash -c \"\
 docker run --rm \
---cpus 16 \
+--cpus 10 \
 --gpus all \
 -p8080:8080 -p8081:8081 -p8082:8082 \
 --mount type=bind,\
-source=/media/z840/HDD_1/LINUX/GUI207_V2.0_SAR/db/models,\
-target=/home/model-server/model-store mmrotate-serve:latest; \
+source=/media/z840/HDD_1/LINUX/jwk/GUI207_V2.0_SAR/db/models/RBOX,\
+target=/home/model-server/model-store mmrotate-serve:v2; \
 exec bash -l\"";
-  this->terminal->execute(dockerRunCmd);
+
+  QString dockerRunCmdMmdet = "gnome-terminal -x bash -c \"\
+docker run --rm \
+--cpus 10 \
+--gpus all \
+-p9080:8080 -p9081:8081 -p9082:8082 \
+--mount type=bind,\
+source=/media/z840/HDD_1/LINUX/jwk/GUI207_V2.0_SAR/db/models/BBOX,\
+target=/home/model-server/model-store mmdet_serve:v2; \
+exec bash -l\"";
+  // this->terminal->execute(dockerRunCmdMmdet);
+  // this->terminal->execute(dockerRunCmd);
+  
   // 延时
   // DELAY::sleep_msec(15000);
   // //     QThread::sleep(20);

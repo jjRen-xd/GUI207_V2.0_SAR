@@ -14,6 +14,8 @@ TestThread::TestThread(DatasetInfo *globalDatasetInfo,
     qRegisterMetaType<std::vector<result_>>("std::vector<result_>");
     qRegisterMetaType<std::vector<std::string>>();
     qRegisterMetaType<CMmap>("CMmap");
+    MaskApi *maskiou;
+    
 }
 
 TestThread::~TestThread()
@@ -28,6 +30,29 @@ void TestThread::run()
     classType.clear();
     conMatrix.clear();
     result.clear();
+
+    // 测试微软官方iou计算库
+    // BB db,gb;
+    // double iou = 0;
+    // // double dt[4] = {135.56723022460938,94.97298431396484,28.2076416015625,77.8844223022461};
+    // // double gt[4] = {136,100,26,70};
+
+    // std::vector<std::double_t> dt = {135.56723022460938,94.97298431396484,28.2076416015625,77.8844223022461};
+    // std::vector<std::double_t> gt = {136,100,26,70};
+
+
+    // // db = &dt;
+    // // gb = &gt;
+
+    // // 预测框个数
+    // siz m = 1;   
+    // // 真实框个数
+    // siz n = 1;   
+    // byte2 iscrowd = 0;
+    // maskiou->bbIou(db,gb,m,n,&iscrowd,&iou);
+    // cout << "iou:" << iou << endl;
+
+
 
     vector<string> allSubDirs;
     dirTools->getDirs(allSubDirs, *choicedDatasetPATH);
@@ -118,8 +143,10 @@ void TestThread::run()
         imageNum = imageNum + 1;
         string choicedImagePath = *choicedDatasetPATH + "/images/" + imageFileName;
         this->choicedSamplePATH = QString::fromStdString(choicedImagePath);
+        // 旋转框预测
         if (*choicedModelType == "RBOX_DET")
         {
+            bboxTag = false;
             // 读取GroundTruth，包含四个坐标和类别信息
             string labelPath = *choicedDatasetPATH + "/labelTxt/" + imageFileName.substr(0, imageFileName.size() - 4) + ".txt";
             std::vector<std::vector<cv::Point>> points_GT; // 存放真实框坐标
@@ -208,13 +235,14 @@ void TestThread::run()
         else
         {
             // 如果是正框，读取xml标注
-
+            bboxTag = true;
             // 读取GroundTruth,正框xy极大极小值
             string labelPath = *choicedDatasetPATH + "/labelTxt/" + imageFileName.substr(0, imageFileName.size() - 4) + ".xml";
             std::vector<std::vector<cv::Point>> points_GT; // 存放真实框坐标
             std::vector<string> label_GT;                  //存放真实框类别标签
+            std::vector<std::vector<std::double_t>> bboxGT;
             // 获取当前图片的标注信息
-            dirTools->getGtXML(label_GT, points_GT, labelPath);
+            dirTools->getGtXML(label_GT, points_GT, bboxGT,labelPath);
             // 当前图片名字
             std::string localFileName = imageFileName.substr(0, imageFileName.size() - 4);
 
@@ -228,7 +256,8 @@ void TestThread::run()
                 {
                     if (classType[i] == label_GT[j])
                     {
-                        gtTemp.gtRect.push_back(cv::minAreaRect(cv::Mat(points_GT[j])));
+                        // gtTemp.gtRect.push_back(cv::minAreaRect(cv::Mat(points_GT[j])));
+                        gtTemp.gtBbox.push_back(bboxGT[j]);
                         gtTemp.det.push_back(0);
                         // 真实框数量计算
                         gtNum[i] = gtNum[i] + 1;
@@ -267,7 +296,8 @@ void TestThread::run()
                         {
                             if (predMapStr[j]["class_name"].toStdString() == classType[i])
                             {
-                                // 三点构造正框矩形
+                                // 三点构造正框矩形，预测框出来的是左下角坐标和宽高
+
                                 QStringList predCoordStr = predMapStr[j]["bbox"].remove('[').remove(']').split(',');
                                 pre_info preTemp;
                                 cv::Point points[4];
@@ -275,17 +305,32 @@ void TestThread::run()
                                 float ymin = predCoordStr[1].toFloat();
                                 float xmax = predCoordStr[2].toFloat();
                                 float ymax = predCoordStr[3].toFloat();
-                                // 左上，左下，右下，逆时针三个点坐标
-                                points[0] = cv::Point(xmin, ymax);
-                                points[1] = cv::Point(xmin, ymin);
-                                points[2] = cv::Point(xmax, ymin);
-                                points[3] = cv::Point(xmax, ymax);
-                                std::vector<cv::Point> pointVec;
-                                for (size_t j = 0; j < 4; j++)
-                                {
-                                    pointVec.push_back(points[j]);
-                                }
-                                preTemp.preRect = cv::minAreaRect(cv::Mat(pointVec));
+
+                                float w = xmax - xmin;
+                                float h = ymax - ymin;
+
+                                // if (imageFileName.substr(0, imageFileName.size() - 4) == "000012")
+                                // {
+                                    
+                                //     cout << "xmin:" << xmin << endl;
+                                //     cout << "ymin:" << ymin << endl;
+                                //     cout << "xmax:" << xmax << endl;
+                                //     cout << "ymax:" << ymax << endl;
+                                // }
+
+                                // // 左上，左下，右下，逆时针三个点坐标
+                                // points[0] = cv::Point(xmin, ymax);
+                                // points[1] = cv::Point(xmin, ymin);
+                                // points[2] = cv::Point(xmax, ymin);
+                                // points[3] = cv::Point(xmax, ymax);
+                                // std::vector<cv::Point> pointVec;
+                                // for (size_t j = 0; j < 4; j++)
+                                // {
+                                //     pointVec.push_back(points[j]);
+                                // }
+                                // preTemp.preRect = cv::minAreaRect(cv::Mat(pointVec));
+
+                                preTemp.preBbox = {xmin,ymin,w,h};
                                 preTemp.imgName = localFileName;
                                 preTemp.score = predMapStr[j]["score"].toFloat();
                                 preInfo[classType[i]].push_back(preTemp);
@@ -323,13 +368,19 @@ void TestThread::run()
             //     break;
             // }
         }
-    }
 
+    }
+    cout << "GtNum = " << gtNum[0] << endl;
+    cout << "DtNum = "<< predAll <<endl;
     // 计算ap
+
     for (size_t cls = 0; cls < classType.size(); cls++)
     {
         // preInfo按照score排序
         sort(preInfo[classType[cls]].begin(), preInfo[classType[cls]].end());
+        // for (size_t i =0;i < preInfo[classType[cls]].size();i++){
+        //     cout << preInfo[classType[cls]][i].score << endl;
+        // }
         // tp和fp容器初始化为0
         std::vector<float> tp(preInfo[classType[cls]].size(), 0.0);
         std::vector<float> fp(preInfo[classType[cls]].size(), 0.0);
@@ -337,7 +388,7 @@ void TestThread::run()
         std::vector<float> recall(preInfo[classType[cls]].size(), 0.0);
         float score = 0.0;
         // 计算tpfp
-        eval->tpfp(preInfo[classType[cls]], gtInfo[classType[cls]], tp, fp, iouThresh);
+        eval->tpfp(bboxTag,preInfo[classType[cls]], gtInfo[classType[cls]], tp, fp, iouThresh);
         // cumsum累加实现
         for (size_t i = 1; i < fp.size(); i++)
         {

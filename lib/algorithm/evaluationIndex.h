@@ -14,6 +14,7 @@
 #include <QChartView>
 #include <QValueAxis>
 #include <iomanip>
+#include <string.h>
 
 
 #include "./lib/guiLogic/modelInfo.h"
@@ -21,6 +22,7 @@
 #include "./lib/guiLogic/tools/searchFolder.h" // 防止opencv找不到
 #include "./lib/algorithm/torchServe.h"
 #include "./lib/algorithm/myStruct.h"
+#include "./lib/algorithm/maskApi.h"
 class EvaluationIndex:public QObject{
     Q_OBJECT
 
@@ -28,15 +30,16 @@ public:
     EvaluationIndex(DatasetInfo *globalDatasetInfo, ModelInfo *globalModelInfo, TorchServe *globalTorchServe);
     ~EvaluationIndex();
 
-
     float rotateIOUcv(cv::RotatedRect rect1,cv::RotatedRect rect2);
     float apCulcu(std::vector<float> precision,std::vector<float> recall);
     void confusionMatrix(std::map<std::string,std::vector<gt_info_cm>> gtInfo,std::map<std::string,std::vector<pre_info_cm>> preInfo,std::vector<std::string> matrixType,std::map<std::string,std::map<std::string, float>> &Matrix,float iouThresh,float scoreThresh);
-    void tpfp(std::vector<pre_info> preInfo,std::vector<gt_info> gtInfo,std::vector<float> &tp,std::vector<float> &fp,float iouThresh);
+    void tpfp(bool bboxTag,std::vector<pre_info> preInfo,std::vector<gt_info> gtInfo,std::vector<float> &tp,std::vector<float> &fp,float iouThresh);
     TorchServe *torchServe;
+
 private:
     DatasetInfo *datasetInfo;
     ModelInfo *modelInfo;
+    MaskApi *maskiou;
 
 };
 

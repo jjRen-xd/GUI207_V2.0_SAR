@@ -8,6 +8,8 @@
 #include <string>
 #include <QString>
 #include <vector>
+#include <math.h>
+#include <stdio.h>
 #include <map>
 #include <time.h>
 #include <QBarSet>
@@ -29,6 +31,14 @@
 #include "./lib/guiLogic/tools/searchFolder.h"
 #include "./lib/algorithm/myStruct.h"
 #include "./core/modelEvalPage.h"
+
+#include "./lib/algorithm/maskApi.h"
+
+// extern "C" {
+//     #include "./lib/algorithm/maskApi.h"
+// }
+
+
 typedef  std::map<std::string,std::map<std::string, float>>  CMmap;
 // 注册结构体
 Q_DECLARE_METATYPE(std::vector<struct result_>);
@@ -55,6 +65,10 @@ public:
     SearchFolder *dirTools = new SearchFolder();
     void run();
     std::vector<result_> result;
+
+    // 判断是否为正框的标志
+    bool bboxTag;
+
 signals:
     void end(std::vector<result_> result,std::vector<std::string> classType,CMmap conMatrix);
 private:
@@ -62,6 +76,7 @@ private:
     EvaluationIndex *eval;
     TorchServe *torchServe;
     BashTerminal *terminal;
+    MaskApi *maskiou;
 };
 
 #endif

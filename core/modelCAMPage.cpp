@@ -263,10 +263,11 @@ int ModelCAMPage::randomImage(){
     // 读取GroundTruth，包含四个坐标和类别信息
     std::vector<std::vector<cv::Point>> points_GT;
     std::vector<std::string> labels_GT;
+    std::vector<std::vector<std::double_t>> bboxGT;
 
     if (datasetInfo->selectedType == "BBOX"){
         string labelPath = choicedDatasetPATH + "/labelTxt/" + choicedImageFile.substr(0, choicedImageFile.size() - 4) + ".xml";
-        dirTools->getGtXML(labels_GT, points_GT, labelPath);
+        dirTools->getGtXML(labels_GT, points_GT,bboxGT, labelPath);
     }
     else{
         string labelPath = choicedDatasetPATH + "/labelTxt/" + choicedImageFile.substr(0, choicedImageFile.size() - 4) + ".txt";

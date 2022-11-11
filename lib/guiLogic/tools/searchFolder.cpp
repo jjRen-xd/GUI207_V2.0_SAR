@@ -124,6 +124,7 @@ bool SearchFolder::getGroundTruth(
 bool SearchFolder::getGtXML(
     std::vector<std::string>  &label_GT,
     std::vector<std::vector<cv::Point>> &points_GT,
+    std::vector<std::vector<std::double_t>> &bboxGT,
     std::string labelPath)
 {
     TiXmlDocument doc;
@@ -156,10 +157,14 @@ bool SearchFolder::getGtXML(
                     {
                         coordi.push_back(atof(local->GetText()));
                     }
-                    float xmin = coordi[0];
-                    float ymin = coordi[1];
+                    // mmdet里，xmin和ymin要-1，会影响到最后的精度
+                    float xmin = coordi[0]-1;
+                    float ymin = coordi[1]-1;
                     float xmax = coordi[2];
                     float ymax = coordi[3];
+                    float w = xmax - xmin;
+                    float h = ymax - ymin;
+                    std::vector<std::double_t> currBbox = {xmin,ymin,w,h};
                     vector<cv::Point> currPoints = {
                         cv::Point(xmin,ymax),
                         cv::Point(xmin,ymin),
@@ -167,6 +172,7 @@ bool SearchFolder::getGtXML(
                         cv::Point(xmax,ymax)
                     };
                     points_GT.push_back(currPoints);
+                    bboxGT.push_back(currBbox);
                 }
             }
         }

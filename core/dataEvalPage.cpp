@@ -74,6 +74,7 @@ void DataEvalPage::ttThread()
             ui->dataEvalProcessBar->setValue(0);
             if (nullptr != thread)
             {
+                start_time = clock();
                 thread->start();
             }
         }
@@ -86,6 +87,10 @@ void DataEvalPage::ttThread()
 //线程结束触发槽函数，用于打印线程输出的结果
 void DataEvalPage::outThread(std::vector<result_> result, std::vector<std::string> classType, std::map<std::string, std::map<std::string, float>> conMatrix)
 {
+    end_time = clock();
+    predTime = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+    std::cout << "Predict Time: " << predTime << std::endl;
+    ui->label_predTime_2->setText(QString("%1").arg(predTime));
     resultMean.clear();
     std::vector<std::string> matrixType(classType);
     matrixType.push_back("background");

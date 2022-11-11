@@ -64,6 +64,7 @@ private:
 
     // 预览图的真实及预测标签信息
     cv::Mat imgSrc;
+    std::vector<std::vector<std::double_t>> bboxGT;
     std::vector<std::vector<cv::Point>> points_GT;
     std::vector<std::string> labels_GT;
     std::vector<std::vector<cv::Point>> points_Pred;

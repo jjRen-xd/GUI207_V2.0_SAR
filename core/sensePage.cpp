@@ -230,9 +230,10 @@ void SenseSetPage::nextBatchImage(){
         // 记录GroundTruth，包含四个坐标和类别信息
         vector<string> label_GT;
         vector<vector<cv::Point>> points_GT;
+        std::vector<std::vector<std::double_t>> bboxGT;
         if(datasetInfo->selectedType == "BBOX"){
             string labelPath = rootPath+"/labelTxt/"+choicedImageFile.substr(0,choicedImageFile.size()-4)+".xml";
-            dirTools->getGtXML(label_GT, points_GT, labelPath);
+            dirTools->getGtXML(label_GT, points_GT,bboxGT, labelPath);
         }else{
             string labelPath = rootPath+"/labelTxt/"+choicedImageFile.substr(0,choicedImageFile.size()-4)+".txt";
             dirTools->getGroundTruth(label_GT, points_GT, labelPath);
