@@ -36,6 +36,7 @@ void BashTerminal::execute(QString cmd){
 void BashTerminal::execute(QString cmd, QString* output){
     /* 阻塞式运行命令接口, 并保存结果 */
     QProcess p;
+    QString respones;
     p.start(bashApi, QStringList() <<"-c" << cmd);
     p.waitForFinished();
     QString strResult = p.readAllStandardOutput();

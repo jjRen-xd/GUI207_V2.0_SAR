@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
     this->torchServe = new TorchServe(this->terminal, this->globalModelInfo);
 
     // 后台计算
-    this->evalBack = new EvaluationIndex(this->globalDatasetInfo,this->globalModelInfo,this->torchServe);
+    // this->evalBack = new EvaluationIndex(this->globalDatasetInfo,this->globalModelInfo,this->torchServe);
 
     // 数据集悬浮窗设置
     this->datasetDock = new DatasetDock(this->ui, this->terminal, this->globalDatasetInfo);
@@ -49,8 +49,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
     // 场景选择页面
     this->senseSetPage = new SenseSetPage(this->ui, this->terminal, this->globalDatasetInfo);
     this->modelChoicePage = new ModelChoicePage(this->ui, this->terminal, this->globalModelInfo,this->torchServe);
-    this->modelEvalPage = new ModelEvalPage(this->ui, this->terminal,this->globalDatasetInfo, this->globalModelInfo, this->torchServe);
-    this->dataEvalPage = new DataEvalPage(this->ui, this->terminal,this->globalDatasetInfo, this->globalModelInfo, this->torchServe,this->evalBack);
+    this->dataEvalPage = new DataEvalPage(this->ui, this->terminal,this->globalDatasetInfo, this->globalModelInfo, this->torchServe);
+    this->datasetEvalPage = new DatasetEvalPage(this->ui, this->terminal,this->globalDatasetInfo, this->globalModelInfo, this->torchServe);
     this->modelTrainPage = new ModelTrainPage(this->ui, this->terminal,this->globalDatasetInfo, this->globalModelInfo, this->torchServe, this->modelDock);
     this->transferTrainPage = new TransferTrainPage(this->ui, this->terminal,this->globalDatasetInfo, this->globalModelInfo, this->torchServe, this->modelDock);
     this->reinforceTrainPage = new ReinfoceTrainPage(this->ui, this->terminal,this->globalDatasetInfo, this->globalModelInfo, this->torchServe, this->modelDock);
@@ -93,11 +93,11 @@ void MainWindow::switchPage(){
     }
     else if(action==ui->action_Evaluate){
         ui->stackedWidget_MultiPage->setCurrentWidget(ui->page_modelEval);
-        this->modelEvalPage->refreshGlobalInfo();
+        this->dataEvalPage->refreshGlobalInfo();
     }
     else if(action==ui->action_DataEval){
         ui->stackedWidget_MultiPage->setCurrentWidget(ui->page_dataEval);
-        this->dataEvalPage->refreshGlobalInfo();
+        this->datasetEvalPage->refreshGlobalInfo();
     }
     else if(action==ui->action_ModelTrain){
         ui->stackedWidget_MultiPage->setCurrentWidget(ui->page_modelTrain);

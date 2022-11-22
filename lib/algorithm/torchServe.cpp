@@ -19,7 +19,7 @@ TorchServe::TorchServe(BashTerminal *bash_terminal, ModelInfo *globalModelInfo) 
       {"FEA_RELE", {{"Inference", 9080}, {"Management", 9081}, {"Metrics", 9082}}},
       {"FEW_SHOT", {{"Inference", 9080}, {"Management", 9081}, {"Metrics", 9082}}},
       {"FEA_OPTI", {{"Inference", 9080}, {"Management", 9081}, {"Metrics", 9082}}},
-      {"RBOX_DET", {{"Inference", 8080}, {"Management", 8081}, {"Metrics", 8082}}}};
+      {"RBOX_DET", {{"Inference", 7080}, {"Management", 7081}, {"Metrics", 7082}}}};
   postTag = 0;
   initTorchServe();
 }
@@ -33,15 +33,15 @@ int TorchServe::initTorchServe()
 {
   this->terminal->print("初始化TorchServe");
   // 初始化Docker
-  // this->terminal->execute("docker stop $(docker ps -aq) && docker rm $(docker ps -aq)");
+  this->terminal->execute("docker stop $(docker ps -aq) && docker rm $(docker ps -aq)");
   QString dockerRunCmd = "gnome-terminal -x bash -c \"\
 docker run --rm \
 --cpus 10 \
 --gpus all \
--p8080:8080 -p8081:8081 -p8082:8082 \
+-p7080:8080 -p7081:8081 -p7082:8082 \
 --mount type=bind,\
 source=/media/z840/HDD_1/LINUX/jwk/GUI207_V2.0_SAR/db/models/RBOX,\
-target=/home/model-server/model-store mmrotate-serve:v2; \
+target=/home/model-server/model-store mmrotate2:v2; \
 exec bash -l\"";
 
   QString dockerRunCmdMmdet = "gnome-terminal -x bash -c \"\
@@ -53,8 +53,8 @@ docker run --rm \
 source=/media/z840/HDD_1/LINUX/jwk/GUI207_V2.0_SAR/db/models/BBOX,\
 target=/home/model-server/model-store mmdet_serve:v2; \
 exec bash -l\"";
-  // this->terminal->execute(dockerRunCmdMmdet);
-  // this->terminal->execute(dockerRunCmd);
+  this->terminal->execute(dockerRunCmdMmdet);
+  this->terminal->execute(dockerRunCmd);
   
   // 延时
   // DELAY::sleep_msec(15000);
@@ -93,7 +93,9 @@ int TorchServe::postModel(QString modelName, QString modelType, int numWorkers)
                            "/models"+"?initial_workers=" +
                            QString::number(numWorkers) + "&url=" + modelName + '\"';
   //QDebug() << modelName;
+
   this->terminal->execute(torchServePOST);
+
   return 1;
 }
 
@@ -118,12 +120,8 @@ std::vector<std::map<QString, QString>> TorchServe::inferenceOne(QString modelNa
                             "/predictions/" + modelName + " -T" + dataPath;
   QString respones;
   auto parsedMap = std::vector<std::map<QString, QString>>();
-
   this->terminal->execute(torchServeInfer, &respones);
-  // this->terminal->print("curl命令已通过");
-  // std::cout<<respones.toStdString()<<std::endl;
   parseInferenceResult(respones, parsedMap);
-
   return parsedMap;
 }
 

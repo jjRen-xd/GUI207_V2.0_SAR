@@ -30,14 +30,9 @@
 #include "./lib/algorithm/evaluationIndex.h"
 #include "./lib/guiLogic/tools/searchFolder.h"
 #include "./lib/algorithm/myStruct.h"
-#include "./core/modelEvalPage.h"
+#include "./core/dataEvalPage.h"
 
 #include "./lib/algorithm/maskApi.h"
-
-// extern "C" {
-//     #include "./lib/algorithm/maskApi.h"
-// }
-
 
 typedef  std::map<std::string,std::map<std::string, float>>  CMmap;
 // 注册结构体

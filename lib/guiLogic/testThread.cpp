@@ -31,29 +31,6 @@ void TestThread::run()
     conMatrix.clear();
     result.clear();
 
-    // 测试微软官方iou计算库
-    // BB db,gb;
-    // double iou = 0;
-    // // double dt[4] = {135.56723022460938,94.97298431396484,28.2076416015625,77.8844223022461};
-    // // double gt[4] = {136,100,26,70};
-
-    // std::vector<std::double_t> dt = {135.56723022460938,94.97298431396484,28.2076416015625,77.8844223022461};
-    // std::vector<std::double_t> gt = {136,100,26,70};
-
-
-    // // db = &dt;
-    // // gb = &gt;
-
-    // // 预测框个数
-    // siz m = 1;   
-    // // 真实框个数
-    // siz n = 1;   
-    // byte2 iscrowd = 0;
-    // maskiou->bbIou(db,gb,m,n,&iscrowd,&iou);
-    // cout << "iou:" << iou << endl;
-
-
-
     vector<string> allSubDirs;
     dirTools->getDirs(allSubDirs, *choicedDatasetPATH);
     vector<string> targetKeys = {"images", "labelTxt"};
@@ -271,7 +248,8 @@ void TestThread::run()
             {
                 gt_info_cm matrixGtTmp;
                 matrixGtTmp.className = label_GT[i];
-                matrixGtTmp.gtRect = cv::minAreaRect(cv::Mat(points_GT[i]));
+                // matrixGtTmp.gtRect = cv::minAreaRect(cv::Mat(points_GT[i]));
+                matrixGtTmp.gtBbox = bboxGT[i];
                 gtInfoMatrix[localFileName].push_back(matrixGtTmp);
             }
 
@@ -301,38 +279,17 @@ void TestThread::run()
                                 QStringList predCoordStr = predMapStr[j]["bbox"].remove('[').remove(']').split(',');
                                 pre_info preTemp;
                                 cv::Point points[4];
-                                float xmin = predCoordStr[0].toFloat();
-                                float ymin = predCoordStr[1].toFloat();
-                                float xmax = predCoordStr[2].toFloat();
-                                float ymax = predCoordStr[3].toFloat();
+                                double xmin = predCoordStr[0].toDouble();
+                                double ymin = predCoordStr[1].toDouble();
+                                double xmax = predCoordStr[2].toDouble();
+                                double ymax = predCoordStr[3].toDouble();
 
-                                float w = xmax - xmin;
-                                float h = ymax - ymin;
-
-                                // if (imageFileName.substr(0, imageFileName.size() - 4) == "000012")
-                                // {
-                                    
-                                //     cout << "xmin:" << xmin << endl;
-                                //     cout << "ymin:" << ymin << endl;
-                                //     cout << "xmax:" << xmax << endl;
-                                //     cout << "ymax:" << ymax << endl;
-                                // }
-
-                                // // 左上，左下，右下，逆时针三个点坐标
-                                // points[0] = cv::Point(xmin, ymax);
-                                // points[1] = cv::Point(xmin, ymin);
-                                // points[2] = cv::Point(xmax, ymin);
-                                // points[3] = cv::Point(xmax, ymax);
-                                // std::vector<cv::Point> pointVec;
-                                // for (size_t j = 0; j < 4; j++)
-                                // {
-                                //     pointVec.push_back(points[j]);
-                                // }
-                                // preTemp.preRect = cv::minAreaRect(cv::Mat(pointVec));
+                                double w = xmax - xmin;
+                                double h = ymax - ymin;
 
                                 preTemp.preBbox = {xmin,ymin,w,h};
                                 preTemp.imgName = localFileName;
-                                preTemp.score = predMapStr[j]["score"].toFloat();
+                                preTemp.score = predMapStr[j]["score"].toDouble();
                                 preInfo[classType[i]].push_back(preTemp);
                             }
                         }
@@ -344,25 +301,17 @@ void TestThread::run()
                         pre_info_cm matrixPreTmp;
                         matrixPreTmp.className = predMapStr[i]["class_name"].toStdString();
                         cv::Point points[4];
-                        float xmin = predCoordStr[0].toFloat();
-                        float ymin = predCoordStr[1].toFloat();
-                        float xmax = predCoordStr[2].toFloat();
-                        float ymax = predCoordStr[3].toFloat();
-                        // 左上，左下，右下，逆时针三个点坐标
-                        points[0] = cv::Point(xmin, ymax);
-                        points[1] = cv::Point(xmin, ymin);
-                        points[2] = cv::Point(xmax, ymin);
-                        points[3] = cv::Point(xmax, ymax);
-                        std::vector<cv::Point> pointVec;
-                        for (size_t j = 0; j < 4; j++)
-                        {
-                            pointVec.push_back(points[j]);
-                        }
-                        matrixPreTmp.preRect = cv::minAreaRect(cv::Mat(pointVec));
-                        matrixPreTmp.score = predMapStr[i]["score"].toFloat();
+                        double xmin = predCoordStr[0].toDouble();
+                        double ymin = predCoordStr[1].toDouble();
+                        double xmax = predCoordStr[2].toDouble();
+                        double ymax = predCoordStr[3].toDouble();
+
+                        double w = xmax - xmin;
+                        double h = ymax - ymin;
+                        matrixPreTmp.preBbox = {xmin,ymin,w,h};
+                        matrixPreTmp.score = predMapStr[i]["score"].toDouble();
                         preInfoMatrix[localFileName].push_back(matrixPreTmp);
                     }
-                // }
             }
             // if(imageNum == 50){
             //     break;
@@ -370,33 +319,44 @@ void TestThread::run()
         }
 
     }
-    cout << "GtNum = " << gtNum[0] << endl;
+    for (size_t cls = 0;cls < classType.size();cls++){
+        cout << "GtNum = " << gtNum[cls] << endl;
+    }
+    // cout << "GtNum = " << gtNum[0] << endl;
     cout << "DtNum = "<< predAll <<endl;
+
+
     // 计算ap
 
     for (size_t cls = 0; cls < classType.size(); cls++)
     {
         // preInfo按照score排序
         sort(preInfo[classType[cls]].begin(), preInfo[classType[cls]].end());
+        // 这里跑出来是正确的
+        // cout << "DtScoreFirst:" << preInfo[classType[0]][0].score << endl;
+        // cout << "DtScoreEnd:" << preInfo[classType[0]][-1].score << endl;
         // for (size_t i =0;i < preInfo[classType[cls]].size();i++){
-        //     cout << preInfo[classType[cls]][i].score << endl;
+        //     cout << "DtScore:" << preInfo[classType[cls]][i].score << endl;
         // }
         // tp和fp容器初始化为0
         std::vector<float> tp(preInfo[classType[cls]].size(), 0.0);
         std::vector<float> fp(preInfo[classType[cls]].size(), 0.0);
-        std::vector<float> precision(preInfo[classType[cls]].size(), 0.0);
-        std::vector<float> recall(preInfo[classType[cls]].size(), 0.0);
-        float score = 0.0;
+        std::vector<double> precision(preInfo[classType[cls]].size(), 0.0);
+        std::vector<double> recall(preInfo[classType[cls]].size(), 0.0);
+        std::vector<double> scoreVector(preInfo[classType[cls]].size(), 0.0);
+        double score = 0.0;
         // 计算tpfp
         eval->tpfp(bboxTag,preInfo[classType[cls]], gtInfo[classType[cls]], tp, fp, iouThresh);
-        // cumsum累加实现
+        // cumsum累加实现,到这为止都是正确的
         for (size_t i = 1; i < fp.size(); i++)
         {
             fp[i] = fp[i - 1] + fp[i];
             tp[i] = tp[i - 1] + tp[i];
+            // cout << "fp_" << i-1 << ":" << fp[i-1] << endl; 
+            scoreVector[i] = preInfo[classType[cls]][i].score;
             score = preInfo[classType[cls]][i].score + score;
         }
-        // recall和precision计算
+        // recall和precision计算,到这里也都是正确的对得上
         for (size_t i = 0; i < precision.size(); i++)
         {
             if (tp[i] + fp[i] == 0.0)
@@ -406,6 +366,7 @@ void TestThread::run()
             else
             {
                 precision[i] = tp[i] / (tp[i] + fp[i]);
+                // cout << "precision_" << i << ":" << precision[i] << endl;
             }
             if (gtNum[cls] == 0)
             {
@@ -414,12 +375,13 @@ void TestThread::run()
             else
             {
                 recall[i] = tp[i] / gtNum[cls];
+                // cout << "recall_" << i << ":" << recall[i] << endl;
             }
         }
-        float ap = eval->apCulcu(precision, recall);
-        float prec = 0;
-        float cfar = 0;
-        float rec = 0;
+        std::vector<double> apResult = eval->apCulcu(precision, recall,scoreVector);
+        double prec = 0;
+        double cfar = 0;
+        double rec = 0;
         if ((tp.back() + fp.back()) > 0)
         {
             prec = tp.back() / (tp.back() + fp.back());
@@ -427,22 +389,24 @@ void TestThread::run()
         cfar = 1 - prec;
         if (gtNum[cls] > 0)
         {
-            rec = tp.back() / gtNum[cls];
+            rec = recall.back();
         }
         if (tp.size() > 0)
         {
             score = score / tp.size();
         }
+        double ap = apResult[0];
+        score = apResult[1];
         result_ resultTmp = {classType[cls], gtNum[cls], int(preInfo[classType[cls]].size()), fp.back(), tp.back(), ap, rec, prec, cfar, score};
         result.push_back(resultTmp);
     }
 
-    // 程序运行时间计算
-    // finish = clock();
-    // double allTime = double(finish-start) / CLOCKS_PER_SEC;
-    // double perTime = allTime / imageNum;
-    // cout << "codeAllTime:" << allTime << " perTime:" << perTime << endl;
-    eval->confusionMatrix(gtInfoMatrix, preInfoMatrix, matrixType, conMatrix, iouThresh, scoreThresh);
+    eval->confusionMatrix(bboxTag,gtInfoMatrix, preInfoMatrix, matrixType, conMatrix, iouThresh, scoreThresh);
+    if (bboxTag){
+        for (size_t i = 0;i < classType.size();i++){
+            result[i].cfar =  conMatrix[matrixType[1]][matrixType[0]]/(conMatrix[matrixType[1]][matrixType[0]]+conMatrix[matrixType[0]][matrixType[0]]);
+        }
+    }
     if (result.empty()){
         cout << "no result" << endl;
     }

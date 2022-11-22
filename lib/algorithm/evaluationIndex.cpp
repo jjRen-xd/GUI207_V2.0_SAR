@@ -43,29 +43,6 @@ void EvaluationIndex::tpfp(bool bboxTag,
     float iouThresh){
     int num =0;
 
-    // 测试微软官方iou计算库
-    BB db,gb;
-    double iou = 0;
-    // double dt[4] = {135.56723022460938,94.97298431396484,28.2076416015625,77.8844223022461};
-    // double gt[4] = {136,100,26,70};
-
-    std::vector<std::double_t> dt = {135.56723022460938,94.97298431396484,28.2076416015625,77.8844223022461};
-    std::vector<std::double_t> gt = {136,100,26,70};
-
-
-    // db = &dt;
-    // gb = &gt;
-
-    // 预测框个数
-    siz m = 1;   
-    // 真实框个数
-    siz n = 1;   
-    byte2 iscrowd = 0;
-    maskiou->bbIou(db,gb,m,n,&iscrowd,&iou);
-    cout << "iou:" << iou << endl;
-
-
-
     // 计算预测框和该图所有真实框的IOU，取最大值
     for (size_t i = 0; i < preInfo.size(); i++)
     {
@@ -93,6 +70,9 @@ void EvaluationIndex::tpfp(bool bboxTag,
                         siz n = 1;
                         byte2 iscrowd = 0;
                         maskiou->bbIou(db,gb,m,n,&iscrowd,&iou);
+                        // if(preInfo[i].imgName == "000449"){
+                        //     cout << "iou: " << iou << endl;
+                        // }
                         IOU.push_back(iou);
                     }
                 }
@@ -114,10 +94,10 @@ void EvaluationIndex::tpfp(bool bboxTag,
                 // 计算tp 和fp个数
                 if(iouMax > iouThresh){
                     if(gtInfo[j].det[iouMaxIdx] == 0){
-                        if(gtInfo[j].imgName == "001039"){
-                            // cout << gtInfo[j].imgName << endl;
-                            cout << iouMax << endl;
-                        }
+                        // if(gtInfo[j].imgName == "001039"){
+                        //     // cout << gtInfo[j].imgName << endl;
+                        //     cout << iouMax << endl;
+                        // }
                         tp[i] = 1.0;
                         gtInfo[j].det[iouMaxIdx] = 1;
                     }
@@ -130,49 +110,105 @@ void EvaluationIndex::tpfp(bool bboxTag,
                 }
                 num = num + 1;
             }
-            // 得到预测框与当前图中真实框的最大IOU
-            // auto iouMaxit = max_element(IOU.begin(), IOU.end());
-            // auto iouMax = *iouMaxit;     //这里莫名其妙不能这样用，不然系统会崩溃，只能自己写一个
-            // auto iouMax = *max_element(IOU.begin(), IOU.end());
         }
     }
     cout << "usedDt:" << num << endl;
 }
 
-float EvaluationIndex::apCulcu(std::vector<float> precision,std::vector<float> recall){
-    precision.push_back(0.0);
-    recall.push_back(1.0);
-    //初始位置补0
-    recall.insert(recall.begin(),0.0);
-    precision.insert(precision.begin(),0.0);
+
+// 在start_in和end_in之间等分num_in个
+std::vector<double> EvaluationIndex::linspace(double start_in, double end_in, int num_in)
+{
+
+  std::vector<double> linspaced;
+
+  double start = static_cast<double>(start_in);
+  double end = static_cast<double>(end_in);
+  double num = static_cast<double>(num_in);
+
+  if (num == 0) { return linspaced; }
+  if (num == 1) 
+    {
+      linspaced.push_back(start);
+      return linspaced;
+    }
+
+  double delta = (end - start) / (num - 1);
+
+  for(int i=0; i < num-1; ++i)
+    {
+      linspaced.push_back(start + delta * i);
+    }
+  linspaced.push_back(end); // I want to ensure that start and end
+                            // are exactly the same as the input
+  return linspaced;
+}
+
+
+std::vector<double> EvaluationIndex::apCulcu(std::vector<double> precision,std::vector<double> recall,std::vector<double> score){
+
+    // 长度为101的用于插入的数组，1分成101份
+    linSpaced = this->linspace(0.0,1.00,101);
+
+    // 最后用于平均的长度为101的precision和scores数组
+    std::vector<double> pr(101,0.0);
+    std::vector<double> ss(101,0.0);
+
+    // 用于存放插入序号的长度为101的数组
+    std::vector<size_t> insertArray;
+
     //存放recall中不重复的序号
     std::vector<size_t> index;      
-    float apSum = 0.0;
+    double apSum = 0.0;
+    double scoreSum = 0.0;
     // precision两两取最大值
     for (size_t i = precision.size()-1; i > 0; i--)
     {
         precision[i-1] = max(precision[i],precision[i-1]);
     }
-    // 寻找recall中值变化的序号
-    for (size_t i = 1; i < recall.size()-1; i++)
-    {
-        if(recall[i] != recall[i-1]){
-            index.push_back(i);
+
+    // 选择101个插入的序号
+    for (size_t i = 0; i < linSpaced.size();i++){
+        // 如果小于第一个recall值，则为0，如果大于最后一个值，则为最后一个数，其他则在中间
+        if (linSpaced[i] < recall[0])
+        {
+            insertArray.push_back(0);
+        }else if (linSpaced[i] > recall.back()){
+            insertArray.push_back(recall.size());
         }else{
-            continue;
+            for (size_t j = 1; j < recall.size();j++){
+                if (linSpaced[i] <= recall[j] && linSpaced[i] > recall[j-1]){
+                    insertArray.push_back(j);
+                }
+            }
         }
     }
-    //求AP
-    for (size_t i = 0; i < index.size(); i++)
-    {
-        apSum = apSum + ((recall[index[i]]-recall[index[i]-1]) * precision[index[i]]);
+
+    for (size_t i = 0; i < pr.size();i++ ){
+        pr[i] = precision[insertArray[i]];
+        ss[i] = score[insertArray[i]];
     }
-    return apSum;
+
+    for (size_t i = 0; i < pr.size(); i++)
+    {
+        apSum = apSum + pr[i];
+        scoreSum = scoreSum + ss[i];
+    }
+
+    double apMean,scoreMean;
+    apMean = apSum / pr.size();
+    scoreMean = scoreSum / ss.size();
+    cout << "scoreMean:" << scoreMean << endl;
+    std::vector<double> result;
+    result.push_back(apMean);
+    result.push_back(scoreMean);
+    return result;
 }
-// void EvaluationIndex::
+
 
 // 计算混淆矩阵
 void EvaluationIndex::confusionMatrix(
+    bool bboxTag,
     std::map<std::string,std::vector<gt_info_cm>> gtInfo,
     std::map<std::string,std::vector<pre_info_cm>> preInfo,
     std::vector<std::string> matrixType,
@@ -188,8 +224,36 @@ void EvaluationIndex::confusionMatrix(
         {
             for (size_t j = 0; j < gtInfo[perImgPre.first].size(); j++)
             {
-                ious[i][j] = rotateIOUcv(perImgPre.second[i].preRect,gtInfo[perImgPre.first][j].gtRect);
-                // ious.push_back(rotateIOUcv(perImgPre.second[i].preRect,gtInfo[perImgPre.first][j].gtRect));
+                if (bboxTag){
+                    BB db,gb;
+                    double iou = 0;
+                    // 构建和预测框真实框一样大小的数组
+                    double dt[perImgPre.second[i].preBbox.size()];
+                    double gt[gtInfo[perImgPre.first][j].gtBbox.size()];
+                    // 把vector的真实框和预测框转化为数组
+                    memcpy(dt,&perImgPre.second[i].preBbox[0],perImgPre.second[i].preBbox.size()*sizeof(perImgPre.second[i].preBbox[0]));
+                    memcpy(gt,&gtInfo[perImgPre.first][j].gtBbox[0],gtInfo[perImgPre.first][j].gtBbox.size()*sizeof(gtInfo[perImgPre.first][j].gtBbox[0]));
+                    // memcpy(dt,&preInfo[i].preBbox[0],preInfo[i].preBbox.size() * sizeof(preInfo[i].preBbox[0]));
+                    // memcpy(gt,&gtInfo[j].gtBbox[k][0],gtInfo[j].gtBbox[k].size() * sizeof(gtInfo[j].gtBbox[k][0]));
+                    db = dt;
+                    gb = gt;
+                    // 预测框个数
+                    siz m = 1;
+                    // 真实框个数
+                    siz n = 1;
+                    byte2 iscrowd = 0;
+                    maskiou->bbIou(db,gb,m,n,&iscrowd,&iou);
+                    ious[i][j] = iou;
+                    // if(perImgPre.first == "000449"){
+                    //     std::cout << "iou: " << ious[i][j] << std::endl;
+                    // }
+                }else{
+                    ious[i][j] = rotateIOUcv(perImgPre.second[i].preRect,gtInfo[perImgPre.first][j].gtRect);
+                    // cout << "perImgPre:" << perImgPre.first << endl;
+                    // if (perImgPre.first == "000449"){
+                    //     cout << "conMuIOU:" << ious[i][j] << endl;
+                    // }
+                }
             }
         }
         for (size_t i = 0; i < perImgPre.second.size(); i++)

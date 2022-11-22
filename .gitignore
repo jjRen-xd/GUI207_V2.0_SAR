@@ -6,7 +6,7 @@
 build/*
 build/build_here
 
-conf/
+conf/*
 subGUI/*
 
 bash/*
@@ -30,3 +30,6 @@ GUI_V1.0.pro.user
 GUI_V2.0.pro.user
 GUI_V2.0_SAR.pro.user
 GUI_V2.0_SAR.pro.user.6cd0d44
+GUI_V2.0_SAR.pro
+conf/datasetInfoCache.xml
+conf/modelInfoCache.xml

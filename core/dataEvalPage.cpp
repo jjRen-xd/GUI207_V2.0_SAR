@@ -1,145 +1,43 @@
 #include "dataEvalPage.h"
 
+#include "lib/guiLogic/tools/convertTools.h"
+
 #include <QMessageBox>
 #include <QFileDialog>
-#include <algorithm>
-#include <cstdio>
 
 using namespace std;
 #define PI 3.1415926
 
 DataEvalPage::DataEvalPage(Ui_MainWindow *main_ui,
-                           BashTerminal *bash_terminal,
-                           DatasetInfo *globalDatasetInfo,
-                           ModelInfo *globalModelInfo,
-                           TorchServe *globalTorchServe,
-                           EvaluationIndex *evalBack) : ui(main_ui),
-                                                        terminal(bash_terminal),
-                                                        datasetInfo(globalDatasetInfo),
-                                                        modelInfo(globalModelInfo),
-                                                        torchServe(globalTorchServe),
-                                                        eval(evalBack)
+                             BashTerminal *bash_terminal,
+                             DatasetInfo *globalDatasetInfo,
+                             ModelInfo *globalModelInfo,
+                             TorchServe *globalTorchServe) : ui(main_ui),
+                                                             terminal(bash_terminal),
+                                                             datasetInfo(globalDatasetInfo),
+                                                             modelInfo(globalModelInfo),
+                                                             torchServe(globalTorchServe)
 {
+    // 刷新模型、数据集、参数信息
     refreshGlobalInfo();
-    connect(ui->pushButton_mE_testAll, &QPushButton::clicked, this, &DataEvalPage::ttThread);
 
-    uiResult.emplace("mAP50", ui->label_map50Num);
-    uiResult.emplace("mPrec", ui->label_precNum);
-    uiResult.emplace("mRecall", ui->label_recNum);
-    uiResult.emplace("mcfar", ui->label_cfarNum);
-    uiResult.emplace("gtAll", ui->label_gtNum);
-    uiResult.emplace("preAll", ui->label_dtNum);
-    uiResult.emplace("tp", ui->label_tpNum);
-    uiResult.emplace("score", ui->label_scoreNum);
+    // 按钮信号链接
+    connect(ui->pushButton_mE_random, &QPushButton::clicked, this, &DataEvalPage::randSample);
+    connect(ui->pushButto_mE_importImg, &QPushButton::clicked, this, &DataEvalPage::importImage);
+    connect(ui->pushButto_mE_importLabel, &QPushButton::clicked, this, &DataEvalPage::importLabel);
+    connect(ui->pushButton_mE_testOneSample, &QPushButton::clicked, this, &DataEvalPage::testOneSample);
 
-    resultMean.emplace("mAP50", 0.0);
-    resultMean.emplace("mPrec", 0.0);
-    resultMean.emplace("mRecall", 0.0);
-    resultMean.emplace("mcfar", 0.0);
-    resultMean.emplace("gtAll", 0.0);
-    resultMean.emplace("preAll", 0.0);
-    resultMean.emplace("tp", 0.0);
-    resultMean.emplace("score", 0.0);
+    // 复选框信号链接
+    connect(ui->checkBox_mE_showGT, &QCheckBox::stateChanged, this, &DataEvalPage::checkboxResponse);
+    connect(ui->checkBox_mE_showPred, &QCheckBox::stateChanged, this, &DataEvalPage::checkboxResponse);
 
-    thread = new TestThread(datasetInfo, eval, &(this->choicedDatasetPATH), &(this->choicedModelName), &(this->choicedModelType));
-    connect(thread, &TestThread::end, this, &DataEvalPage::outThread);
+
 }
 
 DataEvalPage::~DataEvalPage()
 {
 }
 
-void DataEvalPage::ttThread()
-{
-    QString selectedDataName = QString::fromStdString(this->datasetInfo->selectedName);
-    if (this->choicedModelType == "" || this->datasetInfo->selectedName == "")
-    {
-        QMessageBox::warning(NULL, "错误", "请选择模型和数据集！");
-    }else if (selectedDataName.contains("Diorship") )
-    {
-        QMessageBox::warning(NULL, "错误", "请选择灰度图！");
-    }else if (torchServe->postTag == 0)
-    {
-        QMessageBox::warning(NULL, "错误", "模型没有上传完成！");
-    }
-    else
-    {
-        if (this->choicedModelType == "FEA_OPTI"){
-            QMessageBox::warning(NULL, "错误", "该模型不能测试！");
-        }else if (this->choicedModelType == "RBOX_DET" && this->datasetInfo->selectedType != "RBOX"){
-            QMessageBox::warning(NULL, "错误", "数据集和模型不匹配！");
-        }else{
-            ui->pushButton_mE_testAll->setEnabled(false);
-            ui->dataEvalProcessBar->setMaximum(0);
-            ui->dataEvalProcessBar->setValue(0);
-            if (nullptr != thread)
-            {
-                start_time = clock();
-                thread->start();
-            }
-        }
-    }
-    
-
-
-}
-
-//线程结束触发槽函数，用于打印线程输出的结果
-void DataEvalPage::outThread(std::vector<result_> result, std::vector<std::string> classType, std::map<std::string, std::map<std::string, float>> conMatrix)
-{
-    end_time = clock();
-    predTime = (double)(end_time - start_time) / CLOCKS_PER_SEC;
-    std::cout << "Predict Time: " << predTime << std::endl;
-    ui->label_predTime_2->setText(QString("%1").arg(predTime));
-    resultMean.clear();
-    std::vector<std::string> matrixType(classType);
-    matrixType.push_back("background");
-    ui->dataEvalProcessBar->setMaximum(100);
-    ui->dataEvalProcessBar->setValue(100);
-    if (result.size() == 0)
-    {
-        QMessageBox::warning(NULL, "错误", "结果为空！");
-        ui->pushButton_mE_testAll->setEnabled(true);
-    }else
-    {
-        for (size_t i = 0; i < classType.size(); i++)
-        {
-            resultMean["mAP50"] = resultMean["mAP50"] + result[i].ap;
-            resultMean["mPrec"] = resultMean["mPrec"] + result[i].precision;
-            resultMean["mRecall"] = resultMean["mRecall"] + result[i].recall;
-            resultMean["mcfar"] = resultMean["mcfar"] + result[i].cfar;
-            resultMean["gtAll"] = resultMean["gtAll"] + float(result[i].gtNUm);
-            resultMean["preAll"] = resultMean["preAll"] + float(result[i].detNUm);
-            resultMean["tp"] = resultMean["tp"] + float(result[i].tp);
-            resultMean["score"] = resultMean["score"] + float(result[i].score);
-        }
-        resultMean["mAP50"] = resultMean["mAP50"] / classType.size();
-        resultMean["mPrec"] = resultMean["mPrec"] / classType.size();
-        resultMean["mRecall"] = resultMean["mRecall"] / classType.size();
-        resultMean["mcfar"] = resultMean["mcfar"] / classType.size();
-        resultMean["score"] = resultMean["score"] / classType.size();
-        updateUiResult();
-        plotConMatrix(conMatrix, matrixType);
-        histogram(result, resultMean, classType);
-        ui->pushButton_mE_testAll->setEnabled(true);
-    }
-}
-
-void DataEvalPage::updateUiResult()
-{
-    for (auto subResult : this->uiResult)
-    {
-        std::string type = subResult.first;
-        if (type == "gtAll" || type == "preAll" || type == "tp")
-        {
-            subResult.second->setText(QString("%1").arg(resultMean[subResult.first]));
-        }
-        else
-        {
-            subResult.second->setText(QString::number(resultMean[subResult.first] * 100, 'f', 2).append("%"));
-        }
-    }
-}
 
 void DataEvalPage::refreshGlobalInfo()
 {
@@ -147,207 +45,318 @@ void DataEvalPage::refreshGlobalInfo()
     if(modelInfo->checkMap(modelInfo->selectedType, modelInfo->selectedName, "batch")){
         this->choicedModelName = QString::fromStdString(modelInfo->selectedName);
         this->choicedModelType = QString::fromStdString(modelInfo->selectedType);
-        ui->label_mE_batch_2->setText(QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "batch")));
-        ui->label_mE_model_2->setText(choicedModelName);
+        ui->label_mE_model->setText(choicedModelName);
+        ui->label_mE_batch->setText(QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "batch")));
     }
     else{
         this->choicedModelName = "";
         this->choicedModelType = "";
-        ui->label_mE_batch_2->setText("");
-        ui->label_mE_model_2->setText("空");
+        ui->label_mE_model->setText("空");
+        ui->label_mE_batch->setText("");
     }
-    if(datasetInfo->checkMap(datasetInfo->selectedType, datasetInfo->selectedName, "PATH")){
-        ui->label_mE_dataset_2->setText(QString::fromStdString(datasetInfo->selectedName));
+    if(datasetInfo->checkMap(datasetInfo->selectedType, datasetInfo->selectedName,"PATH")){
+        ui->label_mE_dataset->setText(QString::fromStdString(datasetInfo->selectedName));
         this->choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
     }
     else{
+        ui->label_mE_dataset->setText("空");
         this->choicedDatasetPATH = "";
-        ui->label_mE_dataset_2->setText("空");
     }
-
-
 }
 
-float DataEvalPage::rotateIOUcv(cv::RotatedRect rect1, cv::RotatedRect rect2)
+int DataEvalPage::randSample()
 {
-    float areaRect1 = rect1.size.width * rect1.size.height;
-    float areaRect2 = rect2.size.width * rect2.size.height;
-    vector<cv::Point2f> vertices;
-    int intersectionType = cv::rotatedRectangleIntersection(rect1, rect2, vertices);
-    if (vertices.size() == 0)
-        return 0.0;
+
+    // 清空GroundTruth
+    labels_GT.clear();
+    points_GT.clear();
+    bboxGT.clear();
+
+    // 获取所有子文件夹，并判断是否是图片、标注文件夹
+    vector<string> allSubDirs;
+    dirTools->getDirs(allSubDirs, choicedDatasetPATH);
+    vector<string> targetKeys = {"images", "labelTxt"};
+    for (auto &targetKey : targetKeys)
+    {
+        if (!(std::find(allSubDirs.begin(), allSubDirs.end(), targetKey) != allSubDirs.end()))
+        {
+            // 目标路径不存在目标文件夹
+            QMessageBox::warning(NULL, "错误", "该数据集路径下不存在" + QString::fromStdString(targetKey) + "文件夹！");
+            return -1;
+        }
+    }
+    // 获取图片文件夹下的所有图片文件名
+    vector<string> imageFileNames;
+    if (0 == datasetInfo->selectedType.compare("BBOX"))
+    {
+        dirTools->getFiles(imageFileNames, ".jpg", choicedDatasetPATH + "/images");
+    }
     else
     {
-        vector<cv::Point2f> order_pts;
-        // 找到交集（交集的区域），对轮廓的各个点进行排序
-        cv::convexHull(cv::Mat(vertices), order_pts, true);
-        double area = cv::contourArea(order_pts);
-        float inner = (float)(area / (areaRect1 + areaRect2 - area + 0.0001));
-        return inner;
+        dirTools->getFiles(imageFileNames, ".png", choicedDatasetPATH + "/images");
     }
+    // 随机选取一张图片作为预览图片
+    srand((unsigned)time(NULL));
+    string choicedImageFile = imageFileNames[(rand()) % imageFileNames.size()];
+    string choicedImagePath = choicedDatasetPATH + "/images/" + choicedImageFile;
+    this->choicedSamplePATH = QString::fromStdString(choicedImagePath);
+
+    // 读取图片
+    this->imgSrc = cv::imread(choicedImagePath.c_str(), cv::IMREAD_COLOR);
+
+    // 读取GroundTruth，包含四个坐标和类别信息
+    if (datasetInfo->selectedType == "BBOX")
+    {
+        string labelPath = choicedDatasetPATH + "/labelTxt/" + choicedImageFile.substr(0, choicedImageFile.size() - 4) + ".xml";
+        dirTools->getGtXML(labels_GT, points_GT, bboxGT, labelPath);
+    }
+    else
+    {
+        string labelPath = choicedDatasetPATH + "/labelTxt/" + choicedImageFile.substr(0, choicedImageFile.size() - 4) + ".txt";
+        dirTools->getGroundTruth(labels_GT, points_GT, labelPath);
+    }
+    // 在图片上画出GroundTruth的矩形框
+    cv::Mat imgShow = imgSrc.clone();
+    this->showImg_GT(imgShow);
+
+    // 清空预测结果
+    points_Pred.clear();
+    labels_Pred.clear();
+    scores_Pred.clear();
+    return 1;
 }
 
-// 绘制混淆矩阵
-void DataEvalPage::plotConMatrix(std::map<std::string, std::map<std::string,
-                                                                float>>
-                                     conMatrix,
-                                 std::vector<std::string> matrixType)
+int DataEvalPage::importImage()
 {
-    ui->qTable->setWindowTitle("Confusion Matrix");
-    ui->qTable->setColumnCount(matrixType.size());
-    ui->qTable->setRowCount(matrixType.size());
-    // 行列标题设置
-    QStringList h_Header;
-    QStringList v_Header;
-    for (size_t i = 0; i < matrixType.size(); i++)
+    // 手动导入.png/.jpg/.bmp/.tiff/.raw图像
+    // FIXME 可能有些图像格式不支持，需要检查一下
+    QString filePath = QFileDialog::getOpenFileName(NULL, "导入图片", "./", "Image Files (*.png *.jpg *.bmp *.tiff *.raw)");
+    if (filePath.isEmpty())
     {
-        h_Header.append(QString::fromStdString(matrixType[i]));
-        v_Header.append(QString::fromStdString(matrixType[i]));
+        return -1;
     }
-    ui->qTable->setHorizontalHeaderLabels(h_Header);
-    ui->qTable->setVerticalHeaderLabels(v_Header);
-    ui->qTable->setStyleSheet("QHeaderView::section{background:white;}");
-    ui->qTable->horizontalHeader()->setVisible(true);
-    ui->qTable->verticalHeader()->setVisible(true);
-    //窗口自适应
-    // ui->qTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    // ui->qTable->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    // 不可以编辑
-    ui->qTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    // 根据内容设置行列长度
-    // ui->qTable->resizeColumnsToContents();
-    // ui->qTable->resizeRowsToContents();
+    this->choicedSamplePATH = filePath;
+    this->imgSrc = cv::imread(filePath.toStdString().c_str(), cv::IMREAD_COLOR);
 
-    std::vector<float> iSum;
-    for (size_t i = 0; i < matrixType.size(); i++)
+    // 展示
+    this->showImg_Ori();
+
+    // 清空GroundTruth
+    labels_GT.clear();
+    points_GT.clear();
+
+    // 清空预测结果
+    points_Pred.clear();
+    labels_Pred.clear();
+    scores_Pred.clear();
+    return 1;
+}
+
+int DataEvalPage::importLabel()
+{
+    // 手动导入.txt标注文件
+    // FIXME 可能有些图像格式不支持，需要检查一下
+    QString filePath = QFileDialog::getOpenFileName(NULL, "导入标注", "./", "Text Files (*.txt)");
+    if (filePath.isEmpty())
     {
-        float iSumTmp = 0;
-        for (size_t j = 0; j < matrixType.size(); j++)
-        {
-            iSumTmp = iSumTmp + conMatrix[matrixType[i]][matrixType[j]];
+        return -1;
+    }
+    string labelPath = filePath.toStdString();
+    dirTools->getGroundTruth(labels_GT, points_GT, labelPath);
+
+    // 在图片上画出GroundTruth的矩形框
+    cv::Mat imgShow = imgSrc.clone();
+    this->showImg_GT(imgShow);
+    return 1;
+}
+
+int DataEvalPage::testOneSample()
+{
+    cout << "choicedModelName:" << choicedModelName.split(".mar")[0].toStdString() << endl;
+    cout << "modelType:" << choicedModelType.toStdString() << endl;
+    cout << "choicedSamplePATH:" << choicedSamplePATH.toStdString() << endl;
+    if (choicedModelType == "FEA_OPTI"){
+        QMessageBox::warning(NULL, "错误", "该模型不能测试！");
+        return -1;
+    }else if (choicedModelType == "RBOX_DET" && datasetInfo->selectedType != "RBOX"){
+        QMessageBox::warning(NULL, "错误", "数据集和模型不匹配！");
+        return -1;
+    }
+
+    if (!choicedModelName.isEmpty() && !choicedSamplePATH.isEmpty())
+    {
+        if (torchServe->postTag == 0){
+            QMessageBox::warning(NULL, "错误", "模型没有上传完成！");
+            return -1;
         }
-        iSum.push_back(iSumTmp);
-    }
-    // 单元格赋值
-    for (size_t i = 0; i < matrixType.size(); i++)
-    {
-        for (size_t j = 0; j < matrixType.size(); j++)
-        {
 
-            if (iSum[i] > 0)
+        // 使用gettimeofday计算时间
+        struct timeval start;
+        struct timeval end;
+        float timer;
+        gettimeofday(&start,NULL);
+
+        // 使用TorchServe进行预测
+        std::vector<std::map<QString, QString>> predMapStr = torchServe->inferenceOne(
+            choicedModelName.split(".mar")[0],
+            choicedModelType,
+            choicedSamplePATH    
+        );
+        if (predMapStr.empty() == 0)
+        {
+            cout << "pred_class:" << predMapStr[0]["class_name"].toStdString() << endl;
+            // 解析预测结果predMapStr
+            if (choicedModelType == "RBOX_DET")
             {
-                float res = conMatrix[matrixType[i]][matrixType[j]] / iSum[i] * 100;
-                ui->qTable->setItem(i, j, new QTableWidgetItem(QString::number(res, 'f', 0).append("%")));
-                ui->qTable->item(i, j)->setTextAlignment(Qt::AlignCenter);
+                // 旋转框检测模型
+                for (size_t i = 0; i < predMapStr.size(); i++)
+                {
+                    // 隶属度大于0.5的显示出来
+                    if (predMapStr[i]["score"].toFloat() > 0.5){
+                        labels_Pred.push_back(predMapStr[i]["class_name"].toStdString());
+                        scores_Pred.push_back(predMapStr[i]["score"].toFloat());
+
+                        QStringList predCoordStr = predMapStr[i]["bbox"].remove('[').remove(']').split(',');
+                        cv::Point centerXY = cv::Point(predCoordStr[0].toFloat(), predCoordStr[1].toFloat());
+                        cv::Size rboxSize = cv::Size(predCoordStr[2].toFloat(), predCoordStr[3].toFloat());
+                        std::vector<cv::Point> predPointVec;
+                        calcuRectangle(centerXY, rboxSize, predCoordStr[4].toFloat() * (-1), predPointVec);
+                        points_Pred.push_back(predPointVec);
+                    }
+                }
             }
             else
             {
-                ui->qTable->setItem(i, j, new QTableWidgetItem(QString::number(0).append("%")));
+                for (size_t i = 0; i < predMapStr.size(); i++)
+                {
+                    if (predMapStr[i]["score"].toFloat() > 0.5){
+                        labels_Pred.push_back(predMapStr[i]["class_name"].toStdString());
+                        scores_Pred.push_back(predMapStr[i]["score"].toFloat());
+
+                        QStringList predCoordStr = predMapStr[i]["bbox"].remove('[').remove(']').split(',');
+
+                        float xmin = predCoordStr[0].toFloat();
+                        float ymin = predCoordStr[1].toFloat();
+                        float xmax = predCoordStr[2].toFloat();
+                        float ymax = predCoordStr[3].toFloat();
+                        // 左上，右上，右下
+                        std::vector<cv::Point> predPointVec;
+                        predPointVec.push_back(cv::Point(xmin, ymax));
+                        predPointVec.push_back(cv::Point(xmax, ymax));
+                        predPointVec.push_back(cv::Point(xmax, ymin));
+                        predPointVec.push_back(cv::Point(xmin, ymin));
+                        points_Pred.push_back(predPointVec);
+                    }
+
+                }
+            }
+
+            gettimeofday(&end,NULL);
+            timer = end.tv_sec - start.tv_sec + (float)(end.tv_usec - start.tv_usec)/CLOCKS_PER_SEC;
+            // std::cout << "gettime:" <<  timer << endl;
+
+            ui->label_predTime->setText(QString("%1").arg(timer));
+            // 绘制预测结果到图片上
+            cv::Mat imgShow = imgSrc.clone();
+            this->showImg_Pred(imgShow);
+            return 1;
+        }
+        else{
+            gettimeofday(&end,NULL);
+            timer = end.tv_sec - start.tv_sec + (float)(end.tv_usec - start.tv_usec)/CLOCKS_PER_SEC;
+            // std::cout << "Predict Time: " << predTime << std::endl;
+            ui->label_predTime->setText(QString("%1").arg(timer));
+            QMessageBox::warning(NULL, "错误", "识别不到结果！");
+            return -1;
+        }
+    }
+    return -1;
+}
+
+void DataEvalPage::calcuRectangle(cv::Point centerXY, cv::Size wh, float angle, std::vector<cv::Point> &fourPoints)
+{
+    // 计算旋转框四个顶点坐标\
+
+    // 获取原始矩形左上、右上、右下、左下的坐标
+    cv::Point point_L_U = cv::Point(centerXY.x - wh.width / 2, centerXY.y - wh.height / 2); //左上
+    cv::Point point_R_U = cv::Point(centerXY.x + wh.width / 2, centerXY.y - wh.height / 2); //右上
+    cv::Point point_R_L = cv::Point(centerXY.x + wh.width / 2, centerXY.y + wh.height / 2); //右下
+    cv::Point point_L_L = cv::Point(centerXY.x - wh.width / 2, centerXY.y + wh.height / 2); //左下
+
+    std::vector<cv::Point> point = {point_L_U, point_R_U, point_R_L, point_L_L}; //原始矩形数组
+
+    //求旋转后的对应坐标
+    for (int i = 0; i < 4; i++)
+    {
+        int x = point[i].x - centerXY.x;
+        int y = point[i].y - centerXY.y;
+        fourPoints.push_back(cv::Point(cvRound(x * cos(angle) + y * sin(angle) + centerXY.x), cvRound(-x * sin(angle) + y * cos(angle) + centerXY.y)));
+    }
+}
+
+void DataEvalPage::showImg_Ori()
+{
+    // 将图片显示到界面上
+    QPixmap pixmap = CVS::cvMatToQPixmap(this->imgSrc);
+    ui->label_mE_img->setPixmap(pixmap.scaled(QSize(700, 700), Qt::KeepAspectRatio));
+    ui->label_mE_imgName->setText(choicedSamplePATH.split("/").last());
+}
+
+void DataEvalPage::showImg_GT(cv::Mat &img)
+{
+    // 绘制旋转框到图片上
+    cv::drawContours(img, points_GT, -1, cv::Scalar(16, 124, 16), 2);
+    // 绘制类别标签到图片上
+    for (size_t i = 0; i < labels_GT.size(); i++)
+    {
+        cv::putText(img, labels_GT[i], points_GT[i][1], cv::FONT_HERSHEY_COMPLEX, 0.4, cv::Scalar(0, 204, 0), 1);
+    }
+    // 将图片显示到界面上
+    QPixmap pixmap = CVS::cvMatToQPixmap(img);
+    ui->label_mE_img->setPixmap(pixmap.scaled(QSize(700, 700), Qt::KeepAspectRatio));
+    ui->label_mE_imgName->setText(choicedSamplePATH.split("/").last());
+}
+
+void DataEvalPage::showImg_Pred(cv::Mat &img)
+{
+    // 绘制旋转框到图片上
+    cv::drawContours(img, points_Pred, -1, cv::Scalar(0, 0, 255), 2);
+    // 绘制类别标签
+    for (size_t i = 0; i < labels_Pred.size(); i++)
+    {
+        cv::putText(img,
+                    labels_Pred[i] + ": " + std::to_string(scores_Pred[i]).substr(0, 5),
+                    points_Pred[i][1],
+                    cv::FONT_HERSHEY_COMPLEX,
+                    0.4, cv::Scalar(0, 0, 255),
+                    1);
+    }
+    // 将图片显示到界面上
+    QPixmap pixmap = CVS::cvMatToQPixmap(img);
+    ui->label_mE_img->setPixmap(pixmap.scaled(QSize(700, 700), Qt::KeepAspectRatio));
+    ui->label_mE_imgName->setText(choicedSamplePATH.split("/").last());
+}
+
+void DataEvalPage::checkboxResponse()
+{
+    // 检查框选择框的状态
+    if (!imgSrc.empty())
+    {
+        cv::Mat imgShow = imgSrc.clone();
+        this->showImg_Ori();
+        if (ui->checkBox_mE_showGT->isChecked())
+        {
+            if (!points_GT.empty())
+            {
+                this->showImg_GT(imgShow);
+            }
+        }
+        if (ui->checkBox_mE_showPred->isChecked())
+        {
+            if (!points_Pred.empty())
+            {
+                this->showImg_Pred(imgShow);
             }
         }
     }
-    // 单元格细节美化
-    for (size_t i = 0; i < matrixType.size(); i++)
-    {
-        for (size_t j = 0; j < matrixType.size(); j++)
-        {
-            // 文本居中
-            ui->qTable->item(i, j)->setTextAlignment(Qt::AlignCenter);
-        }
-    }
-}
-
-void removeLayout(QLayout *layout)
-{
-    QLayoutItem *child;
-    if (layout == nullptr)
-        return;
-    while ((child = layout->takeAt(0)) != nullptr)
-    {
-        // child可能为QLayoutWidget、QLayout、QSpaceItem
-        // QLayout、QSpaceItem直接删除、QLayoutWidget需删除内部widget和自身
-        if (QWidget *widget = child->widget())
-        {
-            widget->setParent(nullptr);
-            delete widget;
-            widget = nullptr;
-        }
-        else if (QLayout *childLayout = child->layout())
-            removeLayout(childLayout);
-        delete child;
-        child = nullptr;
-    }
-}
-
-// 绘制柱状图
-void DataEvalPage::histogram(std::vector<result_> result, std::map<std::string, float> resultMean, std::vector<std::string> classType)
-{
-    //创建条形组
-    std::vector<float> ap50;
-    std::vector<float> recall;
-    std::vector<float> score;
-    std::vector<std::string> chartType(classType);
-    chartType.push_back("平均");
-    for (size_t i = 0; i < classType.size(); i++)
-    {
-        ap50.push_back(result[i].ap);
-        recall.push_back(result[i].recall);
-        score.push_back(result[i].score);
-    }
-    // 加入总的值
-    ap50.push_back(resultMean["mAP50"]);
-    recall.push_back(resultMean["mRecall"]);
-    score.push_back(resultMean["score"]);
-
-    QChart *chart = new QChart;
-    std::map<QString, vector<float>> mapnum;
-    mapnum.insert(pair<QString, std::vector<float>>("AP50", ap50)); //后续可拓展
-    mapnum.insert(pair<QString, std::vector<float>>("Recall", recall));
-    mapnum.insert(pair<QString, std::vector<float>>("Score", score));
-
-    QBarSeries *series = new QBarSeries();
-    map<QString, vector<float>>::iterator it = mapnum.begin();
-    //将数据读入
-    while (it != mapnum.end())
-    {
-        QString tit = it->first;
-        QBarSet *set = new QBarSet(tit);
-        std::vector<float> vecnum = it->second;
-        for (auto a : vecnum)
-        {
-            // 百分号
-            a = a * 100;
-            // 保留两位
-            a = ((float)((int)((a + 0.005) * 100))) / 100;
-            *set << a;
-        }
-        series->append(set);
-        it++;
-    }
-    // QString::number(resultMean[subResult.first],'f',2).append("%")
-    series->setVisible(true);
-    series->setLabelsVisible(true);
-    // 横坐标参数
-    QBarCategoryAxis *axis = new QBarCategoryAxis;
-    for (int i = 0; i < chartType.size(); i++)
-    {
-        axis->append(QString::fromStdString(chartType[i]));
-    }
-    QValueAxis *axisy = new QValueAxis;
-    axisy->setRange(0, 100);
-    axisy->setTitleText("%");
-    QFont chartLabel;
-    chartLabel.setPixelSize(14);
-    chart->addSeries(series);
-    chart->setTitle("各类别具体参数图");
-    chart->setTitleFont(chartLabel);
-
-    chart->setAxisX(axis, series);
-    chart->setAxisY(axisy, series);
-    chart->legend()->setVisible(true);
-
-    QChartView *view = new QChartView(chart);
-    view->setRenderHint(QPainter::Antialiasing);
-    removeLayout(ui->horizontalLayout_histogram);
-    ui->horizontalLayout_histogram->addWidget(view);
 }

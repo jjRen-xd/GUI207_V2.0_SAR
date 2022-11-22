@@ -9,8 +9,8 @@
 // 主页面类
 #include "./core/sensePage.h"
 #include "./core/modelChoicePage.h"
-#include "./core/modelEvalPage.h"
 #include "./core/dataEvalPage.h"
+#include "./core/datasetEvalPage.h"
 #include "./core/modelVisPage.h"
 #include "./core/modelCAMPage.h"
 #include "./core/modelTrainPage.h"
@@ -64,8 +64,8 @@ private:
         // 主页面
         SenseSetPage *senseSetPage;
         ModelChoicePage *modelChoicePage;
-        ModelEvalPage *modelEvalPage;
         DataEvalPage *dataEvalPage;
+        DatasetEvalPage *datasetEvalPage;
         ModelTrainPage *modelTrainPage;
         TransferTrainPage *transferTrainPage;
         ReinfoceTrainPage *reinforceTrainPage;

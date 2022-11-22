@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1366</width>
-    <height>979</height>
+    <height>980</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -33,7 +33,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="page_senseSet">
        <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -99,8 +99,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>734</width>
-             <height>671</height>
+             <width>711</width>
+             <height>550</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -942,8 +942,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>734</width>
-             <height>671</height>
+             <width>534</width>
+             <height>750</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -1903,8 +1903,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>732</width>
-             <height>669</height>
+             <width>542</width>
+             <height>272</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -2346,8 +2346,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>732</width>
-             <height>669</height>
+             <width>716</width>
+             <height>659</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -2523,6 +2523,19 @@
                    </property>
                   </widget>
                  </item>
+                 <item>
+                  <widget class="QPushButton" name="saveResultButton">
+                   <property name="minimumSize">
+                    <size>
+                     <width>120</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>保存结果</string>
+                   </property>
+                  </widget>
+                 </item>
                 </layout>
                </item>
                <item>
@@ -2543,7 +2556,7 @@
                        <item>
                         <widget class="QLabel" name="label_map50">
                          <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;mAP50:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;精确率(mAP50):&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
@@ -2557,11 +2570,20 @@
                       </layout>
                      </item>
                      <item>
-                      <layout class="QHBoxLayout" name="horizontalLayout_38">
+                      <layout class="QHBoxLayout" name="horizontalLayout_5">
                        <item>
-                        <widget class="QLabel" name="label_prec">
+                        <widget class="QLabel" name="label_score">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="layoutDirection">
+                          <enum>Qt::LeftToRight</enum>
+                         </property>
                          <property name="text">
-                          <string>精确率:</string>
+                          <string>隶属度:</string>
                          </property>
                          <property name="alignment">
                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -2569,7 +2591,7 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLabel" name="label_precNum">
+                        <widget class="QLabel" name="label_scoreNum">
                          <property name="text">
                           <string>-</string>
                          </property>
@@ -2683,36 +2705,6 @@
                        </item>
                        <item>
                         <widget class="QLabel" name="label_tpNum">
-                         <property name="text">
-                          <string>-</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
-                     <item>
-                      <layout class="QHBoxLayout" name="horizontalLayout_5">
-                       <item>
-                        <widget class="QLabel" name="label_score">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="layoutDirection">
-                          <enum>Qt::LeftToRight</enum>
-                         </property>
-                         <property name="text">
-                          <string>隶属度:</string>
-                         </property>
-                         <property name="alignment">
-                          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLabel" name="label_scoreNum">
                          <property name="text">
                           <string>-</string>
                          </property>
@@ -2839,8 +2831,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>724</width>
-             <height>515</height>
+             <width>853</width>
+             <height>600</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_37">
@@ -3200,7 +3192,7 @@
                      <rect>
                       <x>0</x>
                       <y>0</y>
-                      <width>1860</width>
+                      <width>1892</width>
                       <height>228</height>
                      </rect>
                     </property>
@@ -4366,8 +4358,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>551</width>
-             <height>1102</height>
+             <width>686</width>
+             <height>1136</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_46">
@@ -4884,8 +4876,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>551</width>
-             <height>686</height>
+             <width>686</width>
+             <height>711</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_77">
@@ -5244,8 +5236,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>640</width>
-             <height>344</height>
+             <width>750</width>
+             <height>427</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -6790,8 +6782,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>759</width>
-             <height>670</height>
+             <width>789</width>
+             <height>283</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_65">
@@ -7425,8 +7417,8 @@
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>723</width>
-                    <height>483</height>
+                    <width>731</width>
+                    <height>461</height>
                    </rect>
                   </property>
                   <property name="sizePolicy">
@@ -9540,7 +9532,7 @@
      <x>0</x>
      <y>0</y>
      <width>1366</width>
-     <height>17</height>
+     <height>27</height>
     </rect>
    </property>
    <property name="minimumSize">

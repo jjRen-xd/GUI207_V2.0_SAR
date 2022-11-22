@@ -18,12 +18,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 HEADERS += \
     conf/QRibbon/QRibbon.h \
     core/MainWindow.h \
-    core/dataEvalPage.h \
+    core/datasetEvalPage.h \
     core/datasetsWindow/chart.h \
     core/datasetsWindow/datasetDock.h \
     core/modelCAMPage.h \
     core/modelChoicePage.h \
-    core/modelEvalPage.h \
+    core/dataEvalPage.h \
     core/modelTrainPage.h \
     core/modelVisPage.h \
     core/modelsWindow/modelDock.h \
@@ -41,11 +41,12 @@ HEADERS += \
     lib/guiLogic/tinyXml/tinystr.h \
     lib/guiLogic/tinyXml/tinyxml.h \
     lib/guiLogic/tools/convertTools.h \
-    lib/guiLogic/tools/searchFolder.h
+    lib/guiLogic/tools/searchFolder.h \
+    lib/algorithm/maskApi.h
 SOURCES += \
-    core/dataEvalPage.cpp \
+    core/datasetEvalPage.cpp \
     core/modelCAMPage.cpp \
-    core/modelEvalPage.cpp \
+    core/dataEvalPage.cpp \
     core/modelTrainPage.cpp \
     core/modelVisPage.cpp \
     core/reinforceTrainPage.cpp \
@@ -69,7 +70,8 @@ SOURCES += \
     lib/guiLogic/tinyXml/tinyxml.cpp \
     lib/guiLogic/tinyXml/tinyxmlerror.cpp \
     lib/guiLogic/tinyXml/tinyxmlparser.cpp \
-    lib/guiLogic/tools/searchFolder.cpp
+    lib/guiLogic/tools/searchFolder.cpp \
+    lib/algorithm/maskApi.cpp
 
 FORMS += \
     ./conf/QRibbon/qribbon.ui \
@@ -89,24 +91,6 @@ RESOURCES += \
     conf/QRibbon/QRibbon.qrc \
     sources/MainWindow_sources.qrc
 
-include("./subGUI/subGUI.pri")
-
-
-LIBS += /usr/local/lib/libopencv_calib3d.so \
-/usr/local/lib/libopencv_core.so \
-/usr/local/lib/libopencv_features2d.so \
-/usr/local/lib/libopencv_flann.so \
-/usr/local/lib/libopencv_highgui.so \
-/usr/local/lib/libopencv_imgcodecs.so \
-/usr/local/lib/libopencv_imgproc.so \
-/usr/local/lib/libopencv_ml.so \
-/usr/local/lib/libopencv_objdetect.so \
-/usr/local/lib/libopencv_photo.so \
-/usr/local/lib/libopencv_shape.so \
-/usr/local/lib/libopencv_stitching.so \
-/usr/local/lib/libopencv_superres.so \
-/usr/local/lib/libopencv_videoio.so \
-/usr/local/lib/libopencv_video.so \
-/usr/local/lib/libopencv_videostab.so
+include("./conf/opencv.pri")
 
 RC_ICONS = "./sources/LOGO.ico"
