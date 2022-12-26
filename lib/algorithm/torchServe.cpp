@@ -19,7 +19,7 @@ TorchServe::TorchServe(BashTerminal *bash_terminal, ModelInfo *globalModelInfo) 
       {"FEA_RELE", {{"Inference", 9080}, {"Management", 9081}, {"Metrics", 9082}}},
       {"FEW_SHOT", {{"Inference", 9080}, {"Management", 9081}, {"Metrics", 9082}}},
       {"FEA_OPTI", {{"Inference", 9080}, {"Management", 9081}, {"Metrics", 9082}}},
-      {"RBOX_DET", {{"Inference", 7080}, {"Management", 7081}, {"Metrics", 7082}}}};
+      {"RBOX_DET", {{"Inference", 8080}, {"Management", 8081}, {"Metrics", 8082}}}};
   postTag = 0;
   initTorchServe();
 }
@@ -34,13 +34,13 @@ int TorchServe::initTorchServe()
   this->terminal->print("初始化TorchServe");
   // 初始化Docker
   this->terminal->execute("docker stop $(docker ps -aq) && docker rm $(docker ps -aq)");
-  QString dockerRunCmd = "gnome-terminal -x bash -c \"\
+  QString dockerRunCmdMmrot = "gnome-terminal -x bash -c \"\
 docker run --rm \
 --cpus 10 \
 --gpus all \
--p7080:8080 -p7081:8081 -p7082:8082 \
+-p8080:8080 -p8081:8081 -p8082:8082 \
 --mount type=bind,\
-source=/media/z840/HDD_1/LINUX/jwk/GUI207_V2.0_SAR/db/models/RBOX,\
+source=/media/z840/HDD_6T/Linux_DATA/jwk/GUI207_V2.0_SAR/db/models/RBOX,\
 target=/home/model-server/model-store mmrotate2:v2; \
 exec bash -l\"";
 
@@ -50,15 +50,20 @@ docker run --rm \
 --gpus all \
 -p9080:8080 -p9081:8081 -p9082:8082 \
 --mount type=bind,\
-source=/media/z840/HDD_1/LINUX/jwk/GUI207_V2.0_SAR/db/models/BBOX,\
+source=/media/z840/HDD_6T/Linux_DATA/jwk/GUI207_V2.0_SAR/db/models/BBOX,\
 target=/home/model-server/model-store mmdet_serve:v2; \
 exec bash -l\"";
+
+  this->terminal->execute(dockerRunCmdMmrot);
+  // DELAY::sleep_msec(5000);
   this->terminal->execute(dockerRunCmdMmdet);
-  this->terminal->execute(dockerRunCmd);
-  
+
+
+  // 
+
   // 延时
   // DELAY::sleep_msec(15000);
-  // //     QThread::sleep(20);
+  // QThread::sleep(5);
 
   // // 根据已经导入的模型，上传.mar模型至torchServe服务器
   // std::vector<std::string> modelTypes = modelInfo->getTypes();

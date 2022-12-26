@@ -118,7 +118,7 @@ void TransferTrainPage::startNormalTrain(){
     ui->startNormalTrainButton->setEnabled(false);
     QString cmd="";
     if(processTrain[0]->state()!=QProcess::Running){
-        cmd = "source activate && source deactivate && conda activate 207_base && ";
+        cmd = "source ~/anaconda3/bin/activate mmlab && ";
     }
     QDateTime dateTime(QDateTime::currentDateTime());
     times[0] = dateTime.toString("yyyy-MM-dd-hh-mm-ss");
@@ -155,7 +155,7 @@ void TransferTrainPage::startTransferTrain(){
     
     QString cmd="";
     if(processTrain[1]->state()!=QProcess::Running){
-        cmd = "source activate && source deactivate && conda activate 207_base && ";
+        cmd = "source ~/anaconda3/bin/activate mmlab && ";
     }
 //    if(ui->useExistedModelBox->isChecked()){
 //        choicedPreModel = QString::fromStdString(modelInfo->getAttri("FEW_SHOT",ui->existedModelBox->currentText().toStdString(),"PATH"));

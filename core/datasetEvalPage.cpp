@@ -22,6 +22,8 @@ DatasetEvalPage::DatasetEvalPage(Ui_MainWindow *main_ui,
     evalBack = new EvaluationIndex(datasetInfo,this->modelInfo,this->torchServe);
     connect(ui->pushButton_mE_testAll, &QPushButton::clicked, this, &DatasetEvalPage::testThread);
     connect(ui->saveResultButton, &QPushButton::clicked,this,&DatasetEvalPage::saveResult);
+    connect(ui->stopThreadButton,&QPushButton::clicked,this,&DatasetEvalPage::outThreadStop);// 停止
+    ui->stopThreadButton->setEnabled(false);
     
     uiResult.emplace("mAP50", ui->label_map50Num);
     // uiResult.emplace("mPrec", ui->label_precNum);
@@ -43,6 +45,7 @@ DatasetEvalPage::DatasetEvalPage(Ui_MainWindow *main_ui,
 
     thread = new TestThread(datasetInfo, evalBack, &(this->choicedDatasetPATH), &(this->choicedModelName), &(this->choicedModelType));
     connect(thread, &TestThread::end, this, &DatasetEvalPage::outThread);
+    connect(thread,&TestThread::errorStop,this, &DatasetEvalPage::outThreadError);
 }
 
 DatasetEvalPage::~DatasetEvalPage()
@@ -114,6 +117,7 @@ void DatasetEvalPage::testThread()
             QMessageBox::warning(NULL, "错误", "数据集和模型不匹配！");
         }else{
             ui->pushButton_mE_testAll->setEnabled(false);
+            ui->stopThreadButton->setEnabled(true);
             ui->dataEvalProcessBar->setMaximum(0);
             ui->dataEvalProcessBar->setValue(0);
             if (nullptr != thread)
@@ -124,6 +128,31 @@ void DatasetEvalPage::testThread()
         }
     }
 }
+
+void DatasetEvalPage::outThreadError(bool stopped)
+{
+    if (nullptr != thread){
+        QMessageBox::warning(NULL, "错误", "模型无法预测！");
+        ui->dataEvalProcessBar->setMaximum(100);
+        ui->dataEvalProcessBar->setValue(100);
+        ui->pushButton_mE_testAll->setEnabled(true);
+        ui->stopThreadButton->setEnabled(false);
+        
+    }
+}
+
+void DatasetEvalPage::outThreadStop()
+{
+    if (nullptr != thread)
+    {
+        thread->stop();
+    }
+    ui->dataEvalProcessBar->setMaximum(100);
+    ui->dataEvalProcessBar->setValue(100);
+    ui->stopThreadButton->setDisabled(true);
+    ui->pushButton_mE_testAll->setEnabled(true);
+}
+
 
 //线程结束触发槽函数，用于打印线程输出的结果
 void DatasetEvalPage::outThread(std::vector<result_> result_out, std::vector<std::string> classType_out, std::map<std::string, std::map<std::string, float>> conMatrix_out)
@@ -166,6 +195,7 @@ void DatasetEvalPage::outThread(std::vector<result_> result_out, std::vector<std
         plotConMatrix(conMatrix, matrixType);
         histogram(result, resultMean, classType);
         ui->pushButton_mE_testAll->setEnabled(true);
+        ui->stopThreadButton->setEnabled(false);
     }
 }
 
@@ -369,7 +399,6 @@ void DatasetEvalPage::histogram(std::vector<result_> result, std::map<std::strin
         series->append(set);
         it++;
     }
-    // QString::number(resultMean[subResult.first],'f',2).append("%")
     series->setVisible(true);
     series->setLabelsVisible(true);
     // 横坐标参数

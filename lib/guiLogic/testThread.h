@@ -60,18 +60,21 @@ public:
     SearchFolder *dirTools = new SearchFolder();
     void run();
     std::vector<result_> result;
-
+    void stop();
     // 判断是否为正框的标志
     bool bboxTag;
-
+    bool errorTag;
+    
 signals:
     void end(std::vector<result_> result,std::vector<std::string> classType,CMmap conMatrix);
+    void errorStop(bool stopTag);
 private:
     DatasetInfo *datasetInfo;
     EvaluationIndex *eval;
     TorchServe *torchServe;
     BashTerminal *terminal;
     MaskApi *maskiou;
+    volatile bool stopped;
 };
 
 #endif

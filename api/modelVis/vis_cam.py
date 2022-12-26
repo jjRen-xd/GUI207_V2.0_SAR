@@ -43,7 +43,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Visualize CAM')
     parser.add_argument(
         '--img_dir',
-        default='/media/z840/HDD_1/LINUX/mmlab/mmdetection/datasets/SSDD/JPEGImages',
+        default='/media/z840/HDD_6T/Linux_LIB/mmlab/mmdetection/datasets/SSDD/JPEGImages',
         help='Image file dir')
     parser.add_argument(
         '--img',
@@ -51,11 +51,11 @@ def parse_args():
         help='Image file')
     parser.add_argument(
         '--config', 
-        default='/media/z840/HDD_1/LINUX/mmlab/mmdetection/work_dirs/faster_rcnn_r50_fpn_1x_ssdd_20220411/faster_rcnn_r50_fpn_1x_ssdd_20220411.py',
+        default='/media/z840/HDD_6T/Linux_LIB/mmlab/mmdetection/work_dirs/faster_rcnn_r50_fpn_1x_ssdd_20220411/faster_rcnn_r50_fpn_1x_ssdd_20220411.py',
         help='Config file')
     parser.add_argument(
         '--checkpoint',
-        default='/media/z840/HDD_1/LINUX/mmlab/mmdetection/work_dirs/faster_rcnn_r50_fpn_1x_ssdd_20220411/latest.pth',
+        default='/media/z840/HDD_6T/Linux_LIB/mmlab/mmdetection/work_dirs/faster_rcnn_r50_fpn_1x_ssdd_20220411/latest.pth',
         help='Checkpoint file')
     parser.add_argument(
         '--method',

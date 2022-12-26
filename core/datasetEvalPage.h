@@ -52,6 +52,8 @@ public slots:
     void refreshGlobalInfo();
     void testThread();
     void outThread(std::vector<result_> result_out,std::vector<std::string> classType_out,std::map<std::string,std::map<std::string, float>> conMatrix_out);
+    void outThreadStop();
+    void outThreadError(bool stopped);
     void saveResult();
 private:
     // mmrotate

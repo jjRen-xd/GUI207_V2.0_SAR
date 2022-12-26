@@ -2524,6 +2524,19 @@
                   </widget>
                  </item>
                  <item>
+                  <widget class="QPushButton" name="stopThreadButton">
+                   <property name="minimumSize">
+                    <size>
+                     <width>120</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>停止</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
                   <widget class="QPushButton" name="saveResultButton">
                    <property name="minimumSize">
                     <size>

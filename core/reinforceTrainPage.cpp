@@ -71,7 +71,7 @@ void ReinfoceTrainPage::startTrain(){
     saveModelName = ui->reinforceSaveModelNameEdit->text();
     QString cmd="";
     if(processTrain->state()!=QProcess::Running){
-        cmd = "source activate && source deactivate && conda activate 207_base && ";
+        cmd = "source ~/anaconda3/bin/activate mmlab && ";
     }
     if(!ui->useTrainedRfModelCheckBox->isChecked()){
         if(!datasetInfo->checkMap(reinforceDataType.toStdString(),ui->reinforceDataBox->currentText().toStdString(),"PATH")){

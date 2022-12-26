@@ -127,7 +127,7 @@ if __name__ == '__main__':
     )
     parser.add_argument(
         '--config', 
-        default="/media/z840/HDD_1/LINUX/mmlab/mmdetection/work_dirs/"+
+        default="/media/z840/HDD_6T/Linux_LIB/mmlab/mmdetection/work_dirs/"+
             "faster_rcnn_r50_fpn_1x_ssdd_20220411/"+
             "faster_rcnn_r50_fpn_1x_ssdd_20220411.py",
         type=str,
@@ -135,7 +135,7 @@ if __name__ == '__main__':
     )
     parser.add_argument(
         '--checkpoint', 
-        default="/media/z840/HDD_1/LINUX/mmlab/mmdetection/work_dirs/"+
+        default="/media/z840/HDD_6T/Linux_LIB/mmlab/mmdetection/work_dirs/"+
             "faster_rcnn_r50_fpn_1x_ssdd_20220411/latest.pth",
         type=str,
         help='checkpoint file'
@@ -148,14 +148,14 @@ if __name__ == '__main__':
     )
     parser.add_argument(
         '--image_path',
-        default="/media/z840/HDD_1/LINUX/mmlab/mmdetection/datasets/"+
+        default="/media/z840/HDD_6T/Linux_LIB/mmlab/mmdetection/datasets/"+
             "SSDD/JPEGImages/000736.jpg",
         type=str,
         help='The path of image to visualize'
     )
     parser.add_argument(
         '--save_path',
-        default="/media/z840/HDD_1/LINUX/"+
+        default="/media/z840/HDD_6T/Linux_DATA/jwk/"+
             "GUI207_V2.0_SAR/lib/algorithm/modelVisOutput",
         type=str,
         help='The path of feature map to save'
