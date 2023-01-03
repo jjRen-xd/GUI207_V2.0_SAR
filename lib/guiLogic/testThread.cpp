@@ -31,7 +31,7 @@ void TestThread::stop()
 void TestThread::run()
 {
     // stopped = false;
-    qDebug() << "线程开始运行";
+    //qDebug() << "线程开始运行";
     // while (!stopped){
     float iouThresh = 0.5;
     float scoreThresh = 0.3;
@@ -456,22 +456,34 @@ void TestThread::run()
         
         if (bboxTag)
         {
-            // for (size_t i = 0; i < classType.size(); i++)
-            // {
-            //     result[i].cfar = conMatrix[matrixType[1]][matrixType[0]] / (conMatrix[matrixType[1]][matrixType[0]] + conMatrix[matrixType[0]][matrixType[0]]);
-            // }
-            double conPrec = 0.0;
-            for (size_t i = 0; i < classType.size(); i++)
-            {
-                // 求conMatrix[matrixType[i]]的和
-                double sum = 0.0;
-                for (size_t j = 0; j < classType.size(); j++)
-                {
-                    sum += conMatrix[matrixType[i]][matrixType[j]];
-                }
-                conPrec= conMatrix[matrixType[i]][matrixType[i]] / sum;
-                result[i].cfar = 1 - conPrec;
-            }
+//             for (size_t i = 0; i < classType.size(); i++)
+//             {
+//                 result[i].cfar = conMatrix[matrixType[1]][matrixType[0]] / (conMatrix[matrixType[1]][matrixType[0]] + conMatrix[matrixType[0]][matrixType[0]]);
+//             }
+             double conPrec = 0.0;
+             for (size_t i = 0; i < classType.size(); i++)
+             {
+                 // 求conMatrix[matrixType[i]]的和
+                 double sum = 0.0;
+                 for (size_t j = 0; j <= classType.size(); j++)
+                 {
+                     sum += conMatrix[matrixType[j]][matrixType[i]];
+                 }
+                 conPrec = conMatrix[matrixType[i]][matrixType[i]] / sum;
+                 result[i].cfar = 1 - conPrec;
+             }
+//            double conPrec = 0.0;
+//            for (size_t i = 0; i < classType.size(); i++)
+//            {
+//                // 求conMatrix[matrixType[i]]的和
+//                double sum = 0.0;
+//                for (size_t j = 0; j < classType.size(); j++)
+//                {
+//                    sum += conMatrix[matrixType[i]][matrixType[j]];
+//                }
+//                conPrec= conMatrix[matrixType[i]][matrixType[i]] / sum;
+//                result[i].cfar = 1 - conPrec;
+//            }
         }
         if (result.empty())
         {

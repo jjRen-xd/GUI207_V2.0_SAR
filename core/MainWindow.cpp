@@ -58,8 +58,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
     this->modelCAMPage = new ModelCAMPage(this->ui, this->terminal, this->globalDatasetInfo, this->globalModelInfo);
 
     // mmdetection nedd use "python setup.py develop" to initial the struct of its folder because zyx added a folder names GUI
-    QString initCmd = "source activate && source deactivate && conda activate 207_base && cd ../db/bash/mmdetection && python setup.py develop && cd ../../../build && conda activate base";
-    this->terminal->execute(initCmd);
+//    QString initCmd = "source /root/anaconda3/bin/activate 207_base && cd ../db/bash/mmdetection && python setup.py develop && cd ../../../build && conda activate base";
+//    this->terminal->execute(initCmd);
 }
 
 

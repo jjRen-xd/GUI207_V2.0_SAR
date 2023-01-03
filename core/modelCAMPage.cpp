@@ -20,9 +20,8 @@ ModelCAMPage::ModelCAMPage(Ui_MainWindow *main_ui,
 {
     // 刷新模型、数据集信息
     refreshGlobalInfo();
-    // this->condaPath = "/root/anaconda3/bin/activate";
-    this->condaPath = "~/anaconda3/bin/activate";
-    this->condaEnvName = "mmlab";
+    this->condaPath = "/root/anaconda3/bin/activate";
+    this->condaEnvName = "207_base";
 
     // 下拉框信号槽绑定
     connect(ui->comboBox_CAM_L1, SIGNAL(textActivated(QString)), this, SLOT(on_comboBox_L1(QString)));

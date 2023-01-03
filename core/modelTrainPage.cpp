@@ -80,7 +80,8 @@ void ModelTrainPage::startTrain(){
     uiInitial();
     QString cmd="";
     if(processTrain->state()!=QProcess::Running){
-        cmd = "source ~/anaconda3/bin/activate mmlab && ";
+//        cmd = "source activate && source deactivate && conda activate 207_base && ";
+        cmd = "source /root/anaconda3/bin/activate 207_base && ";
     }
     if(ui->feaConfusionCheckBox->isChecked()){
         this->featureIds="";
@@ -192,11 +193,11 @@ void ModelTrainPage::uiInitial(){
 }
 
 void ModelTrainPage::showTrianResult(){
-    QDir dirs("../db/models/BBOX");
+    QDir dirs("../db/trainLogs");
     QStringList dirList = dirs.entryList(QDir::Dirs);
     foreach (auto dir , dirList){
         if(dir.contains(time)){
-            QString wordir    = "../db/models/BBOX/"+dir;
+            QString wordir    = "../db/trainLogs/"+dir;
             QString ap_file   = wordir+"/AP.jpg";
             QString acc_file  = wordir+"/Accuracy.jpg";
             QString loss_file = wordir+"/Loss.jpg";
@@ -210,7 +211,7 @@ void ModelTrainPage::showTrianResult(){
             QImage *img_cm = new QImage(matrix_file);
             ui->ap_matrix_label->setPixmap(QPixmap::fromImage(*img_cm));
             //    导入训练好的模型至系统
-            modelDock->importModelAfterTrain(modelType, wordir, saveModelName, ".mar");
+            modelDock->importModelAfterTrain(modelType, "../db/models/BBOX/"+time+"-"+saveModelName, saveModelName, ".mar");
             return;
         }
     }

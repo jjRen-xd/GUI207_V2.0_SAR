@@ -21,7 +21,7 @@ TorchServe::TorchServe(BashTerminal *bash_terminal, ModelInfo *globalModelInfo) 
       {"FEA_OPTI", {{"Inference", 9080}, {"Management", 9081}, {"Metrics", 9082}}},
       {"RBOX_DET", {{"Inference", 8080}, {"Management", 8081}, {"Metrics", 8082}}}};
   postTag = 0;
-  initTorchServe();
+//  initTorchServe();
 }
 
 TorchServe::~TorchServe()
@@ -93,7 +93,7 @@ exec bash -l\"";
 
 int TorchServe::postModel(QString modelName, QString modelType, int numWorkers)
 {
-  QString torchServePOST = "curl -X POST \"http://localhost:" +
+  QString torchServePOST = "/root/anaconda3/bin/curl -X POST \"http://localhost:" +
                            QString::number(serverPortList[modelType]["Management"]) +
                            "/models"+"?initial_workers=" +
                            QString::number(numWorkers) + "&url=" + modelName + '\"';
@@ -106,7 +106,7 @@ int TorchServe::postModel(QString modelName, QString modelType, int numWorkers)
 
 int TorchServe::deleteModel(QString modelName, QString modelType)
 {
-  QString torchServeDELETE = "curl -X DELETE \"http://localhost:" +
+  QString torchServeDELETE = "/root/anaconda3/bin/curl -X DELETE \"http://localhost:" +
                              QString::number(serverPortList[modelType]["Management"]) +
                              "/models/" + modelName.split(".")[0] + '\"';
   this->terminal->execute(torchServeDELETE);
@@ -120,11 +120,12 @@ QString TorchServe::getModelList()
 // 推理接口
 std::vector<std::map<QString, QString>> TorchServe::inferenceOne(QString modelName, QString modelType, QString dataPath)
 {
-  QString torchServeInfer = "curl http://127.0.0.1:" +
+  QString torchServeInfer = "/root/anaconda3/bin/curl http://127.0.0.1:" +
                             QString::number(serverPortList[modelType]["Inference"]) +
-                            "/predictions/" + modelName + " -T" + dataPath;
+                            "/predictions/" + modelName + " -T " + dataPath;
   QString respones;
   auto parsedMap = std::vector<std::map<QString, QString>>();
+
   this->terminal->execute(torchServeInfer, &respones);
   parseInferenceResult(respones, parsedMap);
   return parsedMap;

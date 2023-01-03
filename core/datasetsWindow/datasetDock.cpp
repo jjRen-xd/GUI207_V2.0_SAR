@@ -62,6 +62,12 @@ void DatasetDock::importDataset(string type){
         QMessageBox::warning(NULL,"提示","数据集打开失败!");
         return;
     }
+    QDir dirs(rootPath);
+    QStringList dirList = dirs.entryList(QDir::Dirs);
+    if(dirList.indexOf("classImages")==-1 || dirList.indexOf("images")==-1 || dirList.indexOf("labelTxt")==-1){
+        QMessageBox::warning(NULL,"提示","请选择正确的数据集文件夹(包含classImages、images、labelTxt等)!");
+        return;
+    }
     QString datasetName = rootPath.split('/').last();
 
     vector<string> allXmlNames;

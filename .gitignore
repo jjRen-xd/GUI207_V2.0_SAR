@@ -33,3 +33,5 @@ GUI_V2.0_SAR.pro.user.6cd0d44
 GUI_V2.0_SAR.pro
 conf/datasetInfoCache.xml
 conf/modelInfoCache.xml
+
+sources/*

@@ -1,5 +1,7 @@
 #include "datasetEvalPage.h"
 
+#include <fstream>
+#include <iostream>
 #include <QMessageBox>
 #include <QFileDialog>
 #include <algorithm>

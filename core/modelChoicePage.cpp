@@ -147,7 +147,7 @@ void ModelChoicePage::confirmModel(bool notDialog = false){
 
         if(!notDialog)
             QMessageBox::information(NULL, "模型切换提醒", "已成功切换模型为->"+selectedType+"->"+selectedName+"！");
-        QString command = "curl -X POST \"http://localhost:" +
+        QString command = "/root/anaconda3/bin/curl -X POST \"http://localhost:" +
                 QString::number(this->torchServe->serverPortList[selectedType]["Management"]) +
                 "/models"+"?initial_workers=" +
                 QString::number(1) + "&url=" + selectedName + '\"';

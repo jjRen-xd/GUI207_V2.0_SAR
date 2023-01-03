@@ -118,7 +118,8 @@ void TransferTrainPage::startNormalTrain(){
     ui->startNormalTrainButton->setEnabled(false);
     QString cmd="";
     if(processTrain[0]->state()!=QProcess::Running){
-        cmd = "source ~/anaconda3/bin/activate mmlab && ";
+//        cmd = "source activate && source deactivate && conda activate 207_base && ";
+        cmd = "source /root/anaconda3/bin/activate 207_base && ";
     }
     QDateTime dateTime(QDateTime::currentDateTime());
     times[0] = dateTime.toString("yyyy-MM-dd-hh-mm-ss");
@@ -155,7 +156,8 @@ void TransferTrainPage::startTransferTrain(){
     
     QString cmd="";
     if(processTrain[1]->state()!=QProcess::Running){
-        cmd = "source ~/anaconda3/bin/activate mmlab && ";
+//        cmd = "source activate && source deactivate && conda activate 207_base && ";
+        cmd = "source /root/anaconda3/bin/activate 207_base && ";
     }
 //    if(ui->useExistedModelBox->isChecked()){
 //        choicedPreModel = QString::fromStdString(modelInfo->getAttri("FEW_SHOT",ui->existedModelBox->currentText().toStdString(),"PATH"));
@@ -230,7 +232,7 @@ void TransferTrainPage::monitorTrainProcess(int modeltypeId){
                 for(i++;i<len;i++){
                     ui->textEdit->append(lines[i]);
                 }
-                ui->textEdit->append("[注] 学习率较大或样本容量较小都会导致训练失败");
+                ui->textEdit->append("[注] 训练轮数过小、样本容量过小、学习率过大都会导致训练失败");
                 ui->textEdit->update();
                 starTrainBts[modeltypeId]->setEnabled(true);
                 trainProgressBars[modeltypeId]->setMaximum(100);
@@ -252,11 +254,11 @@ void TransferTrainPage::uiInitial(int modeltypeId){
 }
 
 void TransferTrainPage::showTrianResult(int modeltypeId){
-    QDir dir("../db/models/BBOX");
+    QDir dir("../db/trainLogs");
     QStringList dirList = dir.entryList(QDir::Dirs);
     foreach (auto dir , dirList){
         if(dir.contains(times[modeltypeId])){
-            QString wordir    = "../db/models/BBOX/"+dir;
+            QString wordir    = "../db/trainLogs/"+dir;
             QString ap_file   = wordir+"/AP.jpg";
             QString acc_file  = wordir+"/Accuracy.jpg";
             QString loss_file = wordir+"/Loss.jpg";
@@ -269,9 +271,8 @@ void TransferTrainPage::showTrianResult(int modeltypeId){
             apValLabel[modeltypeId]->setPixmap(QPixmap::fromImage(*img_ap));
             QImage *img_cm = new QImage(matrix_file);
             conMatrixLabel[modeltypeId]->setPixmap(QPixmap::fromImage(*img_cm));
-
             //    导入训练好的模型至系统
-            modelDock->importModelAfterTrain(modelType, wordir, saveModelNames[modeltypeId], ".mar");
+            modelDock->importModelAfterTrain(modelType, "../db/models/BBOX/"+times[modeltypeId]+"-"+saveModelNames[modeltypeId], saveModelNames[modeltypeId], ".mar");
             return;
         }
     }

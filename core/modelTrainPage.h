@@ -48,7 +48,7 @@ private:
     QString saveModelName = "";
     QString fusionType="";
     QString modelType="TRA_DL";
-    bool showLog=true;
+    bool showLog=false;
     QString choicedDatasetPATH="";
 
     // 为了兼容win与linux双平台

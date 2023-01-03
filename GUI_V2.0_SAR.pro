@@ -92,5 +92,6 @@ RESOURCES += \
     sources/MainWindow_sources.qrc
 
 include("./conf/opencv.pri")
+include("./subGUI/subGUI.pri")
 
 RC_ICONS = "./sources/LOGO.ico"

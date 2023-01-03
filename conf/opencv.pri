@@ -1,3 +1,4 @@
-INCLUDEPATH += /usr/include/opencv4/opencv2
+INCLUDEPATH += /usr/include/opencv4/
+LIBS += `pkg-config opencv4 --cflags --libs`
 
-LIBS += /usr/lib/x86_64-linux-gnu/libopencv_*.so
+

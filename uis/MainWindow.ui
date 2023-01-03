@@ -33,7 +33,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>8</number>
       </property>
       <widget class="QWidget" name="page_senseSet">
        <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -99,8 +99,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>711</width>
-             <height>550</height>
+             <width>684</width>
+             <height>498</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -942,8 +942,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>534</width>
-             <height>750</height>
+             <width>456</width>
+             <height>673</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -1903,8 +1903,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>542</width>
-             <height>272</height>
+             <width>716</width>
+             <height>659</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -2355,6 +2355,12 @@
              <layout class="QHBoxLayout" name="horizontalLayout_29">
               <item>
                <widget class="Line" name="line_20">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
@@ -2844,8 +2850,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>853</width>
-             <height>600</height>
+             <width>784</width>
+             <height>650</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_37">
@@ -3205,7 +3211,7 @@
                      <rect>
                       <x>0</x>
                       <y>0</y>
-                      <width>1892</width>
+                      <width>1868</width>
                       <height>228</height>
                      </rect>
                     </property>
@@ -4371,8 +4377,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>686</width>
-             <height>1136</height>
+             <width>702</width>
+             <height>1117</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_46">
@@ -4889,8 +4895,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>686</width>
-             <height>711</height>
+             <width>702</width>
+             <height>697</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_77">
@@ -5249,8 +5255,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>750</width>
-             <height>427</height>
+             <width>716</width>
+             <height>664</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -5689,13 +5695,13 @@
                        </property>
                        <property name="minimumSize">
                         <size>
-                         <width>70</width>
+                         <width>80</width>
                          <height>0</height>
                         </size>
                        </property>
                        <property name="maximumSize">
                         <size>
-                         <width>70</width>
+                         <width>80</width>
                          <height>16777215</height>
                         </size>
                        </property>
@@ -5758,13 +5764,13 @@
                        </property>
                        <property name="minimumSize">
                         <size>
-                         <width>120</width>
+                         <width>130</width>
                          <height>22</height>
                         </size>
                        </property>
                        <property name="maximumSize">
                         <size>
-                         <width>120</width>
+                         <width>130</width>
                          <height>22</height>
                         </size>
                        </property>
@@ -6118,13 +6124,13 @@
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
+                     <width>80</width>
                      <height>0</height>
                     </size>
                    </property>
                    <property name="maximumSize">
                     <size>
-                     <width>70</width>
+                     <width>80</width>
                      <height>16777215</height>
                     </size>
                    </property>
@@ -6432,13 +6438,13 @@
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>120</width>
+                     <width>130</width>
                      <height>22</height>
                     </size>
                    </property>
                    <property name="maximumSize">
                     <size>
-                     <width>120</width>
+                     <width>130</width>
                      <height>22</height>
                     </size>
                    </property>
@@ -6795,8 +6801,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>789</width>
-             <height>283</height>
+             <width>845</width>
+             <height>650</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_65">
@@ -6836,13 +6842,13 @@
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>65</width>
+                     <width>80</width>
                      <height>22</height>
                     </size>
                    </property>
                    <property name="maximumSize">
                     <size>
-                     <width>65</width>
+                     <width>80</width>
                      <height>22</height>
                     </size>
                    </property>
@@ -6855,13 +6861,13 @@
                   <widget class="QComboBox" name="reinforceDataBox">
                    <property name="minimumSize">
                     <size>
-                     <width>150</width>
+                     <width>200</width>
                      <height>22</height>
                     </size>
                    </property>
                    <property name="maximumSize">
                     <size>
-                     <width>150</width>
+                     <width>200</width>
                      <height>22</height>
                     </size>
                    </property>
@@ -7091,13 +7097,13 @@
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>65</width>
+                     <width>80</width>
                      <height>22</height>
                     </size>
                    </property>
                    <property name="maximumSize">
                     <size>
-                     <width>65</width>
+                     <width>80</width>
                      <height>22</height>
                     </size>
                    </property>
@@ -7110,13 +7116,13 @@
                   <widget class="QComboBox" name="reinforceTrainedModelBox">
                    <property name="minimumSize">
                     <size>
-                     <width>150</width>
+                     <width>200</width>
                      <height>22</height>
                     </size>
                    </property>
                    <property name="maximumSize">
                     <size>
-                     <width>150</width>
+                     <width>200</width>
                      <height>22</height>
                     </size>
                    </property>
@@ -7362,13 +7368,13 @@
                   <widget class="QPushButton" name="startRfTrainButton">
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
+                     <width>100</width>
                      <height>22</height>
                     </size>
                    </property>
                    <property name="maximumSize">
                     <size>
-                     <width>70</width>
+                     <width>100</width>
                      <height>22</height>
                     </size>
                    </property>
@@ -7381,13 +7387,13 @@
                   <widget class="QPushButton" name="stopRfTrainButton">
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
+                     <width>100</width>
                      <height>22</height>
                     </size>
                    </property>
                    <property name="maximumSize">
                     <size>
-                     <width>70</width>
+                     <width>100</width>
                      <height>22</height>
                     </size>
                    </property>
@@ -7430,8 +7436,8 @@
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>731</width>
-                    <height>461</height>
+                    <width>787</width>
+                    <height>455</height>
                    </rect>
                   </property>
                   <property name="sizePolicy">
@@ -9545,7 +9551,7 @@
      <x>0</x>
      <y>0</y>
      <width>1366</width>
-     <height>27</height>
+     <height>19</height>
     </rect>
    </property>
    <property name="minimumSize">
@@ -9606,25 +9612,6 @@
     <addaction name="actionFullScreen"/>
     <addaction name="actionNormal"/>
    </widget>
-   <widget class="QMenu" name="menu_setting">
-    <property name="title">
-     <string>设置</string>
-    </property>
-    <addaction name="actionwaitadd"/>
-   </widget>
-   <widget class="QMenu" name="menu_help">
-    <property name="title">
-     <string>帮助</string>
-    </property>
-    <addaction name="action_AboutQt"/>
-    <addaction name="action_AboutApp"/>
-   </widget>
-   <widget class="QMenu" name="menu_doc">
-    <property name="title">
-     <string>文档</string>
-    </property>
-    <addaction name="actionwaitadd_2"/>
-   </widget>
    <widget class="QMenu" name="menu_model">
     <property name="title">
      <string>模型库</string>
@@ -9652,9 +9639,6 @@
    <addaction name="menu_dataset"/>
    <addaction name="menu_model"/>
    <addaction name="menu_view"/>
-   <addaction name="menu_setting"/>
-   <addaction name="menu_help"/>
-   <addaction name="menu_doc"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="action_SceneSetting">
